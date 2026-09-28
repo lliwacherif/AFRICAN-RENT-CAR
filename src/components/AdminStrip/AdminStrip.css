@@ -1,0 +1,50 @@
+.admin-strip {
+  background: var(--blue, #2C3E56);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  position: relative;
+  z-index: 201;
+  box-shadow: 0 2px 8px rgba(44, 62, 86, 0.15);
+}
+
+.admin-strip__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.admin-strip__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-strip__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-strip__link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+  transition: opacity 0.15s, color 0.15s;
+}
+.admin-strip__link:hover {
+  opacity: 0.85;
+  color: #ffcfc7;
+}
+
+.admin-strip__sep {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+}

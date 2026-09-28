@@ -1,0 +1,315 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --color-heritage: #A84A3B;
+  --color-heritage-dark: #8A372A;
+  --color-heritage-light: #C25847;
+
+  --color-slate-deep: #2C3E56;
+  --color-slate-dark: #1F2C3D;
+
+  --color-warm-ivory: #FFFFF0;
+  --color-surface-pure: #FFFFFF;
+  --color-secondary-bg: #F8F7EE;
+
+  --color-border-subtle: #EBE6DC;
+  --color-border-medium: #DAD3C5;
+
+  --color-text-main: #191C1F;
+  --color-text-body: #4A525A;
+  --color-text-muted: #727D88;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  background-color: #FFFFF0;
+  color: #191C1F;
+  overflow-x: hidden;
+}
+
+/* Apple Glassmorphism Design System Utilities - Authentic Translucent Liquid Glass */
+.apple-glass {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 
+    0 24px 48px -12px rgba(0, 0, 0, 0.28),
+    0 1px 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 -1px 1px 0 rgba(0, 0, 0, 0.08) inset;
+}
+
+.apple-glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 12px 32px -4px rgba(0, 0, 0, 0.05),
+    0 1px 2px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.apple-glass-dark {
+  background: rgba(20, 27, 38, 0.78);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.18) inset;
+}
+
+.apple-glass-input {
+  background: rgba(16, 22, 31, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+  color: #ffffff;
+}
+
+.apple-glass-input:focus-within {
+  background: rgba(16, 22, 31, 0.85);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 
+    0 0 0 2px rgba(168, 74, 59, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3) inset;
+}
+
+.apple-glass-input input,
+.apple-glass-input select {
+  background: transparent;
+  color: #ffffff;
+}
+
+/* Custom smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F8F7EE;
+}
+::-webkit-scrollbar-thumb {
+  background: #DAD3C5;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A84A3B;
+}
+
+/* Legacy support variables for other routes */
+:root {
+  --black:       #fffff0;
+  --black-2:     #ffffff;
+  --black-3:     #f8f7ee;
+  --black-4:     #ebe6dc;
+  --black-5:     #dad3c5;
+  --black-6:     #c4bcac;
+  --gold:        #A84A3B;
+  --gold-dark:   #8a372a;
+  --gold-light:  #c25847;
+  --gold-pale:   rgba(168, 74, 59, 0.08);
+  --gold-pale2:  rgba(168, 74, 59, 0.16);
+  --blue:        #2C3E56;
+  --blue-dark:   #1f2c3d;
+  --blue-light:  #3b5270;
+  --white:       #191c1f;
+  --white-90:    #2a2f34;
+  --white-70:    #4a525a;
+  --white-60:    #5f6872;
+  --white-50:    #727d88;
+  --white-30:    #9ba5b0;
+  --pure-white:  #ffffff;
+  --success:     #15803d;
+  --warning:     #d97706;
+  --danger:      #dc2626;
+  --radius:      8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --transition:  all 0.2s ease;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+button, input, select, textarea { font-family: inherit; }
+
+/* ── Universal Container & Safe Zone ── */
+.container,
+div.container,
+main.container,
+section.container,
+header.container,
+footer.container {
+  width: 100% !important;
+  max-width: 1280px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 640px) {
+  .container,
+  div.container,
+  main.container,
+  section.container,
+  header.container,
+  footer.container {
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container,
+  div.container,
+  main.container,
+  section.container,
+  header.container,
+  footer.container {
+    padding-left: 36px !important;
+    padding-right: 36px !important;
+    max-width: 1320px !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container,
+  div.container,
+  main.container,
+  section.container,
+  header.container,
+  footer.container {
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+    max-width: 1380px !important;
+  }
+}
+
+/* ── View Mode Toggle (Liste / Mosaïque — Booking style) ── */
+.view-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--black-3, #f8f7ee);
+  border: 1.5px solid var(--black-5, #dad3c5);
+  border-radius: 9999px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.view-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--white-70, #4a525a);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+  line-height: 1.2;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.view-toggle__btn:hover:not(.view-toggle__btn--active) {
+  color: var(--white, #191c1f);
+  background: rgba(168, 74, 59, 0.08);
+}
+
+.view-toggle__btn--active {
+  background: var(--gold, #A84A3B) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(168, 74, 59, 0.3);
+}
+
+/* Luxury Range Slider Styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #EBE6DC;
+  height: 6px;
+  border-radius: 9999px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #A84A3B;
+  cursor: pointer;
+  border: 2.5px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(168, 74, 59, 0.35);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #8A372A;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #A84A3B;
+  cursor: pointer;
+  border: 2.5px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(168, 74, 59, 0.35);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+/* View Mode Segmented Pill (Version 4 Specification) */
+.view-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  background: #F8F7EE;
+  border: 1px solid #EBE6DC;
+  border-radius: 9999px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.view-toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+}
+
+.view-toggle-item.active {
+  background: #A84A3B;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(168, 74, 59, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.view-toggle-item.inactive {
+  color: #727D88;
+}
+
+.view-toggle-item.inactive:hover {
+  color: #191C1F;
+  background: rgba(255, 255, 255, 0.7);
+}
+

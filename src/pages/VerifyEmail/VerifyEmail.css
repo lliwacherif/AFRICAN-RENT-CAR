@@ -1,0 +1,132 @@
+.ve-page {
+  background: var(--black, #fffff0);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ve-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+.ve-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--black-2, #ffffff);
+  border: 1.5px solid var(--black-4, #ebe6dc);
+  border-radius: 20px;
+  padding: 44px 36px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(44, 62, 86, 0.08);
+}
+
+.ve-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ve-spin {
+  color: var(--gold, #A84A3B);
+  animation: ve-spin-anim 1s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes ve-spin-anim {
+  to { transform: rotate(360deg); }
+}
+
+.ve-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.ve-icon-wrap--success {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.ve-icon-wrap--error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.ve-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--white, #191c1f);
+  margin: 0 0 12px;
+}
+
+.ve-sub {
+  font-size: 15px;
+  color: var(--gold, #A84A3B);
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.ve-sub--error {
+  color: #dc2626;
+}
+
+.ve-desc {
+  font-size: 13.5px;
+  color: var(--white-50, #727d88);
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+
+.ve-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.ve-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.ve-btn--primary {
+  background: var(--gold, #A84A3B);
+  color: var(--pure-white, #ffffff);
+  border: none;
+}
+
+.ve-btn--primary:hover {
+  background: var(--gold-dark, #8a372a);
+}
+
+.ve-btn--secondary {
+  background: var(--black-3, #f8f7ee);
+  color: var(--white-70, #4a525a);
+  border: 1.5px solid var(--black-5, #dad3c5);
+}
+
+.ve-btn--secondary:hover {
+  background: var(--black-2, #ffffff);
+  color: var(--gold, #A84A3B);
+  border-color: var(--gold, #A84A3B);
+}
