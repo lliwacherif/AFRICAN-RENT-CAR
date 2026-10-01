@@ -1,8 +1,11 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// AFRICAN RENT CAR — COMPLETE i18n DICTIONARY (FR & AR)
+// AFRICAN RENT CAR — COMPLETE i18n DICTIONARY (FR, AR & EN)
 // ══════════════════════════════════════════════════════════════════════════════
 
+import { en } from './en'
+
 export const translations = {
+  en,
   fr: {
     // Navigation
     nav: {

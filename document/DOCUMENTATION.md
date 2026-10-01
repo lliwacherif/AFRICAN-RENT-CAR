@@ -107,14 +107,11 @@ MONGODB_URI=mongodb://localhost:27017/tunisia-car-rental
 JWT_SECRET=votre_cle_secrete_jwt_hyper_securisee
 JWT_EXPIRES_IN=7d
 
-# Stockage d'images / fichiers (Cloudinary & Supabase)
+# Stockage d'images / fichiers (Cloudinary)
 CLOUDINARY_CLOUD_NAME=votre_cloud_name
 CLOUDINARY_API_KEY=votre_api_key
 CLOUDINARY_API_SECRET=votre_api_secret
 
-SUPABASE_URL=votre_supabase_url
-SUPABASE_KEY=votre_supabase_key
-SUPABASE_SERVICE_KEY=votre_supabase_service_key
 ```
 
 ### 4.2. Variables d'environnement Frontend (`.env`)
@@ -220,7 +217,7 @@ Tunisia-Car-Rental/
 │   │   ├── mail/                # Service d'envoi d'emails (Nodemailer)
 │   │   ├── parcs/               # Module de gestion des agences / parcs
 │   │   ├── reservations/        # Module de gestion des réservations
-│   │   ├── upload/              # Services d'upload d'images & modèles 3D (Cloudinary/Supabase)
+│   │   ├── upload/              # Services d'upload d'images & modèles 3D (Cloudinary)
 │   │   ├── users/               # Module de gestion des utilisateurs & rôles
 │   │   ├── vehicles/            # Module des véhicules (catalogue, statut, modèles 3D)
 │   │   ├── app.module.ts        # Module racine NestJS
@@ -288,7 +285,7 @@ La documentation complète et interactive Swagger est générée automatiquement
 ## 8. FAQ & Dépannage courant
 
 ### Q1 : Le backend refuse les fichiers 3D (.glb) volumineux.
-> **Solution** : Le limiteur d'Express dans `backend/src/main.ts` a été configuré à `100mb` pour autoriser les uploads de modèles 3D complexes. Vérifiez que `CLOUDINARY` ou `SUPABASE` disposent des autorisations nécessaires pour stocker les fichiers binaires.
+> **Solution** : Le limiteur d'Express dans `backend/src/main.ts` a été configuré à `100mb` pour autoriser les uploads de modèles 3D complexes. Vérifiez que `CLOUDINARY` dispose des autorisations nécessaires pour stocker les fichiers binaires.
 
 ### Q2 : Erreur CORS lors des appels depuis le Frontend React.
 > **Solution** : Assurez-vous que la variable `FRONTEND_URL` dans `backend/.env` correspond exactement à l'URL sur laquelle tourne Vite (par ex: `http://localhost:5173`).

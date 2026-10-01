@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   UserCheck, 
@@ -36,6 +37,8 @@ import ChauffeurTrailModal from '../../components/ChauffeurMap/ChauffeurTrailMod
 import './Chauffeur.css';
 
 export default function Chauffeur() {
+  const tr = useText()
+
   const { formatPrice, currency } = useCurrency();
   const { user } = useAuth();
 
@@ -276,31 +279,31 @@ export default function Chauffeur() {
         <div className="max-w-[1300px] mx-auto text-center relative z-10 px-4">
           <div className="chauffeur-badge">
             <UserCheck className="w-4 h-4 text-[#F4A261]" />
-            <span>Lignes Régulières & Chauffeur Privé Assigné</span>
+            <span>{tr("Lignes Régulières & Chauffeur Privé Assigné")}</span>
           </div>
 
           <h1 className="chauffeur-title">
-            Voyagez d'un Point A à un Point B <br />
-            <span className="accent">avec Chauffeur Dédié & Prix Fixe</span>
+            {tr("Voyagez d'un Point A à un Point B")} <br />
+            <span className="accent">{tr("avec Chauffeur Dédié & Prix Fixe")}</span>
           </h1>
 
           <p className="chauffeur-subtitle mx-auto">
-            Notre agence programme et sécurise des liaisons régulières à travers toute la Tunisie. Choisissez votre point de départ et votre destination pour vérifier en temps réel le chauffeur et le véhicule de prestige affectés à votre trajet.
+            {tr("Notre agence programme et sécurise des liaisons régulières à travers toute la Tunisie. Choisissez votre point de départ et votre destination pour vérifier en temps réel le chauffeur et le véhicule de prestige affectés à votre trajet.")}
           </p>
 
           {/* Quick Pillars pill */}
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs text-white/80 font-semibold pt-2">
             <div className="flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-full border border-white/15">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Lignes Garanties & Tarifs Fixes</span>
+              <span>{tr("Lignes Garanties & Tarifs Fixes")}</span>
             </div>
             <div className="flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-full border border-white/15">
               <Plane className="w-3.5 h-3.5 text-[#F4A261]" />
-              <span>Accueil Pancarte Aéroports 24/7</span>
+              <span>{tr("Accueil Pancarte Aéroports 24/7")}</span>
             </div>
             <div className="flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-full border border-white/15">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Flotte VIP Mercedes, Audi & BMW</span>
+              <span>{tr("Flotte VIP Mercedes, Audi & BMW")}</span>
             </div>
           </div>
         </div>
@@ -314,21 +317,21 @@ export default function Chauffeur() {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#A84A3B] animate-ping" />
                 <h2 className="text-xl sm:text-2xl font-black text-[#191C1F] tracking-tight">
-                  Vérificateur de Ligne & Disponibilité Chauffeur
+                  {tr("Vérificateur de Ligne & Disponibilité Chauffeur")}
                 </h2>
               </div>
               <p className="text-xs sm:text-sm text-[#727D88] mt-1 font-medium">
-                Sélectionnez vos étapes parmi les liaisons configurées par l'agence.
+                {tr("Sélectionnez vos étapes parmi les liaisons configurées par l'agence.")}
               </p>
             </div>
 
             <div className="bg-[#FAF8F5] border border-[#EBE6DC] px-4 py-2 rounded-2xl flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-[#2C3E56]/10 text-[#2C3E56] flex items-center justify-center font-black text-xs">
-                {routes.length}
+                {tr(routes.length)}
               </div>
               <div className="text-left text-xs">
-                <p className="font-extrabold text-[#191C1F]">Liaisons Actives</p>
-                <p className="text-[11px] text-[#727D88]">Chauffeurs assignés</p>
+                <p className="font-extrabold text-[#191C1F]">{tr("Liaisons Actives")}</p>
+                <p className="text-[11px] text-[#727D88]">{tr("Chauffeurs assignés")}</p>
               </div>
             </div>
           </div>
@@ -339,7 +342,7 @@ export default function Chauffeur() {
               <div className="lg:col-span-5">
                 <label className="search-step-tag">
                   <MapPin className="w-3.5 h-3.5 text-[#A84A3B]" />
-                  <span>Point de Départ (Lieu de prise en charge)</span>
+                  <span>{tr("Point de Départ (Lieu de prise en charge)")}</span>
                 </label>
                 <div className="route-select-wrapper">
                   <div className="flex items-center gap-2">
@@ -352,13 +355,13 @@ export default function Chauffeur() {
                       }}
                       className="cursor-pointer"
                     >
-                      <option value="" disabled>Sélectionnez le lieu de départ...</option>
+                      <option value="" disabled>{tr("Sélectionnez le lieu de départ...")}</option>
                       {departureOptions.map((pt) => {
                         const locObj = locations.find(l => l.name === pt);
                         const icon = locObj?.category === 'airport' ? '✈️ ' : locObj?.category === 'hotel_zone' ? '🏨 ' : locObj?.category === 'port' ? '⚓ ' : '📍 ';
                         return (
                           <option key={pt} value={pt}>
-                            {icon}{pt} {locObj?.popular ? '⭐' : ''}
+                            {tr(icon)}{tr(pt)} {tr(locObj?.popular ? '⭐' : '')}
                           </option>
                         );
                       })}
@@ -374,7 +377,7 @@ export default function Chauffeur() {
                   type="button"
                   onClick={handleSwap}
                   className="route-swap-btn"
-                  title="Inverser le sens du trajet"
+                  title={tr("Inverser le sens du trajet")}
                 >
                   <ArrowUpDown className="w-4 h-4" />
                 </button>
@@ -384,7 +387,7 @@ export default function Chauffeur() {
               <div className="lg:col-span-5">
                 <label className="search-step-tag">
                   <Navigation className="w-3.5 h-3.5 text-[#2C3E56]" />
-                  <span>Point d'Arrivée (Destination finale)</span>
+                  <span>{tr("Point d'Arrivée (Destination finale)")}</span>
                 </label>
                 <div className="route-select-wrapper">
                   <div className="flex items-center gap-2">
@@ -397,14 +400,14 @@ export default function Chauffeur() {
                       }}
                       className="cursor-pointer"
                     >
-                      <option value="" disabled>Sélectionnez la destination...</option>
+                      <option value="" disabled>{tr("Sélectionnez la destination...")}</option>
                       {destinationOptions.map((pt) => {
                         const isReachableDirectly = availableDestinationsForDepart.includes(pt);
                         const locObj = locations.find(l => l.name === pt);
                         const icon = locObj?.category === 'airport' ? '✈️ ' : locObj?.category === 'hotel_zone' ? '🏨 ' : locObj?.category === 'port' ? '⚓ ' : '📍 ';
                         return (
                           <option key={pt} value={pt}>
-                            {icon}{pt} {isReachableDirectly ? '• (Liaison Directe)' : ''}
+                            {tr(icon)}{tr(pt)} {tr(isReachableDirectly ? '• (Liaison Directe)' : '')}
                           </option>
                         );
                       })}
@@ -425,12 +428,12 @@ export default function Chauffeur() {
                 {checkingAvailability ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Vérification de l'affectation en cours...</span>
+                    <span>{tr("Vérification de l'affectation en cours...")}</span>
                   </>
                 ) : (
                   <>
                     <UserCheck className="w-5 h-5" />
-                    <span>Vérifier la disponibilité du chauffeur pour ce trajet</span>
+                    <span>{tr("Vérifier la disponibilité du chauffeur pour ce trajet")}</span>
                   </>
                 )}
               </button>
@@ -440,14 +443,14 @@ export default function Chauffeur() {
                 className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-[#FAF8F5] hover:bg-[#F2EDE4] border border-[#EBE6DC] text-xs font-bold text-[#2C3E56] flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
               >
                 <Phone className="w-3.5 h-3.5 text-[#A84A3B]" />
-                <span>Assistance Lignes 24/7 : +216 27 908 060</span>
+                <span>{tr("Assistance Lignes 24/7 : +216 27 908 060")}</span>
               </a>
             </div>
           </form>
 
           {/* Quick popular routes pills */}
           <div className="mt-6 pt-5 border-t border-[#F0EBE1] flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-[#727D88] font-bold">Liaisons directes fréquentes :</span>
+            <span className="text-[#727D88] font-bold">{tr("Liaisons directes fréquentes :")}</span>
             {routes.slice(0, 4).map((r) => (
               <button
                 key={r._id}
@@ -476,11 +479,11 @@ export default function Chauffeur() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-300 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
-                          Liaison Confirmée & Chauffeur Prêt
+                          {tr("Liaison Confirmée & Chauffeur Prêt")}
                         </span>
                       </div>
                       <h3 className="text-xl sm:text-2xl font-black mt-1 text-white">
-                        {matchedRoute.from} <span className="text-[#F4A261]">➔</span> {matchedRoute.to}
+                        {tr(matchedRoute.from)} <span className="text-[#F4A261]">➔</span> {tr(matchedRoute.to)}
                       </h3>
                     </div>
                   </div>
@@ -488,11 +491,11 @@ export default function Chauffeur() {
                   <div className="flex items-center gap-4 text-xs font-bold text-white/90">
                     <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-xl border border-white/15">
                       <Clock className="w-4 h-4 text-[#F4A261]" />
-                      <span>{matchedRoute.duration || '1h 30m'}</span>
+                      <span>{tr(matchedRoute.duration || '1h 30m')}</span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-xl border border-white/15">
                       <Navigation className="w-4 h-4 text-emerald-400" />
-                      <span>{matchedRoute.distance || '120 km'}</span>
+                      <span>{tr(matchedRoute.distance || '120 km')}</span>
                     </div>
                   </div>
                 </div>
@@ -506,29 +509,29 @@ export default function Chauffeur() {
                         <div className="chauffeur-avatar-ring shrink-0">
                           <img 
                             src={matchedRoute.assignedChauffeur?.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80'} 
-                            alt={matchedRoute.assignedChauffeur?.name} 
+                            alt={tr(matchedRoute.assignedChauffeur?.name)}
                           />
-                          <div className="verified-driver-badge" title="Chauffeur Professionnel Agréé">
+                          <div className="verified-driver-badge" title={tr("Chauffeur Professionnel Agréé")}>
                             <Check className="w-3.5 h-3.5 stroke-[3]" />
                           </div>
                         </div>
 
                         <div>
                           <span className="text-[10px] font-black uppercase tracking-wider text-[#A84A3B] bg-[#A84A3B]/10 px-2 py-0.5 rounded-md">
-                            Chauffeur Assigné à cette ligne
+                            {tr("Chauffeur Assigné à cette ligne")}
                           </span>
                           <h4 className="text-xl font-extrabold text-[#191C1F] mt-1">
-                            {matchedRoute.assignedChauffeur?.name || 'Chauffeur VIP'}
+                            {tr(matchedRoute.assignedChauffeur?.name || 'Chauffeur VIP')}
                           </h4>
                           <div className="flex items-center gap-2 mt-1">
                             <div className="flex items-center text-amber-500 font-bold text-xs">
                               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 mr-1" />
-                              <span>{matchedRoute.assignedChauffeur?.rating || 4.9}</span>
+                              <span>{tr(matchedRoute.assignedChauffeur?.rating || 4.9)}</span>
                               <span className="text-[#727D88] font-normal ml-1">/ 5.0</span>
                             </div>
                             <span className="text-[#727D88] text-xs">•</span>
                             <span className="text-xs font-semibold text-[#727D88]">
-                              {matchedRoute.assignedChauffeur?.experienceYears || 10} ans d'expérience
+                              {tr(matchedRoute.assignedChauffeur?.experienceYears || 10)} {tr("ans d'expérience")}
                             </span>
                           </div>
                         </div>
@@ -537,12 +540,12 @@ export default function Chauffeur() {
                       {/* Languages */}
                       <div className="mt-4 pt-4 border-t border-[#F0EBE1]">
                         <p className="text-[11px] font-bold text-[#727D88] uppercase tracking-wider mb-2">
-                          Langues parlées par le chauffeur :
+                          {tr("Langues parlées par le chauffeur :")}
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {(matchedRoute.assignedChauffeur?.spokenLanguages || ['Français', 'العربية', 'English']).map(lang => (
                             <span key={lang} className="px-2.5 py-1 rounded-full bg-[#FAF8F5] text-xs font-semibold text-[#2C3E56] border border-[#EBE6DC]">
-                              {lang}
+                              {tr(lang)}
                             </span>
                           ))}
                         </div>
@@ -552,9 +555,9 @@ export default function Chauffeur() {
                     <div className="mt-6 pt-4 border-t border-[#F0EBE1] flex items-center justify-between text-xs text-[#727D88]">
                       <span className="flex items-center gap-1.5 font-bold text-emerald-700">
                         <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                        Disponibilité confirmée
+                        {tr("Disponibilité confirmée")}
                       </span>
-                      <span>Badge d'accueil nominatif</span>
+                      <span>{tr("Badge d'accueil nominatif")}</span>
                     </div>
                   </div>
 
@@ -563,14 +566,14 @@ export default function Chauffeur() {
                     <div className="bg-white p-5 rounded-3xl border border-[#EBE6DC] shadow-sm">
                       <div className="flex items-center gap-2 text-xs font-black text-[#A84A3B] uppercase tracking-wider mb-2">
                         <Car className="w-4 h-4" />
-                        <span>Véhicule de Prestige Affecté</span>
+                        <span>{tr("Véhicule de Prestige Affecté")}</span>
                       </div>
 
                       <h5 className="text-lg font-black text-[#191C1F]">
-                        {matchedRoute.assignedChauffeur?.vehicleModel || 'Berline Affaires'}
+                        {tr(matchedRoute.assignedChauffeur?.vehicleModel || 'Berline Affaires')}
                       </h5>
                       <p className="text-xs font-semibold text-[#727D88] mt-0.5">
-                        Immatriculation : <span className="font-mono font-bold text-[#191C1F]">{matchedRoute.assignedChauffeur?.vehiclePlate || '234 TU 8901'}</span>
+                        {tr("Immatriculation :")} <span className="font-mono font-bold text-[#191C1F]">{tr(matchedRoute.assignedChauffeur?.vehiclePlate || '234 TU 8901')}</span>
                       </p>
 
                       <div className="mt-4 space-y-2">
@@ -582,7 +585,7 @@ export default function Chauffeur() {
                         ]).map((amenity, idx) => (
                           <div key={idx} className="flex items-center gap-2 text-xs text-[#2C3E56] font-medium">
                             <Check className="w-3.5 h-3.5 text-[#A84A3B] shrink-0" />
-                            <span>{amenity}</span>
+                            <span>{tr(amenity)}</span>
                           </div>
                         ))}
                       </div>
@@ -592,11 +595,11 @@ export default function Chauffeur() {
                     <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EBE6DC] text-xs text-[#4A525A] space-y-1.5">
                       <p className="font-bold text-[#191C1F] flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 text-[#A84A3B]" />
-                        <span>Inclus dans ce forfait fixe :</span>
+                        <span>{tr("Inclus dans ce forfait fixe :")}</span>
                       </p>
-                      <p>✓ Tous les frais de péages autoroutiers</p>
-                      <p>✓ 60 minutes d'attente gratuite en cas de retard d'avion</p>
-                      <p>✓ Prise en charge des bagages</p>
+                      <p>{tr("✓ Tous les frais de péages autoroutiers")}</p>
+                      <p>{tr("✓ 60 minutes d'attente gratuite en cas de retard d'avion")}</p>
+                      <p>{tr("✓ Prise en charge des bagages")}</p>
                     </div>
                   </div>
 
@@ -604,7 +607,7 @@ export default function Chauffeur() {
                   <div className="lg:col-span-3 bg-gradient-to-br from-[#1F2C3D] to-[#162232] text-white p-6 rounded-3xl shadow-xl flex flex-col justify-between text-center">
                     <div>
                       <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#F4A261] bg-white/10 px-3 py-1 rounded-full border border-white/15">
-                        Tarif Fixe Tout Inclus
+                        {tr("Tarif Fixe Tout Inclus")}
                       </span>
 
                       <div className="my-5">
@@ -612,18 +615,18 @@ export default function Chauffeur() {
                           {formatPrice(matchedRoute.basePriceTND)}
                         </div>
                         <p className="text-[11px] text-white/70 mt-1 font-medium">
-                          Prix garanti sans surprise • Pas de compteur
+                          {tr("Prix garanti sans surprise • Pas de compteur")}
                         </p>
                       </div>
 
                       <div className="border-t border-white/10 pt-4 text-[11px] text-white/80 space-y-1 text-left">
                         <p className="flex items-center gap-1.5">
                           <Check className="w-3 h-3 text-emerald-400" />
-                          <span>Annulation gratuite jusqu'à 12h</span>
+                          <span>{tr("Annulation gratuite jusqu'à 12h")}</span>
                         </p>
                         <p className="flex items-center gap-1.5">
                           <Check className="w-3 h-3 text-emerald-400" />
-                          <span>Paiement en ligne ou à bord</span>
+                          <span>{tr("Paiement en ligne ou à bord")}</span>
                         </p>
                       </div>
                     </div>
@@ -634,7 +637,7 @@ export default function Chauffeur() {
                       className="mt-4 w-full py-2.5 px-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs border border-white/20 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                     >
                       <Navigation className="w-4 h-4 text-[#F4A261]" />
-                      <span>Visualiser le tracé sur la carte Google Maps</span>
+                      <span>{tr("Visualiser le tracé sur la carte Google Maps")}</span>
                     </button>
 
                     <button
@@ -643,7 +646,7 @@ export default function Chauffeur() {
                       className="mt-2.5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#A84A3B] to-[#C25847] hover:brightness-110 text-white font-extrabold text-sm shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <UserCheck className="w-4 h-4" />
-                      <span>Réserver ce Trajet</span>
+                      <span>{tr("Réserver ce Trajet")}</span>
                     </button>
                   </div>
                 </div>
@@ -655,13 +658,13 @@ export default function Chauffeur() {
                   <AlertCircle className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-black text-[#191C1F]">
-                  Aucune ligne régulière assignée pour :
+                  {tr("Aucune ligne régulière assignée pour :")}
                 </h3>
                 <p className="text-base font-extrabold text-[#A84A3B] mt-1 mb-3">
-                  « {departPoint} » ➔ « {destinationPoint} »
+                  « {tr(departPoint)} » ➔ « {tr(destinationPoint)} »
                 </p>
                 <p className="text-sm text-[#727D88] max-w-xl mx-auto mb-6 leading-relaxed">
-                  Nos chauffeurs opèrent sur des trajets réguliers prédéfinis par l'agence. Ce trajet précis ne fait pas partie des lignes directes fixes actuelles.
+                  {tr("Nos chauffeurs opèrent sur des trajets réguliers prédéfinis par l'agence. Ce trajet précis ne fait pas partie des lignes directes fixes actuelles.")}
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center gap-3">
@@ -674,7 +677,7 @@ export default function Chauffeur() {
                     }}
                     className="px-6 py-3 rounded-2xl bg-[#2C3E56] text-white text-xs font-extrabold hover:bg-[#1F2C3D] transition-colors"
                   >
-                    Voir notre liaison principale : {routes[0]?.from} ➔ {routes[0]?.to}
+                    {tr("Voir notre liaison principale :")} {tr(routes[0]?.from)} ➔ {tr(routes[0]?.to)}
                   </button>
 
                   <button
@@ -683,7 +686,7 @@ export default function Chauffeur() {
                     className="px-6 py-3 rounded-2xl bg-[#A84A3B] text-white text-xs font-extrabold hover:bg-[#8F3E31] transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <UserCheck className="w-4 h-4" />
-                    <span>Demander un chauffeur privé pour cet itinéraire</span>
+                    <span>{tr("Demander un chauffeur privé pour cet itinéraire")}</span>
                   </button>
 
                   <a
@@ -691,7 +694,7 @@ export default function Chauffeur() {
                     className="px-6 py-3 rounded-2xl bg-white border border-[#EBE6DC] text-xs font-extrabold text-[#A84A3B] hover:bg-[#FAF8F5] transition-colors flex items-center gap-2"
                   >
                     <Phone className="w-4 h-4" />
-                    <span>Assistance téléphonique 24/7 : +216 27 908 060</span>
+                    <span>{tr("Assistance téléphonique 24/7 : +216 27 908 060")}</span>
                   </a>
                 </div>
               </div>
@@ -707,18 +710,18 @@ export default function Chauffeur() {
             <div>
               <div className="catalog-card__badge mb-2">
                 <Compass className="w-3.5 h-3.5 text-[#2C3E56]" />
-                <span>Réseau de Lignes Régulières</span>
+                <span>{tr("Réseau de Lignes Régulières")}</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-[#191C1F] tracking-tight">
-                Toutes nos Lignes Fixes avec Chauffeurs Dédiés
+                {tr("Toutes nos Lignes Fixes avec Chauffeurs Dédiés")}
               </h2>
               <p className="text-xs sm:text-sm text-[#727D88] mt-1 font-medium">
-                Cliquez sur une ligne pour l'examiner et voir immédiatement son chauffeur assigné.
+                {tr("Cliquez sur une ligne pour l'examiner et voir immédiatement son chauffeur assigné.")}
               </p>
             </div>
 
             <div className="text-xs text-[#727D88] font-semibold">
-              Tarifs garantis en <span className="font-extrabold text-[#A84A3B]">{currency}</span>
+              {tr("Tarifs garantis en")} <span className="font-extrabold text-[#A84A3B]">{tr(currency)}</span>
             </div>
           </div>
 
@@ -742,7 +745,7 @@ export default function Chauffeur() {
                       : 'bg-white hover:bg-[#F2EDE4] text-[#4A525A] border border-[#EBE6DC]'
                   }`}
                 >
-                  {f.label}
+                  {tr(f.label)}
                 </button>
               ))}
             </div>
@@ -751,7 +754,7 @@ export default function Chauffeur() {
               <Search className="w-3.5 h-3.5 text-[#727D88] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Rechercher une ville, chauffeur..."
+                placeholder={tr("Rechercher une ville, chauffeur...")}
                 value={catalogSearch}
                 onChange={(e) => setCatalogSearch(e.target.value)}
                 className="w-full pl-9 pr-8 py-2 rounded-full bg-white border border-[#EBE6DC] text-xs font-semibold text-[#191C1F] placeholder:text-[#727D88] focus:outline-none focus:border-[#A84A3B] focus:ring-2 focus:ring-[#A84A3B]/10 transition-all shadow-2xs"
@@ -761,7 +764,7 @@ export default function Chauffeur() {
                   type="button"
                   onClick={() => setCatalogSearch('')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#727D88] hover:text-[#191C1F] cursor-pointer"
-                  title="Effacer la recherche"
+                  title={tr("Effacer la recherche")}
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -772,16 +775,16 @@ export default function Chauffeur() {
           {loadingRoutes ? (
             <div className="py-12 text-center text-[#727D88]">
               <div className="w-8 h-8 border-3 border-[#A84A3B]/30 border-t-[#A84A3B] rounded-full animate-spin mx-auto mb-3" />
-              <p className="font-bold text-sm">Chargement des liaisons régulières...</p>
+              <p className="font-bold text-sm">{tr("Chargement des liaisons régulières...")}</p>
             </div>
           ) : filteredCatalogRoutes.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-3xl border border-[#EBE6DC] p-8 max-w-md mx-auto shadow-2xs">
               <div className="w-12 h-12 rounded-2xl bg-[#A84A3B]/10 text-[#A84A3B] flex items-center justify-center mx-auto mb-3">
                 <AlertCircle className="w-6 h-6" />
               </div>
-              <h3 className="text-base font-extrabold text-[#191C1F]">Aucune ligne ne correspond à vos filtres</h3>
+              <h3 className="text-base font-extrabold text-[#191C1F]">{tr("Aucune ligne ne correspond à vos filtres")}</h3>
               <p className="text-xs text-[#727D88] mt-1 mb-4">
-                Essayez d'ajuster votre recherche ou réinitialisez les critères.
+                {tr("Essayez d'ajuster votre recherche ou réinitialisez les critères.")}
               </p>
               <button
                 type="button"
@@ -791,7 +794,7 @@ export default function Chauffeur() {
                 }}
                 className="px-4 py-2 rounded-xl bg-[#2C3E56] text-white text-xs font-extrabold hover:bg-[#A84A3B] transition-colors"
               >
-                Réinitialiser les filtres
+                {tr("Réinitialiser les filtres")}
               </button>
             </div>
           ) : (
@@ -805,7 +808,7 @@ export default function Chauffeur() {
                     key={route._id}
                     onClick={() => setSelectedTrailRoute(route)}
                     className={`catalog-card cursor-pointer group ${isCurrent ? 'is-active' : ''}`}
-                    title="Cliquer pour afficher l'itinéraire complet sur Google Maps"
+                    title={tr("Cliquer pour afficher l'itinéraire complet sur Google Maps")}
                   >
                     <div>
                       {/* Top Header Pill Bar */}
@@ -813,23 +816,23 @@ export default function Chauffeur() {
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10.5px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-800 border border-emerald-500/25">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span>Chauffeur Dédié</span>
+                            <span>{tr("Chauffeur Dédié")}</span>
                           </span>
                           {route.popular && (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-800 border border-amber-500/30">
                               <Sparkles className="w-3 h-3 text-amber-600 fill-amber-500" />
-                              <span>Prisée</span>
+                              <span>{tr("Prisée")}</span>
                             </span>
                           )}
                         </div>
 
                         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FAF8F5] text-[#2C3E56] text-xs font-extrabold border border-[#EBE6DC] shrink-0">
                           <Clock className="w-3.5 h-3.5 text-[#A84A3B]" />
-                          <span>{route.duration}</span>
+                          <span>{tr(route.duration)}</span>
                           {route.distance && (
                             <>
                               <span className="text-[#727D88]/30">•</span>
-                              <span className="text-[#727D88] text-[11px]">{route.distance}</span>
+                              <span className="text-[#727D88] text-[11px]">{tr(route.distance)}</span>
                             </>
                           )}
                         </div>
@@ -848,10 +851,10 @@ export default function Chauffeur() {
                           </div>
                           <div className="min-w-0 flex-1">
                             <span className="text-[9.5px] font-black uppercase tracking-wider text-[#A84A3B] block">
-                              Prise en charge
+                              {tr("Prise en charge")}
                             </span>
                             <p className="text-xs sm:text-[13px] font-extrabold text-[#191C1F] leading-snug mt-0.5">
-                              {route.from}
+                              {tr(route.from)}
                             </p>
                           </div>
                         </div>
@@ -861,7 +864,7 @@ export default function Chauffeur() {
                           <div className="h-4 border-l-2 border-dashed border-[#A84A3B]/35" />
                           <div className="flex items-center gap-1 text-[10px] font-bold text-[#727D88] bg-white px-2 py-0.5 rounded-full border border-[#EBE6DC]">
                             <Navigation className="w-2.5 h-2.5 text-[#A84A3B]" />
-                            <span>Liaison Directe Sans Arrêt</span>
+                            <span>{tr("Liaison Directe Sans Arrêt")}</span>
                           </div>
                         </div>
 
@@ -875,7 +878,7 @@ export default function Chauffeur() {
                               Destination
                             </span>
                             <p className="text-xs sm:text-[13px] font-extrabold text-[#191C1F] leading-snug mt-0.5">
-                              {route.to}
+                              {tr(route.to)}
                             </p>
                           </div>
                         </div>
@@ -891,7 +894,7 @@ export default function Chauffeur() {
                         className="w-full mt-2.5 py-1.5 px-3 rounded-xl bg-gradient-to-r from-[#2C3E56]/5 to-[#A84A3B]/10 hover:from-[#A84A3B]/15 hover:to-[#A84A3B]/25 border border-[#A84A3B]/20 text-[#A84A3B] hover:text-[#8B3224] text-[11px] font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer"
                       >
                         <Navigation className="w-3.5 h-3.5 text-[#A84A3B]" />
-                        <span>Voir le tracé en direct sur la carte</span>
+                        <span>{tr("Voir le tracé en direct sur la carte")}</span>
                         <ArrowRight className="w-3 h-3 text-[#A84A3B] opacity-70" />
                       </button>
 
@@ -901,10 +904,10 @@ export default function Chauffeur() {
                           <div className="relative shrink-0">
                             <img
                               src={route.assignedChauffeur?.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80'}
-                              alt={route.assignedChauffeur?.name}
+                              alt={tr(route.assignedChauffeur?.name)}
                               className="w-11 h-11 rounded-2xl object-cover border-2 border-white/20 shadow-xs"
                             />
-                            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center border-2 border-[#162232]" title="Chauffeur Certifié">
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center border-2 border-[#162232]" title={tr("Chauffeur Certifié")}>
                               <Check className="w-2.5 h-2.5 stroke-[3]" />
                             </div>
                           </div>
@@ -912,22 +915,22 @@ export default function Chauffeur() {
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-1">
                               <p className="text-xs font-black text-white truncate">
-                                {route.assignedChauffeur?.name || 'Chauffeur Dédié'}
+                                {tr(route.assignedChauffeur?.name || 'Chauffeur Dédié')}
                               </p>
                               <div className="flex items-center gap-1 text-[10px] font-black text-amber-400 bg-amber-400/15 px-1.5 py-0.5 rounded-md border border-amber-400/20 shrink-0">
                                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                <span>{route.assignedChauffeur?.rating || '4.95'}</span>
+                                <span>{tr(route.assignedChauffeur?.rating || '4.95')}</span>
                               </div>
                             </div>
 
                             <div className="flex items-center gap-1.5 text-[11px] text-[#F4A261] font-bold mt-0.5 truncate">
                               <Car className="w-3 h-3 shrink-0" />
-                              <span className="truncate">{route.assignedChauffeur?.vehicleModel || 'Berline VIP'}</span>
+                              <span className="truncate">{tr(route.assignedChauffeur?.vehicleModel || 'Berline VIP')}</span>
                             </div>
 
                             <div className="flex items-center gap-2 mt-1 text-[10px] text-white/60">
                               {route.assignedChauffeur?.tripsCount && (
-                                <span>{route.assignedChauffeur.tripsCount} courses</span>
+                                <span>{tr(route.assignedChauffeur.tripsCount)} {tr("courses")}</span>
                               )}
                               {route.assignedChauffeur?.languages?.length > 0 && (
                                 <>
@@ -945,13 +948,13 @@ export default function Chauffeur() {
                     <div className="pt-3.5 border-t border-[#EBE6DC] flex items-center justify-between gap-3 mt-4">
                       <div>
                         <span className="text-[10px] text-[#727D88] font-black uppercase tracking-wider block">
-                          Tarif Fixe Garanti
+                          {tr("Tarif Fixe Garanti")}
                         </span>
                         <div className="text-xl sm:text-2xl font-black text-[#A84A3B] tracking-tight">
                           {formatPrice(route.basePriceTND)}
                         </div>
                         <span className="text-[10px] text-emerald-700 font-bold block">
-                          ✓ Péages & accueil inclus
+                          {tr("✓ Péages & accueil inclus")}
                         </span>
                       </div>
 
@@ -967,7 +970,7 @@ export default function Chauffeur() {
                             : 'bg-[#2C3E56] hover:bg-[#A84A3B] text-white hover:shadow-md'
                         }`}
                       >
-                        <span>{isCurrent ? 'Ligne Activée' : 'Choisir cette ligne'}</span>
+                        <span>{tr(isCurrent ? 'Ligne Activée' : 'Choisir cette ligne')}</span>
                         <ArrowRight className={`w-3.5 h-3.5 ${isCurrent ? 'rotate-90' : ''} transition-transform`} />
                       </button>
                     </div>
@@ -984,10 +987,10 @@ export default function Chauffeur() {
         <div className="max-w-[1300px] mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h3 className="text-2xl sm:text-3xl font-extrabold text-[#191C1F] tracking-tight">
-              L'Excellence du Transport avec Chauffeur Privé
+              {tr("L'Excellence du Transport avec Chauffeur Privé")}
             </h3>
             <p className="text-xs sm:text-sm text-[#727D88] mt-2">
-              Un confort sans compromis, pensé pour les professionnels, les voyageurs et les familles exigeantes.
+              {tr("Un confort sans compromis, pensé pour les professionnels, les voyageurs et les familles exigeantes.")}
             </p>
           </div>
 
@@ -996,9 +999,9 @@ export default function Chauffeur() {
               <div className="w-12 h-12 rounded-2xl bg-[#2C3E56]/10 text-[#2C3E56] flex items-center justify-center mb-4">
                 <Plane className="w-6 h-6" />
               </div>
-              <h4 className="font-extrabold text-sm text-[#191C1F] mb-1.5">Accueil Aéroports VIP</h4>
+              <h4 className="font-extrabold text-sm text-[#191C1F] mb-1.5">{tr("Accueil Aéroports VIP")}</h4>
               <p className="text-xs text-[#727D88] leading-relaxed">
-                Votre chauffeur vous attend hall des arrivées avec une pancarte à votre nom et vous aide avec vos bagages.
+                {tr("Votre chauffeur vous attend hall des arrivées avec une pancarte à votre nom et vous aide avec vos bagages.")}
               </p>
             </div>
 
@@ -1006,9 +1009,9 @@ export default function Chauffeur() {
               <div className="w-12 h-12 rounded-2xl bg-[#A84A3B]/10 text-[#A84A3B] flex items-center justify-center mb-4">
                 <Clock className="w-6 h-6" />
               </div>
-              <h4 className="font-extrabold text-sm text-[#191C1F] mb-1.5">Ponctualité Infaillible</h4>
+              <h4 className="font-extrabold text-sm text-[#191C1F] mb-1.5">{tr("Ponctualité Infaillible")}</h4>
               <p className="text-xs text-[#727D88] leading-relaxed">
-                Suivi du statut de votre vol en temps réel. Si votre vol a du retard, votre chauffeur ajuste son heure sans supplément.
+                {tr("Suivi du statut de votre vol en temps réel. Si votre vol a du retard, votre chauffeur ajuste son heure sans supplément.")}
               </p>
             </div>
 
@@ -1016,9 +1019,9 @@ export default function Chauffeur() {
               <div className="w-12 h-12 rounded-2xl bg-[#2C3E56]/10 text-[#2C3E56] flex items-center justify-center mb-4">
                 <ShieldCheck className="w-6 h-6" />
               </div>
-              <h4 className="font-extrabold text-sm text-[#191C1F] mb-1.5">Sécurité & Véhicules Récent</h4>
+              <h4 className="font-extrabold text-sm text-[#191C1F] mb-1.5">{tr("Sécurité & Véhicules Récent")}</h4>
               <p className="text-xs text-[#727D88] leading-relaxed">
-                Toutes nos voitures ont moins de 2 ans, sont climatisées et inspectées rigoureusement avant chaque départ.
+                {tr("Toutes nos voitures ont moins de 2 ans, sont climatisées et inspectées rigoureusement avant chaque départ.")}
               </p>
             </div>
 
@@ -1026,9 +1029,9 @@ export default function Chauffeur() {
               <div className="w-12 h-12 rounded-2xl bg-[#A84A3B]/10 text-[#A84A3B] flex items-center justify-center mb-4">
                 <Wifi className="w-6 h-6" />
               </div>
-              <h4 className="font-extrabold text-sm text-[#191C1F] mb-1.5">Confort À Bord</h4>
+              <h4 className="font-extrabold text-sm text-[#191C1F] mb-1.5">{tr("Confort À Bord")}</h4>
               <p className="text-xs text-[#727D88] leading-relaxed">
-                Wi-Fi 5G, eau minérale fraîche, chargeurs multi-marques et ambiance musicale relaxante sur mesure.
+                {tr("Wi-Fi 5G, eau minérale fraîche, chargeurs multi-marques et ambiance musicale relaxante sur mesure.")}
               </p>
             </div>
           </div>
@@ -1044,13 +1047,13 @@ export default function Chauffeur() {
               <div className="flex items-center justify-between pb-4 border-b border-[#EBE6DC] mb-6">
                 <div>
                   <span className="text-[10px] font-black uppercase tracking-wider text-[#A84A3B] bg-[#A84A3B]/10 px-2 py-0.5 rounded-md">
-                    Réservation de Ligne Fixe
+                    {tr("Réservation de Ligne Fixe")}
                   </span>
                   <h3 className="text-xl font-black text-[#191C1F] mt-1">
-                    Confirmer votre Chauffeur
+                    {tr("Confirmer votre Chauffeur")}
                   </h3>
                   <p className="text-xs text-[#727D88]">
-                    {matchedRoute.from} ➔ {matchedRoute.to}
+                    {tr(matchedRoute.from)} ➔ {tr(matchedRoute.to)}
                   </p>
                 </div>
                 <button
@@ -1068,14 +1071,14 @@ export default function Chauffeur() {
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
                   <h4 className="text-xl font-black text-[#191C1F] mb-2">
-                    Réservation Confirmée !
+                    {tr("Réservation Confirmée !")}
                   </h4>
                   <p className="text-xs text-[#727D88] max-w-md mx-auto mb-4 leading-relaxed">
-                    {bookingSuccess.message || 'Votre chauffeur et notre équipe ont bien reçu votre demande de prise en charge.'}
+                    {tr(bookingSuccess.message || 'Votre chauffeur et notre équipe ont bien reçu votre demande de prise en charge.')}
                   </p>
 
                   <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EBE6DC] text-xs font-mono font-bold text-[#2C3E56] mb-6 inline-block">
-                    Dossier N° : {bookingSuccess.reference || 'CHF-892110'}
+                    {tr("Dossier N° :")} {tr(bookingSuccess.reference || 'CHF-892110')}
                   </div>
 
                   <div className="flex justify-center gap-3">
@@ -1084,7 +1087,7 @@ export default function Chauffeur() {
                       onClick={() => setIsBookingOpen(false)}
                       className="px-6 py-3 rounded-xl bg-[#2C3E56] text-white text-xs font-extrabold hover:bg-[#1F2C3D] transition-colors"
                     >
-                      Fermer
+                      {tr("Fermer")}
                     </button>
                   </div>
                 </div>
@@ -1094,14 +1097,14 @@ export default function Chauffeur() {
                   <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EBE6DC] flex items-center justify-between text-xs">
                     <div>
                       <p className="font-extrabold text-[#191C1F]">
-                        Chauffeur : {matchedRoute.assignedChauffeur?.name}
+                        {tr("Chauffeur :")} {tr(matchedRoute.assignedChauffeur?.name)}
                       </p>
                       <p className="text-[#727D88]">
-                        Véhicule : {matchedRoute.assignedChauffeur?.vehicleModel}
+                        {tr("Véhicule :")} {tr(matchedRoute.assignedChauffeur?.vehicleModel)}
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="text-[10px] text-[#727D88] uppercase font-bold">Tarif Fixe</span>
+                      <span className="text-[10px] text-[#727D88] uppercase font-bold">{tr("Tarif Fixe")}</span>
                       <p className="text-base font-black text-[#A84A3B]">
                         {formatPrice(matchedRoute.basePriceTND)}
                       </p>
@@ -1112,7 +1115,7 @@ export default function Chauffeur() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                        Date de prise en charge *
+                        {tr("Date de prise en charge *")}
                       </label>
                       <input
                         type="date"
@@ -1125,7 +1128,7 @@ export default function Chauffeur() {
 
                     <div>
                       <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                        Heure souhaitée *
+                        {tr("Heure souhaitée *")}
                       </label>
                       <input
                         type="time"
@@ -1140,11 +1143,11 @@ export default function Chauffeur() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                       <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                        N° Vol (Aéroport)
+                        {tr("N° Vol (Aéroport)")}
                       </label>
                       <input
                         type="text"
-                        placeholder="Ex: TU 722"
+                        placeholder={tr("Ex: TU 722")}
                         value={bookingForm.flightNumber}
                         onChange={(e) => setBookingForm({ ...bookingForm, flightNumber: e.target.value })}
                         className="w-full px-3.5 py-2 rounded-xl border border-[#EBE6DC] bg-[#FAF8F5] text-xs font-medium text-[#191C1F] outline-none focus:border-[#A84A3B]"
@@ -1153,7 +1156,7 @@ export default function Chauffeur() {
 
                     <div>
                       <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                        Passagers
+                        {tr("Passagers")}
                       </label>
                       <select
                         value={bookingForm.passengers}
@@ -1161,14 +1164,14 @@ export default function Chauffeur() {
                         className="w-full px-3 py-2 rounded-xl border border-[#EBE6DC] bg-[#FAF8F5] text-xs font-bold text-[#191C1F] outline-none focus:border-[#A84A3B]"
                       >
                         {[1, 2, 3, 4, 5, 6, 7].map(num => (
-                          <option key={num} value={num}>{num} passager(s)</option>
+                          <option key={num} value={num}>{tr(num)} {tr("passager(s)")}</option>
                         ))}
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                        Valises
+                        {tr("Valises")}
                       </label>
                       <select
                         value={bookingForm.luggage}
@@ -1176,7 +1179,7 @@ export default function Chauffeur() {
                         className="w-full px-3 py-2 rounded-xl border border-[#EBE6DC] bg-[#FAF8F5] text-xs font-bold text-[#191C1F] outline-none focus:border-[#A84A3B]"
                       >
                         {[0, 1, 2, 3, 4, 5, 6].map(num => (
-                          <option key={num} value={num}>{num} valise(s)</option>
+                          <option key={num} value={num}>{tr(num)} {tr("valise(s)")}</option>
                         ))}
                       </select>
                     </div>
@@ -1186,12 +1189,12 @@ export default function Chauffeur() {
                   <div className="pt-2 border-t border-[#F0EBE1] space-y-3">
                     <div>
                       <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                        Nom & Prénom *
+                        {tr("Nom & Prénom *")}
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="Ex: Ahmed Ben Salah"
+                        placeholder={tr("Ex: Ahmed Ben Salah")}
                         value={bookingForm.fullName}
                         onChange={(e) => setBookingForm({ ...bookingForm, fullName: e.target.value })}
                         className="w-full px-3.5 py-2 rounded-xl border border-[#EBE6DC] bg-[#FAF8F5] text-xs font-medium text-[#191C1F] outline-none focus:border-[#A84A3B]"
@@ -1201,12 +1204,12 @@ export default function Chauffeur() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                          Email de confirmation *
+                          {tr("Email de confirmation *")}
                         </label>
                         <input
                           type="email"
                           required
-                          placeholder="votre@email.com"
+                          placeholder={tr("votre@email.com")}
                           value={bookingForm.email}
                           onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
                           className="w-full px-3.5 py-2 rounded-xl border border-[#EBE6DC] bg-[#FAF8F5] text-xs font-medium text-[#191C1F] outline-none focus:border-[#A84A3B]"
@@ -1215,7 +1218,7 @@ export default function Chauffeur() {
 
                       <div>
                         <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                          Téléphone WhatsApp *
+                          {tr("Téléphone WhatsApp *")}
                         </label>
                         <input
                           type="tel"
@@ -1230,11 +1233,11 @@ export default function Chauffeur() {
 
                     <div>
                       <label className="block text-xs font-bold text-[#191C1F] mb-1">
-                        Instructions particulières (optionnel)
+                        {tr("Instructions particulières (optionnel)")}
                       </label>
                       <textarea
                         rows={2}
-                        placeholder="Ex: Siège bébé 2 ans requis, pancarte au nom de la société..."
+                        placeholder={tr("Ex: Siège bébé 2 ans requis, pancarte au nom de la société...")}
                         value={bookingForm.notes}
                         onChange={(e) => setBookingForm({ ...bookingForm, notes: e.target.value })}
                         className="w-full px-3.5 py-2 rounded-xl border border-[#EBE6DC] bg-[#FAF8F5] text-xs font-medium text-[#191C1F] outline-none focus:border-[#A84A3B]"
@@ -1248,7 +1251,7 @@ export default function Chauffeur() {
                       onClick={() => setIsBookingOpen(false)}
                       className="px-5 py-2.5 rounded-xl border border-[#EBE6DC] text-xs font-bold text-[#727D88] hover:bg-black/5 transition-colors"
                     >
-                      Annuler
+                      {tr("Annuler")}
                     </button>
                     <button
                       type="submit"
@@ -1258,12 +1261,12 @@ export default function Chauffeur() {
                       {isSubmittingBooking ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Transmission...</span>
+                          <span>{tr("Transmission...")}</span>
                         </>
                       ) : (
                         <>
                           <Check className="w-4 h-4" />
-                          <span>Confirmer ma Réservation</span>
+                          <span>{tr("Confirmer ma Réservation")}</span>
                         </>
                       )}
                     </button>

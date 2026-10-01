@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import { Sparkles, Star, ShieldCheck, Compass, Car, Home as HomeIcon } from 'lucide-react';
 
@@ -8,6 +9,8 @@ interface PageHeroProps {
 }
 
 export const PageHero: React.FC<PageHeroProps> = ({ page, onNavigateHome, children }) => {
+  const tr = useText()
+
   const pageConfigs = {
     voitures: {
       badge: 'FLOTTE AUTOMOBILE EXCLUSIVE 2025 / 2026',
@@ -73,7 +76,7 @@ export const PageHero: React.FC<PageHeroProps> = ({ page, onNavigateHome, childr
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none flex items-center justify-center">
         <img
           src={imgSrc}
-          alt={config.titleHighlight}
+          alt={tr(config.titleHighlight)}
           onError={() => {
             if (imgSrc !== '/hero-fallback.jpg') {
               setImgSrc('/hero-fallback.jpg');
@@ -100,27 +103,27 @@ export const PageHero: React.FC<PageHeroProps> = ({ page, onNavigateHome, childr
               className="inline-flex items-center gap-1.5 text-xs text-white/70 hover:text-white transition-colors mb-3 font-semibold cursor-pointer group"
             >
               <span className="group-hover:-translate-x-1 transition-transform">←</span>
-              <span>Retour à l'accueil principal</span>
+              <span>{tr("Retour à l'accueil principal")}</span>
             </button>
           )}
 
           {/* Category Pill: Clean Frosted Glass */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/35 backdrop-blur-xl border border-white/20 text-xs font-bold tracking-wide uppercase text-white shadow-xs mb-3 sm:mb-4">
             <BadgeIcon className="w-3.5 h-3.5 text-[#A84A3B]" />
-            <span>{config.badge}</span>
+            <span>{tr(config.badge)}</span>
           </div>
 
           {/* Main Title (Left-aligned) - Clean, high contrast */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold tracking-tight leading-[1.14] text-white drop-shadow-xs font-display">
-            {config.titlePrefix}{' '}
+            {tr(config.titlePrefix)}{' '}
             <span className="text-white font-black">
-              {config.titleHighlight}
+              {tr(config.titleHighlight)}
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="mt-3 text-xs sm:text-sm md:text-base text-white/85 font-medium leading-relaxed max-w-2xl">
-            {config.subtitle}
+            {tr(config.subtitle)}
           </p>
 
           {/* Clean Unified Trust Badges: Coherent White & Red Brand Palette with Apple Glass */}
@@ -133,7 +136,7 @@ export const PageHero: React.FC<PageHeroProps> = ({ page, onNavigateHome, childr
                   className="bg-black/35 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-white/20 text-white flex items-center gap-2 font-bold shadow-xs"
                 >
                   <Icon className="w-3.5 h-3.5 text-[#A84A3B]" />
-                  <span>{badge.label}</span>
+                  <span>{tr(badge.label)}</span>
                 </div>
               );
             })}
@@ -142,7 +145,7 @@ export const PageHero: React.FC<PageHeroProps> = ({ page, onNavigateHome, childr
           {/* Optional Children Console / Filter */}
           {children && (
             <div className="mt-6 w-full text-left">
-              {children}
+              {tr(children)}
             </div>
           )}
         </div>

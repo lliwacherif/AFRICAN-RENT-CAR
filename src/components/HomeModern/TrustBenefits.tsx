@@ -1,8 +1,11 @@
+import { useText } from '../../context/LanguageContext'
 import React from 'react';
 import { ShieldCheck, BadgePercent, Clock, Headphones, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { TRUST_BENEFITS } from '../data/mockData';
 
 export const TrustBenefits: React.FC = () => {
+  const tr = useText()
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'ShieldCheck':
@@ -24,13 +27,13 @@ export const TrustBenefits: React.FC = () => {
       <div className="text-center max-w-3xl mx-auto mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#A84A3B]/10 text-[#A84A3B] text-xs font-extrabold uppercase tracking-wider mb-3">
           <CheckCircle2 className="w-3.5 h-3.5" />
-          <span>L'Excellence Sans Compromis</span>
+          <span>{tr("L'Excellence Sans Compromis")}</span>
         </div>
         <h2 className="text-2xl sm:text-4xl font-extrabold text-[#191C1F] tracking-tight font-display">
-          Pourquoi réserver avec African Rent Car ?
+          {tr("Pourquoi réserver avec African Rent Car ?")}
         </h2>
         <p className="mt-3 text-base text-[#4A525A] font-medium">
-          Une expérience de voyage pensée dans les moindres détails pour vous offrir sérénité, transparence et liberté en Tunisie.
+          {tr("Une expérience de voyage pensée dans les moindres détails pour vous offrir sérénité, transparence et liberté en Tunisie.")}
         </p>
       </div>
 
@@ -54,25 +57,25 @@ export const TrustBenefits: React.FC = () => {
                   {getIcon(item.icon)}
                 </div>
                 <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-white/80 backdrop-blur-md text-[#2C3E56] border border-white/90 shadow-sm">
-                  {item.badge}
+                  {tr(item.badge)}
                 </span>
               </div>
 
               {/* Text content */}
               <h3 className="text-lg font-extrabold text-[#191C1F] mb-1 group-hover:text-[#A84A3B] transition-colors">
-                {item.title}
+                {tr(item.title)}
               </h3>
               <p className="text-xs font-bold text-[#A84A3B] mb-2.5">
-                {item.highlight}
+                {tr(item.highlight)}
               </p>
               <p className="text-sm text-[#4A525A] leading-relaxed">
-                {item.description}
+                {tr(item.description)}
               </p>
             </div>
 
             {/* Bottom micro-indicator */}
             <div className="mt-6 pt-4 border-t border-black/[0.05] flex items-center justify-between text-xs font-bold text-[#2C3E56] group-hover:text-[#A84A3B] transition-colors">
-              <span>Norme de qualité</span>
+              <span>{tr("Norme de qualité")}</span>
               <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           </div>

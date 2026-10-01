@@ -3,6 +3,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsMongoId,
   IsBoolean,
   IsDateString,
   Min,
@@ -39,5 +40,5 @@ export class QueryVehicleDto {
   @IsOptional() @Type(() => Number) @IsNumber() @Min(18) driverAge?: number;
 
   /** Filter by parc (parking location) ObjectId */
-  @IsOptional() @IsString() parcId?: string;
+  @IsOptional() @IsMongoId() parcId?: string;
 }

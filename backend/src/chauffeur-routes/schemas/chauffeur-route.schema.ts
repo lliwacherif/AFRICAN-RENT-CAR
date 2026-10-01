@@ -3,6 +3,19 @@ import { Document } from 'mongoose';
 
 export type ChauffeurRouteDocument = ChauffeurRoute & Document;
 
+export const DEFAULT_PRIVATE_CHAUFFEUR = {
+  name: 'Chauffeur privé',
+  phone: '+216 27 908 060',
+};
+
+export function withPrivateChauffeur(chauffeur?: Partial<ChauffeurRoute['assignedChauffeur']> | null) {
+  return {
+    ...chauffeur,
+    name: DEFAULT_PRIVATE_CHAUFFEUR.name,
+    phone: chauffeur?.phone?.trim() || DEFAULT_PRIVATE_CHAUFFEUR.phone,
+  };
+}
+
 @Schema({ timestamps: true })
 export class ChauffeurRoute {
   @Prop({ required: true })
@@ -55,7 +68,7 @@ export class ChauffeurRoute {
   @Prop({ default: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80' })
   image: string;
 
-  @Prop({ type: Object, default: {} })
+  @Prop({ type: Object, default: () => ({ ...DEFAULT_PRIVATE_CHAUFFEUR }) })
   assignedChauffeur: {
     name: string;
     phone: string;

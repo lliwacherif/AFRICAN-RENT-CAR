@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Sparkles, 
@@ -24,7 +25,7 @@ interface Message {
 }
 
 export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  const tr = useText()
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,6 +41,8 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({ isOpen, onCl
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  if (!isOpen) return null;
 
   const handleSend = async (textToSend?: string) => {
     const query = textToSend || input;
@@ -92,11 +95,11 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({ isOpen, onCl
             </div>
             <div>
               <h3 className="font-extrabold text-sm sm:text-base leading-none">
-                Concierge VIP Voyage Tunisie
+                {tr("Concierge VIP Voyage Tunisie")}
               </h3>
               <p className="text-[11px] text-white/70 mt-1 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>En direct • African Rent Car</span>
+                <span>{tr("En direct • African Rent Car")}</span>
               </p>
             </div>
           </div>
@@ -133,7 +136,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({ isOpen, onCl
                     : 'bg-white text-[#191C1F] border border-[#EBE6DC] rounded-tl-none'
                 }`}
               >
-                {m.content}
+                {tr(m.content)}
               </div>
             </div>
           ))}
@@ -141,7 +144,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({ isOpen, onCl
           {loading && (
             <div className="flex items-center gap-2 text-xs text-[#727D88] p-2 bg-white/80 rounded-xl w-max border border-[#EBE6DC]">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-[#A84A3B]" />
-              <span>Le Concierge rédige sa réponse personnalisée...</span>
+              <span>{tr("Le Concierge rédige sa réponse personnalisée...")}</span>
             </div>
           )}
 
@@ -156,7 +159,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({ isOpen, onCl
               onClick={() => handleSend(prompt)}
               className="px-2.5 py-1 bg-[#F8F7EE] hover:bg-[#EBE6DC] text-[#2C3E56] text-[11px] font-semibold rounded-lg whitespace-nowrap border border-[#EBE6DC] transition-colors"
             >
-              {prompt}
+              {tr(prompt)}
             </button>
           ))}
         </div>
@@ -172,7 +175,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({ isOpen, onCl
           >
             <input
               type="text"
-              placeholder="Posez votre question sur nos véhicules ou séjours..."
+              placeholder={tr("Posez votre question sur nos véhicules ou séjours...")}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="flex-1 px-4 py-2.5 bg-[#F8F7EE] border border-[#EBE6DC] rounded-xl text-xs sm:text-sm text-[#191C1F] focus:outline-none focus:border-[#A84A3B]"

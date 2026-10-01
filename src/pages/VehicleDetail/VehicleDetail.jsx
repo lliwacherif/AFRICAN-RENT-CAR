@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useState, useEffect, useRef } from 'react'
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { FiHeart, FiMapPin, FiCalendar, FiUser, FiCheck, FiChevronLeft, FiChevronRight, FiShield, FiInfo, FiChevronUp, FiChevronDown, FiAlertCircle } from 'react-icons/fi'
@@ -11,10 +12,13 @@ import Car3DViewer from '../../components/Car3DViewer/Car3DViewer'
 import ParcSelect from '../../components/ParcSelect/ParcSelect'
 import { useWishlist } from '../../context/WishlistContext'
 import './VehicleDetail.css'
+import { getVehicleParcs } from '../../utils/vehicleParcs'
 
 const TVA_RATE = 0.19
 
 export default function VehicleDetail() {
+  const tr = useText()
+
   const { id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -99,12 +103,14 @@ export default function VehicleDetail() {
         }
 
         // If car has an assigned parc, and no custom location was in URL params, pre-fill location
-        const parcName = data?.parc?.name || (typeof data?.parc === 'string' ? data.parc : null)
-        if (parcName) {
+        const locations = getVehicleParcs(data)
+        const selectedParc = locations.find(parc => parc._id === searchParams.get('parcId')) || locations[0]
+        const parcName = selectedParc?.name
+        if (parcName && !searchParams.get('location')) {
           setBooking(prev => ({
             ...prev,
-            pickupLocation: prev.pickupLocation || parcName,
-            dropoffLocation: prev.dropoffLocation || parcName,
+            pickupLocation: parcName,
+            dropoffLocation: parcName,
           }))
         }
       } catch (err) {
@@ -129,8 +135,8 @@ export default function VehicleDetail() {
     <div className="vd-page">
       <div className="container" style={{ padding: '60px 24px', textAlign: 'center' }}>
         <FiAlertCircle size={40} color="#ef4444" />
-        <p style={{ color: '#374151', marginTop: 12 }}>{error || 'Véhicule introuvable.'}</p>
-        <button onClick={() => navigate('/voitures')} style={{ marginTop: 16, padding: '10px 24px', background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: 7, cursor: 'pointer' }}>← Retour</button>
+        <p style={{ color: '#374151', marginTop: 12 }}>{tr(error || 'Véhicule introuvable.')}</p>
+        <button onClick={() => navigate('/voitures')} style={{ marginTop: 16, padding: '10px 24px', background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: 7, cursor: 'pointer' }}>{tr("← Retour")}</button>
       </div>
     </div>
   )
@@ -215,7 +221,7 @@ export default function VehicleDetail() {
       <Header />
       <div className="vd-topbar">
         <div className="container">
-          <Link to="/voitures" className="vd-back"><FiChevronLeft size={16} /> Retour aux résultats</Link>
+          <Link to="/voitures" className="vd-back"><FiChevronLeft size={16} /> {tr("Retour aux résultats")}</Link>
         </div>
       </div>
 
@@ -224,23 +230,23 @@ export default function VehicleDetail() {
         <div className="vd-left">
           <div className="vd-header">
             <div className="vd-header__main">
-              <h1 className="vd-title">{car.name}</h1>
-              <span className="vd-category">{car.category}</span>
+              <h1 className="vd-title">{tr(car.name)}</h1>
+              <span className="vd-category">{tr(car.category)}</span>
             </div>
-            <button 
+            <button
               className="vd-heart" 
               onClick={() => car && toggleFavorite(car, 'car')}
-              title={isLiked ? "Retirer des favoris" : "Ajouter aux favoris"}
+              title={tr(isLiked ? "Retirer des favoris" : "Ajouter aux favoris")}
             >
               <FiHeart size={20} fill={isLiked ? '#ef4444' : 'none'} color={isLiked ? '#ef4444' : '#6b7280'} />
             </button>
           </div>
 
           <div className="vd-specs">
-            <div className="vd-spec">👥 {car.seats} places</div>
-            <div className="vd-spec">⚙️ {car.transmission}</div>
-            <div className="vd-spec">⛽ {car.fuel}</div>
-            {car.features?.ac && <div className="vd-spec">❄️ Climatisation</div>}
+            <div className="vd-spec">👥 {tr(car.seats)} {tr("places")}</div>
+            <div className="vd-spec">⚙️ {tr(car.transmission)}</div>
+            <div className="vd-spec">⛽ {tr(car.fuel)}</div>
+            {car.features?.ac && <div className="vd-spec">{tr("❄️ Climatisation")}</div>}
             {car.features?.gps && <div className="vd-spec">🗺️ GPS</div>}
           </div>
 
@@ -250,14 +256,14 @@ export default function VehicleDetail() {
               className={`vd-media-tab ${mediaMode === 'photo' ? 'vd-media-tab--active' : ''}`}
               onClick={() => setMediaMode('photo')}
             >
-              📷 Photos ({images.length})
+              {tr("📷 Photos (")}{tr(images.length)})
             </button>
             {car.model3dUrl && (
               <button
                 className={`vd-media-tab ${mediaMode === '3d' ? 'vd-media-tab--active' : ''}`}
                 onClick={() => setMediaMode('3d')}
               >
-                📦 Vue 3D 360°
+                {tr("📦 Vue 3D 360°")}
               </button>
             )}
           </div>
@@ -267,7 +273,7 @@ export default function VehicleDetail() {
           ) : (
             <>
               <div className="vd-photo">
-                <img src={images[activeThumb]} alt={car.name} className="vd-photo__main" />
+                <img src={images[activeThumb]} alt={tr(car.name)} className="vd-photo__main" />
               </div>
 
               {images.length > 1 && (
@@ -275,7 +281,7 @@ export default function VehicleDetail() {
                   <button className="vd-thumbs__arrow" onClick={() => setActiveThumb(p => (p - 1 + images.length) % images.length)}><FiChevronLeft size={16}/></button>
                   {images.map((img, i) => (
                     <button key={i} className={`vd-thumb ${activeThumb === i ? 'vd-thumb--active' : ''}`} onClick={() => setActiveThumb(i)}>
-                      <img src={img} alt={`vue ${i + 1}`} />
+                      <img src={img} alt={tr(`vue ${i + 1}`)} />
                     </button>
                   ))}
                   <button className="vd-thumbs__arrow" onClick={() => setActiveThumb(p => (p + 1) % images.length)}><FiChevronRight size={16}/></button>
@@ -287,31 +293,31 @@ export default function VehicleDetail() {
           <div className="vd-info-box">
             <FiShield size={18} color="#1e3a8a" />
             <div>
-              <p className="vd-info-box__title">Annulation gratuite jusqu'à 48h avant la prise en charge</p>
-              <p className="vd-info-box__sub">Réservez maintenant et payez plus tard.</p>
+              <p className="vd-info-box__title">{tr("Annulation gratuite jusqu'à 48h avant la prise en charge")}</p>
+              <p className="vd-info-box__sub">{tr("Réservez maintenant et payez plus tard.")}</p>
             </div>
           </div>
 
           {car.description && (
             <div className="vd-section">
               <h3 className="vd-section__title">Description</h3>
-              <p style={{ fontSize: 13.5, color: '#374151', lineHeight: 1.6 }}>{car.description}</p>
+              <p style={{ fontSize: 13.5, color: '#374151', lineHeight: 1.6 }}>{tr(car.description)}</p>
             </div>
           )}
 
           {/* Dates picker */}
           <div className="vd-section">
-            <h3 className="vd-section__title">Détails de la location</h3>
+            <h3 className="vd-section__title">{tr("Détails de la location")}</h3>
             <div className="vd-details">
               <div className="vd-detail-row">
                 <FiMapPin size={15} color="#6b7280" style={{ marginTop: 8, flexShrink: 0 }} />
                 <div style={{ width: 220, maxWidth: '100%' }}>
-                  <span className="vd-detail-row__label">Lieu de prise en charge</span>
+                  <span className="vd-detail-row__label">{tr("Lieu de prise en charge")}</span>
                   <ParcSelect
                     parcs={parcs}
                     value={booking.pickupLocation}
                     onChange={(parcId, parcName) => setBooking(b => ({ ...b, pickupLocation: parcName }))}
-                    placeholder="Sélectionnez un parc"
+                    placeholder={tr("Sélectionnez un parc")}
                     variant="dark"
                   />
                 </div>
@@ -319,12 +325,12 @@ export default function VehicleDetail() {
               <div className="vd-detail-row">
                 <FiMapPin size={15} color="#6b7280" style={{ marginTop: 8, flexShrink: 0 }} />
                 <div style={{ width: 220, maxWidth: '100%' }}>
-                  <span className="vd-detail-row__label">Lieu de restitution</span>
+                  <span className="vd-detail-row__label">{tr("Lieu de restitution")}</span>
                   <ParcSelect
                     parcs={parcs}
                     value={booking.dropoffLocation}
                     onChange={(parcId, parcName) => setBooking(b => ({ ...b, dropoffLocation: parcName }))}
-                    placeholder="Sélectionnez un parc"
+                    placeholder={tr("Sélectionnez un parc")}
                     variant="dark"
                   />
                 </div>
@@ -332,25 +338,25 @@ export default function VehicleDetail() {
               <div className="vd-detail-row">
                 <FiCalendar size={15} color="#6b7280" />
                 <div>
-                  <span className="vd-detail-row__label">Date de prise en charge</span>
+                  <span className="vd-detail-row__label">{tr("Date de prise en charge")}</span>
                   <input type="date" className="vd-input" value={booking.pickupDate} min={new Date().toISOString().split('T')[0]} onChange={e => setBooking(b => ({ ...b, pickupDate: e.target.value }))} />
                 </div>
               </div>
               <div className="vd-detail-row">
                 <FiCalendar size={15} color="#6b7280" />
                 <div>
-                  <span className="vd-detail-row__label">Date de restitution</span>
+                  <span className="vd-detail-row__label">{tr("Date de restitution")}</span>
                   <input type="date" className="vd-input" value={booking.dropoffDate} min={booking.pickupDate || new Date().toISOString().split('T')[0]} onChange={e => setBooking(b => ({ ...b, dropoffDate: e.target.value }))} />
                 </div>
               </div>
               <div className="vd-detail-row">
                 <FiUser size={15} color="#6b7280" />
                 <div>
-                  <span className="vd-detail-row__label">Âge du conducteur</span>
+                  <span className="vd-detail-row__label">{tr("Âge du conducteur")}</span>
                   {user ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, paddingTop: 4 }}>
-                      <span style={{ fontSize: 14, fontWeight: 600, color: '#1f2937' }}>{effectiveAge} ans</span>
-                      <span style={{ fontSize: 10, color: '#f97316', background: '#fff7ed', borderRadius: 4, padding: '1px 6px', border: '1px solid #fed7aa' }}>🔒 compte</span>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: '#1f2937' }}>{tr(effectiveAge)} {tr("ans")}</span>
+                      <span style={{ fontSize: 10, color: '#f97316', background: '#fff7ed', borderRadius: 4, padding: '1px 6px', border: '1px solid #fed7aa' }}>{tr("🔒 compte")}</span>
                     </div>
                   ) : (
                     <input type="number" className="vd-input" value={booking.driverAge} min={18} max={99} onChange={e => setBooking(b => ({ ...b, driverAge: Number(e.target.value) }))} />
@@ -362,15 +368,15 @@ export default function VehicleDetail() {
 
           <div className="vd-two-cols">
             <div>
-              <h4 className="vd-two-cols__title">Inclus dans le prix</h4>
+              <h4 className="vd-two-cols__title">{tr("Inclus dans le prix")}</h4>
               {['Kilométrage illimité', 'Assurance tous risques', 'Assistance 24/7', 'TVA incluse'].map(item => (
-                <div key={item} className="vd-two-cols__item"><FiCheck size={13} color="#16a34a" />{item}</div>
+                <div key={item} className="vd-two-cols__item"><FiCheck size={13} color="#16a34a" />{tr(item)}</div>
               ))}
             </div>
             <div>
-              <h4 className="vd-two-cols__title">Options disponibles</h4>
+              <h4 className="vd-two-cols__title">{tr("Options disponibles")}</h4>
               {['Siège bébé', 'Conducteur additionnel', 'GPS', 'Wi-Fi portable'].map(item => (
-                <div key={item} className="vd-two-cols__item"><span className="vd-plus">+</span>{item}</div>
+                <div key={item} className="vd-two-cols__item"><span className="vd-plus">+</span>{tr(item)}</div>
               ))}
             </div>
           </div>
@@ -381,42 +387,42 @@ export default function VehicleDetail() {
           {bookingSuccess ? (
             <div className="vd-panel" style={{ textAlign: 'center', padding: 32 }}>
               <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
-              <h3 style={{ color: '#16a34a', marginBottom: 8 }}>Réservation confirmée!</h3>
-              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 20 }}>Votre réservation a été créée avec succès. Vous recevrez une confirmation par email.</p>
-              <button onClick={() => navigate('/')} style={{ background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 24px', cursor: 'pointer', fontSize: 14, fontWeight: 600, fontFamily: 'inherit' }}>Retour à l'accueil</button>
+              <h3 style={{ color: '#16a34a', marginBottom: 8 }}>{tr("Réservation confirmée!")}</h3>
+              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 20 }}>{tr("Votre réservation a été créée avec succès. Vous recevrez une confirmation par email.")}</p>
+              <button onClick={() => navigate('/')} style={{ background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 24px', cursor: 'pointer', fontSize: 14, fontWeight: 600, fontFamily: 'inherit' }}>{tr("Retour à l'accueil")}</button>
             </div>
           ) : (
             <div className="vd-panel">
-              <h3 className="vd-panel__title">Résumé de votre réservation</h3>
-              <div className="vd-panel__car-name">{car.name} ({car.year})</div>
-              <div className="vd-panel__car-cat">⚙️ {car.category}</div>
+              <h3 className="vd-panel__title">{tr("Résumé de votre réservation")}</h3>
+              <div className="vd-panel__car-name">{tr(car.name)} ({tr(car.year)})</div>
+              <div className="vd-panel__car-cat">⚙️ {tr(car.category)}</div>
               <div className="vd-panel__divider" />
 
-              <div className="vd-panel__row"><span>Prix par jour</span><div className="vd-panel__row-right"><span className="vd-panel__row-val">{formatPrice(car.pricePerDay)}</span><span className="vd-panel__row-note">(HT)</span></div></div>
-              <div className="vd-panel__row"><span>Durée</span><span className="vd-panel__row-val">{totalDays} jours</span></div>
-              <div className="vd-panel__row vd-panel__row--bold"><span>Sous-total HT</span><span>{formatPrice(subtotalHT)}</span></div>
+              <div className="vd-panel__row"><span>{tr("Prix par jour")}</span><div className="vd-panel__row-right"><span className="vd-panel__row-val">{formatPrice(car.pricePerDay)}</span><span className="vd-panel__row-note">{tr("(HT)")}</span></div></div>
+              <div className="vd-panel__row"><span>{tr("Durée")}</span><span className="vd-panel__row-val">{tr(totalDays)} {tr("jours")}</span></div>
+              <div className="vd-panel__row vd-panel__row--bold"><span>{tr("Sous-total HT")}</span><span>{formatPrice(subtotalHT)}</span></div>
 
               <button className="vd-panel__detail-toggle" onClick={() => setShowDetail(!showDetail)}>
-                <span>Détail du montant</span>
+                <span>{tr("Détail du montant")}</span>
                 {showDetail ? <FiChevronUp size={14}/> : <FiChevronDown size={14}/>}
               </button>
               {showDetail && (
                 <div className="vd-panel__detail">
-                  <div className="vd-panel__detail-row"><span>Sous-total HT</span><span>{formatPrice(subtotalHT)}</span></div>
-                  <div className="vd-panel__detail-row"><span>TVA (19%)</span><span>{formatPrice(tva)}</span></div>
+                  <div className="vd-panel__detail-row"><span>{tr("Sous-total HT")}</span><span>{formatPrice(subtotalHT)}</span></div>
+                  <div className="vd-panel__detail-row"><span>{tr("TVA (19%)")}</span><span>{formatPrice(tva)}</span></div>
                 </div>
               )}
 
               <div className="vd-panel__divider" />
-              <div className="vd-panel__total-row"><span>Total TTC <small>(TVA 19% incluse)</small></span><span className="vd-panel__total">{formatPrice(totalTTC)}</span></div>
+              <div className="vd-panel__total-row"><span>{tr("Total TTC")} <small>{tr("(TVA 19% incluse)")}</small></span><span className="vd-panel__total">{formatPrice(totalTTC)}</span></div>
 
               <div className="vd-panel__no-fees">
                 <FiShield size={14} color="#16a34a" />
-                <div><span className="vd-panel__no-fees-title">Aucun frais caché</span><span className="vd-panel__no-fees-sub">Le prix final est affiché.</span></div>
+                <div><span className="vd-panel__no-fees-title">{tr("Aucun frais caché")}</span><span className="vd-panel__no-fees-sub">{tr("Le prix final est affiché.")}</span></div>
               </div>
 
               <div className="vd-panel__divider" />
-              <h4 className="vd-panel__pay-title">Choisissez le montant à payer</h4>
+              <h4 className="vd-panel__pay-title">{tr("Choisissez le montant à payer")}</h4>
 
               <div className="vd-slider">
                 <div className="vd-slider__track">
@@ -426,15 +432,15 @@ export default function VehicleDetail() {
                 <div className="vd-slider__labels">
                   {paymentOptions.map((opt, i) => (
                     <button key={i} className={`vd-slider__opt ${paymentOption === i ? 'vd-slider__opt--active' : ''}`} onClick={() => setPaymentOption(i)}>
-                      <span className="vd-slider__opt-label">{opt.label}</span>
-                      <span className="vd-slider__opt-pct">{opt.pct}</span>
+                      <span className="vd-slider__opt-label">{tr(opt.label)}</span>
+                      <span className="vd-slider__opt-pct">{tr(opt.pct)}</span>
                       <span className="vd-slider__opt-amount">{formatPrice(parseFloat(opt.amount))}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="vd-panel__pay-now"><span>Vous payez maintenant</span><span className="vd-panel__pay-now-val">{formatPrice(toPay)}</span></div>
+              <div className="vd-panel__pay-now"><span>{tr("Vous payez maintenant")}</span><span className="vd-panel__pay-now-val">{formatPrice(toPay)}</span></div>
 
               {/* Alternative vehicle checkbox */}
               <label
@@ -456,19 +462,19 @@ export default function VehicleDetail() {
                   style={{ marginTop: 2, accentColor: '#A84A3B', width: 15, height: 15, flexShrink: 0, cursor: 'pointer' }}
                 />
                 <span style={{ fontSize: 12.5, color: acceptAlternative ? 'var(--white)' : 'var(--white-70)', lineHeight: 1.5 }}>
-                  Si ce véhicule n'est pas disponible, j'accepte qu'on me propose{' '}
-                  <strong style={{ color: acceptAlternative ? '#A84A3B' : 'var(--white-50)' }}>un véhicule similaire</strong>{' '}de la même catégorie.
+                  {tr("Si ce véhicule n'est pas disponible, j'accepte qu'on me propose")}{' '}
+                  <strong style={{ color: acceptAlternative ? '#A84A3B' : 'var(--white-50)' }}>{tr("un véhicule similaire")}</strong>{' '}{tr("de la même catégorie.")}
                 </span>
               </label>
 
               {bookingError && (
                 <div style={{ display:'flex', alignItems:'center', gap:8, background:'#fee2e2', border:'1px solid #fca5a5', borderRadius:6, padding:'10px 12px', fontSize:12.5, color:'#991b1b', marginBottom:10 }}>
-                  <FiAlertCircle size={14}/> {bookingError}
+                  <FiAlertCircle size={14}/> {tr(bookingError)}
                 </div>
               )}
 
               <button className="vd-panel__cta" onClick={handleReserve} disabled={submitting}>
-                {submitting ? 'Réservation...' : 'Click to Pay'}
+                {tr(submitting ? 'Réservation...' : 'Click to Pay')}
               </button>
 
               <button
@@ -494,13 +500,13 @@ export default function VehicleDetail() {
                   pointerEvents: 'none',
                 }}
               >
-                <span>Payer en ligne</span>
+                <span>{tr("Payer en ligne")}</span>
                 <span style={{ fontSize: 10, fontWeight: 500, color: 'rgba(255, 255, 255, 0.25)', letterSpacing: '0.4px' }}>
-                  (Bientôt disponible / Coming soon)
+                  {tr("(Bientôt disponible / Coming soon)")}
                 </span>
               </button>
 
-              <div className="vd-panel__secure"><FiShield size={13}/> Paiement sécurisé</div>
+              <div className="vd-panel__secure"><FiShield size={13}/> {tr("Paiement sécurisé")}</div>
 
               <div className="vd-panel__logos">
                 <div className="vd-logo vd-logo--visa">VISA</div>
@@ -515,16 +521,16 @@ export default function VehicleDetail() {
                     style={{ background:'none', border:'none', color:'#1e3a8a', cursor:'pointer', fontSize:'inherit', textDecoration:'underline', fontFamily:'inherit' }}
                     onClick={() => openAuthModal('login')}
                   >
-                    Connectez-vous
+                    {tr("Connectez-vous")}
                   </button>
-                  {' '}ou{' '}
+                  {' '}{tr("ou")}{' '}
                   <button
                     style={{ background:'none', border:'none', color:'#1e3a8a', cursor:'pointer', fontSize:'inherit', textDecoration:'underline', fontFamily:'inherit' }}
                     onClick={() => openAuthModal('register')}
                   >
-                    créez un compte
+                    {tr("créez un compte")}
                   </button>
-                  {' '}pour réserver.
+                  {' '}{tr("pour réserver.")}
                 </p>
               )}
             </div>
@@ -534,10 +540,10 @@ export default function VehicleDetail() {
 
       <div className="vd-why">
         <div className="container">
-          <h3 className="vd-why__title">Pourquoi réserver chez nous ?</h3>
+          <h3 className="vd-why__title">{tr("Pourquoi réserver chez nous ?")}</h3>
           <div className="vd-why__grid">
             {[{icon:'💲',title:'Meilleurs prix garantis',desc:'Toujours le meilleur tarif.'},{icon:'⊘',title:'Annulation gratuite',desc:"Jusqu'à 48h avant."},{icon:'🎧',title:'Service client 24/7',desc:'Toujours disponibles.'},{icon:'🔒',title:'Réservation sécurisée',desc:'Données 100% protégées.'}].map(w => (
-              <div key={w.title} className="vd-why__item"><span className="vd-why__icon">{w.icon}</span><h4 className="vd-why__item-title">{w.title}</h4><p className="vd-why__item-desc">{w.desc}</p></div>
+              <div key={w.title} className="vd-why__item"><span className="vd-why__icon">{tr(w.icon)}</span><h4 className="vd-why__item-title">{tr(w.title)}</h4><p className="vd-why__item-desc">{tr(w.desc)}</p></div>
             ))}
           </div>
         </div>

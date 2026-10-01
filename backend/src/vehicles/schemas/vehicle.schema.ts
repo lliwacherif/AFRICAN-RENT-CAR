@@ -115,6 +115,9 @@ export class Vehicle {
   @Prop({ type: Types.ObjectId, ref: 'Parc', default: null })
   parc?: Types.ObjectId;
 
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Parc' }], default: undefined })
+  parcs?: Types.ObjectId[];
+
   // ── Media ─────────────────────────────────────────────────────────────────
   @Prop({ type: [String], default: [] })
   images: string[];
@@ -162,3 +165,4 @@ export const VehicleSchema = SchemaFactory.createForClass(Vehicle);
 VehicleSchema.index({ category: 1, status: 1, pricePerDay: 1 });
 VehicleSchema.index({ isActive: 1 });
 VehicleSchema.index({ brand: 1 });
+VehicleSchema.index({ parcs: 1 });

@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -34,6 +35,8 @@ function resolveCoords(coords, placeName, isStart = true) {
 }
 
 export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
+  const tr = useText()
+
   const { formatPrice } = useCurrency();
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -231,29 +234,29 @@ export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
           <div className="chauffeur-modal-header__info">
             <span className="chauffeur-modal-badge">
               <Navigation className="w-3.5 h-3.5 text-[#A84A3B]" />
-              <span>Itinéraire Direct Google Maps</span>
+              <span>{tr("Itinéraire Direct Google Maps")}</span>
             </span>
 
             <h3 className="chauffeur-modal-title">
-              <span>{route.from}</span>
+              <span>{tr(route.from)}</span>
               <span className="text-[#A84A3B]">➔</span>
-              <span>{route.to}</span>
+              <span>{tr(route.to)}</span>
             </h3>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-2 bg-[#FAF8F5] border border-[#EBE6DC] px-3 py-1.5 rounded-xl text-xs font-bold text-[#2C3E56]">
               <Clock className="w-3.5 h-3.5 text-[#A84A3B]" />
-              <span>{routeStats.duration}</span>
+              <span>{tr(routeStats.duration)}</span>
               <span className="text-[#EBE6DC]">•</span>
-              <span className="text-[#727D88]">{routeStats.distance}</span>
+              <span className="text-[#727D88]">{tr(routeStats.distance)}</span>
             </div>
 
             <button
               type="button"
               className="chauffeur-modal-close-btn"
               onClick={onClose}
-              title="Fermer la carte (Échap)"
+              title={tr("Fermer la carte (Échap)")}
             >
               <X className="w-5 h-5" />
             </button>
@@ -272,7 +275,7 @@ export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
               onClick={() => handleToggleMapType('roadmap')}
             >
               <Layers className="w-3.5 h-3.5" />
-              <span>Google Plan</span>
+              <span>{tr("Google Plan")}</span>
             </button>
             <button
               type="button"
@@ -285,10 +288,10 @@ export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
               type="button"
               className="chauffeur-map-ctrl-btn"
               onClick={handleRecenter}
-              title="Recentrer le tracé"
+              title={tr("Recentrer le tracé")}
             >
               <Maximize2 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Recentrer</span>
+              <span className="hidden sm:inline">{tr("Recentrer")}</span>
             </button>
           </div>
 
@@ -299,11 +302,11 @@ export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#A84A3B] animate-ping" />
                 <span className="text-xs font-black text-[#191C1F] uppercase tracking-wider">
-                  Tracé Direct en Temps Réel
+                  {tr("Tracé Direct en Temps Réel")}
                 </span>
               </div>
               <div className="text-xs font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 px-2 py-0.5 rounded-md">
-                {routeStats.distance} • {routeStats.duration}
+                {tr(routeStats.distance)} • {tr(routeStats.duration)}
               </div>
             </div>
 
@@ -314,27 +317,27 @@ export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
                   route.assignedChauffeur?.avatar ||
                   'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80'
                 }
-                alt={route.assignedChauffeur?.name}
+                alt={tr(route.assignedChauffeur?.name)}
                 className="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-xs shrink-0"
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-1">
                   <h4 className="text-sm font-black text-[#191C1F] truncate">
-                    {route.assignedChauffeur?.name || 'Chauffeur VIP Dédié'}
+                    {tr(route.assignedChauffeur?.name || 'Chauffeur VIP Dédié')}
                   </h4>
                   <div className="flex items-center gap-1 text-[11px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200 shrink-0">
                     <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                    <span>{route.assignedChauffeur?.rating || 4.95}</span>
+                    <span>{tr(route.assignedChauffeur?.rating || 4.95)}</span>
                   </div>
                 </div>
 
                 <p className="text-xs font-bold text-[#A84A3B] flex items-center gap-1.5 mt-0.5 truncate">
                   <Car className="w-3.5 h-3.5 shrink-0" />
-                  <span className="truncate">{route.assignedChauffeur?.vehicleModel || 'Berline Prestige'}</span>
+                  <span className="truncate">{tr(route.assignedChauffeur?.vehicleModel || 'Berline Prestige')}</span>
                 </p>
 
                 <p className="text-[11px] text-[#727D88] font-semibold mt-0.5">
-                  Immatriculation : <span className="font-mono font-bold text-[#191C1F]">{route.assignedChauffeur?.vehiclePlate || '242 TU 8890'}</span>
+                  {tr("Immatriculation :")} <span className="font-mono font-bold text-[#191C1F]">{tr(route.assignedChauffeur?.vehiclePlate || '242 TU 8890')}</span>
                 </p>
               </div>
             </div>
@@ -343,11 +346,11 @@ export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
             <div className="space-y-1 mb-4 text-[11.5px] text-[#4A525A] bg-[#FAF8F5] p-2.5 rounded-xl border border-[#EBE6DC]">
               <div className="flex items-center gap-1.5 font-semibold text-emerald-800">
                 <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>Péages d'autoroutes inclus sans supplément</span>
+                <span>{tr("Péages d'autoroutes inclus sans supplément")}</span>
               </div>
               <div className="flex items-center gap-1.5 font-semibold text-emerald-800">
                 <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>Accueil avec pancarte nominative à la dépose</span>
+                <span>{tr("Accueil avec pancarte nominative à la dépose")}</span>
               </div>
             </div>
 
@@ -355,7 +358,7 @@ export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
             <div className="flex items-center justify-between gap-3 pt-2">
               <div>
                 <span className="text-[10px] uppercase font-black text-[#727D88] tracking-wider block">
-                  Tarif Forfaitaire Garanti
+                  {tr("Tarif Forfaitaire Garanti")}
                 </span>
                 <div className="text-2xl font-black text-[#A84A3B] tracking-tight">
                   {formatPrice(route.basePriceTND)}
@@ -371,7 +374,7 @@ export default function ChauffeurTrailModal({ route, onClose, onBookNow }) {
                 className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#A84A3B] to-[#C25847] hover:brightness-110 text-white font-extrabold text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Calendar className="w-4 h-4" />
-                <span>Réserver ce Trajet</span>
+                <span>{tr("Réserver ce Trajet")}</span>
               </button>
             </div>
           </div>

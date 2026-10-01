@@ -1,7 +1,10 @@
+import { useText } from '../../context/LanguageContext'
 import { useLanguage } from '../../context/LanguageContext'
 import './AppDownload.css'
 
 export default function AppDownload() {
+  const tr = useText()
+
   const { t } = useLanguage()
 
   return (
@@ -93,7 +96,7 @@ export default function AppDownload() {
           <div className="appdownload__right">
             <img
               src="/app_mockup.png"
-              alt="Application mobile African Rent Car"
+              alt={tr("Application mobile African Rent Car")}
               className="appdownload__mockup"
             />
           </div>

@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import { 
   X, 
@@ -39,6 +40,8 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
   currency,
   onClose,
 }) => {
+  const tr = useText()
+
   const { user } = useAuth() as any;
   const [selectedExtras, setSelectedExtras] = useState<string[]>(['Assurance 0 Franchise']);
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -106,34 +109,34 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <h2 className="text-2xl font-black text-[#191C1F] font-display">
-              Réservation Enregistrée avec Succès !
+              {tr("Réservation Enregistrée avec Succès !")}
             </h2>
             <p className="text-sm text-[#4A525A] max-w-md mx-auto">
-              Merci {customerName}. Votre bon de réservation VIP a été généré avec succès. Notre équipe locale vous contacte par WhatsApp sous 5 minutes.
+              {tr("Merci")} {tr(customerName)}{tr(". Votre bon de réservation VIP a été généré avec succès. Notre équipe locale vous contacte par WhatsApp sous 5 minutes.")}
             </p>
 
             <div className="bg-[#F8F7EE] p-5 rounded-2xl border border-[#EBE6DC] text-left max-w-md mx-auto space-y-2.5 text-xs">
               <div className="flex justify-between font-bold">
-                <span className="text-[#727D88]">Numéro de dossier VIP :</span>
+                <span className="text-[#727D88]">{tr("Numéro de dossier VIP :")}</span>
                 <span className="text-[#A84A3B] font-extrabold">#ARC-2026-9844</span>
               </div>
               <div className="flex justify-between font-bold">
-                <span className="text-[#727D88]">Service réservé :</span>
+                <span className="text-[#727D88]">{tr("Service réservé :")}</span>
                 <span className="text-[#191C1F]">
-                  {isChauffeur 
+                  {tr(isChauffeur
                     ? 'Chauffeur Privé avec accueil aéroport' 
                     : isStay 
                     ? 'Séjour en Villa d\'exception' 
-                    : 'Location Véhicule Prestige'}
+                    : 'Location Véhicule Prestige')}
                 </span>
               </div>
               <div className="flex justify-between font-bold">
-                <span className="text-[#727D88]">Montant total garanti :</span>
+                <span className="text-[#727D88]">{tr("Montant total garanti :")}</span>
                 <span className="text-[#191C1F] font-black text-sm">{formatPrice(grandTotalTND, currency)}</span>
               </div>
               <div className="flex justify-between font-bold">
-                <span className="text-[#727D88]">Modalité :</span>
-                <span className="text-emerald-700">Règlement au chauffeur ou au comptoir (0€ prélevé maintenant)</span>
+                <span className="text-[#727D88]">{tr("Modalité :")}</span>
+                <span className="text-emerald-700">{tr("Règlement au chauffeur ou au comptoir (0€ prélevé maintenant)")}</span>
               </div>
             </div>
 
@@ -141,21 +144,21 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
               onClick={onClose}
               className="mt-6 px-8 py-3.5 bg-[#A84A3B] text-white rounded-xl font-black text-sm shadow-md hover:bg-[#8A372A]"
             >
-              Fermer et retourner à l'accueil
+              {tr("Fermer et retourner à l'accueil")}
             </button>
           </div>
         ) : (
           <div className="space-y-6">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#A84A3B]/10 text-[#A84A3B] text-xs font-bold uppercase mb-2">
-                <span>Confirmation Immédiate • Tarif Fixe Garanti</span>
+                <span>{tr("Confirmation Immédiate • Tarif Fixe Garanti")}</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black text-[#191C1F] font-display">
-                {isChauffeur 
+                {tr(isChauffeur
                   ? 'Votre Course avec Chauffeur Privé' 
                   : isStay 
                   ? 'Votre Réservation de Séjour' 
-                  : 'Détails de votre Location Véhicule'}
+                  : 'Détails de votre Location Véhicule')}
               </h2>
             </div>
 
@@ -174,29 +177,29 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
               />
               <div className="overflow-hidden">
                 <p className="text-xs font-bold text-[#A84A3B] uppercase">
-                  {isChauffeur 
+                  {tr(isChauffeur
                     ? 'Chauffeur Privé A ➔ B' 
                     : isStay 
                     ? 'Villa & Standing' 
                     : selectedPackage 
                     ? 'Pack Fusion -15%' 
-                    : 'Véhicule Certifié'}
+                    : 'Véhicule Certifié')}
                 </p>
                 <h3 className="font-extrabold text-base text-[#191C1F] truncate">
-                  {selectedRoute 
+                  {tr(selectedRoute
                     ? `${selectedRoute.from} ➔ ${selectedRoute.to}` 
                     : selectedAccommodation 
                     ? selectedAccommodation.title 
                     : selectedPackage 
                     ? selectedPackage.title 
-                    : selectedVehicle?.name || 'Porsche Macan GTS'}
+                    : selectedVehicle?.name || 'Porsche Macan GTS')}
                 </h3>
                 <p className="text-xs text-[#727D88]">
-                  {isChauffeur 
+                  {tr(isChauffeur
                     ? `Véhicule haut de gamme • Accueil pancarte inclus • ${searchParams?.passengersCount || '2 passagers'}` 
                     : isStay 
                     ? `${selectedAccommodation?.location || searchParams?.destination || 'Djerba'} • Piscine & Conciergerie` 
-                    : `${days} jours de location • Km inclus`}
+                    : `${days} jours de location • Km inclus`)}
                 </p>
               </div>
             </div>
@@ -207,9 +210,9 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
                 <div className="flex items-center justify-between border-b border-[#EBE6DC] pb-2">
                   <div className="flex items-center gap-2">
                     <Navigation className="w-4 h-4 text-[#2C3E56]" />
-                    <span className="font-bold text-[#727D88]">Point de Départ A :</span>
+                    <span className="font-bold text-[#727D88]">{tr("Point de Départ A :")}</span>
                     <strong className="text-[#191C1F]">
-                      {selectedRoute?.from || searchParams?.pickupPointA || 'Aéroport Tunis-Carthage (TUN)'}
+                      {tr(selectedRoute?.from || searchParams?.pickupPointA || 'Aéroport Tunis-Carthage (TUN)')}
                     </strong>
                   </div>
                 </div>
@@ -218,16 +221,16 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
                     <MapPin className="w-4 h-4 text-[#A84A3B]" />
                     <span className="font-bold text-[#727D88]">Destination B :</span>
                     <strong className="text-[#191C1F]">
-                      {selectedRoute?.to || searchParams?.destinationB || 'Hammamet Sud'}
+                      {tr(selectedRoute?.to || searchParams?.destinationB || 'Hammamet Sud')}
                     </strong>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-[#2C3E56]" />
-                    <span className="font-bold text-[#727D88]">Heure & Vol :</span>
+                    <span className="font-bold text-[#727D88]">{tr("Heure & Vol :")}</span>
                     <strong className="text-[#191C1F]">
-                      {searchParams?.chauffeurTime || '14:30'} • Chauffeur en attente à la sortie
+                      {tr(searchParams?.chauffeurTime || '14:30')} {tr("• Chauffeur en attente à la sortie")}
                     </strong>
                   </div>
                 </div>
@@ -235,18 +238,18 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="p-3 bg-white rounded-xl border border-[#EBE6DC]">
-                  <p className="font-bold text-[#727D88] uppercase text-[10px] mb-1">Prise en charge</p>
-                  <p className="font-extrabold text-[#191C1F]">{agencyObj.name}</p>
+                  <p className="font-bold text-[#727D88] uppercase text-[10px] mb-1">{tr("Prise en charge")}</p>
+                  <p className="font-extrabold text-[#191C1F]">{tr(agencyObj.name)}</p>
                   <p className="text-[#4A525A] text-[11px] mt-0.5">
-                    Date : {searchParams?.pickupDate || '25 Septembre 2026'} à {searchParams?.pickupTime || '10:00'}
+                    Date : {tr(searchParams?.pickupDate || '25 Septembre 2026')} à {tr(searchParams?.pickupTime || '10:00')}
                   </p>
                 </div>
 
                 <div className="p-3 bg-white rounded-xl border border-[#EBE6DC]">
-                  <p className="font-bold text-[#727D88] uppercase text-[10px] mb-1">Restitution</p>
-                  <p className="font-extrabold text-[#191C1F]">{agencyObj.name}</p>
+                  <p className="font-bold text-[#727D88] uppercase text-[10px] mb-1">{tr("Restitution")}</p>
+                  <p className="font-extrabold text-[#191C1F]">{tr(agencyObj.name)}</p>
                   <p className="text-[#4A525A] text-[11px] mt-0.5">
-                    Date : {searchParams?.returnDate || '02 Octobre 2026'} à {searchParams?.returnTime || '10:00'}
+                    Date : {tr(searchParams?.returnDate || '02 Octobre 2026')} à {tr(searchParams?.returnTime || '10:00')}
                   </p>
                 </div>
               </div>
@@ -255,13 +258,13 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
             {/* Flight number for chauffeur or airport rental */}
             <div>
               <label className="text-xs font-bold uppercase tracking-wider text-[#727D88] block mb-1">
-                Numéro de Vol ou Nom pour la Pancarte
+                {tr("Numéro de Vol ou Nom pour la Pancarte")}
               </label>
               <input
                 type="text"
                 value={flightNumber}
                 onChange={(e) => setFlightNumber(e.target.value)}
-                placeholder="Ex: Vol TU 721 ou 'M. et Mme Dupont'"
+                placeholder={tr("Ex: Vol TU 721 ou 'M. et Mme Dupont'")}
                 className="w-full p-3 bg-[#F8F7EE] border border-[#EBE6DC] rounded-xl text-xs font-bold text-[#191C1F] focus:outline-none focus:border-[#A84A3B]"
               />
             </div>
@@ -269,19 +272,19 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
             {/* Contact details */}
             <div className="space-y-2">
               <p className="text-xs font-bold uppercase tracking-wider text-[#727D88]">
-                Coordonnées du Passager Principal
+                {tr("Coordonnées du Passager Principal")}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input
                   type="text"
-                  placeholder="Nom & Prénom"
+                  placeholder={tr("Nom & Prénom")}
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   className="p-3 bg-[#F8F7EE] border border-[#EBE6DC] rounded-xl text-xs font-bold text-[#191C1F] focus:outline-none focus:border-[#A84A3B]"
                 />
                 <input
                   type="tel"
-                  placeholder="Téléphone / WhatsApp"
+                  placeholder={tr("Téléphone / WhatsApp")}
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   className="p-3 bg-[#F8F7EE] border border-[#EBE6DC] rounded-xl text-xs font-bold text-[#191C1F] focus:outline-none focus:border-[#A84A3B]"
@@ -293,13 +296,13 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
             <div className="pt-4 border-t border-[#EBE6DC] flex flex-wrap items-center justify-between gap-4">
               <div>
                 <span className="text-[11px] text-[#727D88] uppercase font-bold block">
-                  Montant Total Fixe Garanti
+                  {tr("Montant Total Fixe Garanti")}
                 </span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-2xl sm:text-3xl font-black text-[#A84A3B] font-display">
                     {formatPrice(grandTotalTND, currency)}
                   </span>
-                  <span className="text-xs text-[#727D88] font-bold">TTC</span>
+                  <span className="text-xs text-[#727D88] font-bold">{tr("TTC")}</span>
                 </div>
               </div>
 
@@ -307,7 +310,7 @@ export const SearchResultsModal: React.FC<SearchResultsModalProps> = ({
                 onClick={() => setIsConfirmed(true)}
                 className="px-8 py-3.5 bg-[#A84A3B] hover:bg-[#8A372A] text-white rounded-2xl font-extrabold text-sm shadow-[0_8px_20px_rgba(168,74,59,0.30)] transition-all flex items-center gap-2 transform hover:-translate-y-0.5"
               >
-                <span>Confirmer la Réservation</span>
+                <span>{tr("Confirmer la Réservation")}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
@@ -40,6 +41,8 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateTab,
   onOpenQuickSearch,
 }) => {
+  const tr = useText()
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
@@ -119,14 +122,14 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-4">
             <span className="hidden sm:inline-flex items-center gap-1.5 font-medium text-white/95">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Assistance & Prise en charge aéroport 24/7
+              {tr("Assistance & Prise en charge aéroport 24/7")}
             </span>
             <span className="sm:hidden font-semibold text-white/90 text-[11px]">
               AFRICAN RENT CAR
             </span>
             <span className="hidden md:inline text-white/40">•</span>
             <span className="hidden md:inline text-white/75">
-              12 agences & comptoirs express en Tunisie
+              {tr("12 agences & comptoirs express en Tunisie")}
             </span>
           </div>
 
@@ -154,9 +157,9 @@ export const Header: React.FC<HeaderProps> = ({
                         ? 'bg-gradient-to-r from-[#A84A3B] to-[#C25847] text-white shadow-[0_2px_8px_rgba(168,74,59,0.5)] font-black scale-[1.02]'
                         : 'text-white/70 hover:text-white hover:bg-white/10'
                     }`}
-                    title={`Afficher les prix en ${curr}`}
+                    title={tr(`Afficher les prix en ${curr}`)}
                   >
-                    {curr}
+                    {tr(curr)}
                   </button>
                 );
               })}
@@ -173,18 +176,18 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-expanded={isLangDropdownOpen}
               >
                 <img
-                  src={lang === 'ar' ? '/Ar.png' : '/Fr.png'}
-                  alt={lang}
+                  src={lang === 'ar' ? '/Ar.png' : lang === 'en' ? '/En.svg' : '/Fr.png'}
+                  alt={tr(lang)}
                   className="w-4 h-3 object-cover rounded-xs shadow-xs"
                 />
-                <span className="text-white font-medium">{lang === 'ar' ? 'العربية' : 'Français'}</span>
+                <span className="text-white font-medium">{tr(lang === 'ar' ? 'العربية' : lang === 'en' ? 'English' : 'Français')}</span>
                 <ChevronDown className={`w-3 h-3 text-white/70 transition-transform duration-200 ${isLangDropdownOpen ? 'rotate-180 text-white' : ''}`} />
               </button>
 
               {isLangDropdownOpen && (
                 <div className="absolute right-0 top-full mt-2 w-40 bg-[#162232]/98 backdrop-blur-2xl rounded-2xl shadow-[0_20px_45px_rgba(0,0,0,0.5)] border border-white/20 py-1.5 text-white z-[100] animate-in fade-in zoom-in-95 overflow-hidden">
                   <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white/40 border-b border-white/10 mb-1">
-                    Langue / Language
+                    {tr("Langue / Language")}
                   </div>
                   <button
                     type="button"
@@ -194,13 +197,13 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                     className={`w-full text-left px-3.5 py-2 text-xs rounded-xl flex items-center justify-between font-bold cursor-pointer transition-colors ${
                       lang === 'fr' 
-                        ? 'bg-[#A84A3B]/30 text-[#F4A261]' 
+                        ? 'bg-[#A84A3B]/30 text-[#F4A261]'
                         : 'text-white/80 hover:bg-white/10 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <img src="/Fr.png" alt="Français" className="w-4 h-3 object-cover rounded-xs" />
-                      <span>Français</span>
+                      <img src="/Fr.png" alt={tr("Français")} className="w-4 h-3 object-cover rounded-xs" />
+                      <span>{tr("Français")}</span>
                     </div>
                     {lang === 'fr' && <Check className="w-3.5 h-3.5 text-[#F4A261]" />}
                   </button>
@@ -213,7 +216,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                     className={`w-full text-left px-3.5 py-2 text-xs rounded-xl flex items-center justify-between font-bold cursor-pointer transition-colors ${
                       lang === 'ar' 
-                        ? 'bg-[#A84A3B]/30 text-[#F4A261]' 
+                        ? 'bg-[#A84A3B]/30 text-[#F4A261]'
                         : 'text-white/80 hover:bg-white/10 hover:text-white'
                     }`}
                   >
@@ -222,6 +225,24 @@ export const Header: React.FC<HeaderProps> = ({
                       <span>العربية</span>
                     </div>
                     {lang === 'ar' && <Check className="w-3.5 h-3.5 text-[#F4A261]" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLanguage('en');
+                      setIsLangDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3.5 py-2 text-xs rounded-xl flex items-center justify-between font-bold cursor-pointer transition-colors ${
+                      lang === 'en'
+                        ? 'bg-[#A84A3B]/30 text-[#F4A261]'
+                        : 'text-white/80 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <img src="/En.svg" alt="English" className="w-4 h-3 object-cover rounded-xs" />
+                      <span>English</span>
+                    </div>
+                    {lang === 'en' && <Check className="w-3.5 h-3.5 text-[#F4A261]" />}
                   </button>
                 </div>
               )}
@@ -259,7 +280,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </div>
               <span className="text-[10px] tracking-widest uppercase font-semibold text-[#727D88]">
-                Mobilité & Séjours d'Exception
+                {tr("Mobilité & Séjours d'Exception")}
               </span>
             </div>
           </Link>
@@ -283,7 +304,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }`}
                 >
                   {Icon && <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#A84A3B]' : 'text-[#727D88]'}`} />}
-                  <span>{item.label}</span>
+                  <span>{tr(item.label)}</span>
                 </Link>
               );
             })}
@@ -299,29 +320,29 @@ export const Header: React.FC<HeaderProps> = ({
                   type="button"
                   onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                   className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white/70 hover:bg-white backdrop-blur-md border border-[#EBE6DC] shadow-xs text-xs font-semibold text-[#191C1F] transition-all cursor-pointer"
-                  title="Mon Espace Client"
+                  title={tr("Mon Espace Client")}
                 >
                   {user.avatar ? (
                     <img
                       src={user.avatar}
-                      alt={user.firstName || 'Profil'}
+                      alt={tr(user.firstName || 'Profil')}
                       className="w-6 h-6 rounded-full object-cover shadow-xs border border-white/40"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
                     <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#2C3E56] to-[#1F2C3D] text-white flex items-center justify-center font-bold text-[11px] shadow-sm">
-                      {user.firstName ? user.firstName.charAt(0).toUpperCase() : (user.name ? user.name.charAt(0).toUpperCase() : (user.email ? user.email.charAt(0).toUpperCase() : 'U'))}
+                      {tr(user.firstName ? user.firstName.charAt(0).toUpperCase() : (user.name ? user.name.charAt(0).toUpperCase() : (user.email ? user.email.charAt(0).toUpperCase() : 'U')))}
                     </div>
                   )}
                   <span className="hidden md:inline font-bold">
-                    {user.firstName || user.name || 'Client'} {user.lastName ? user.lastName.charAt(0) + '.' : ''}
+                    {tr(user.firstName || user.name || 'Client')} {tr(user.lastName ? user.lastName.charAt(0) + '.' : '')}
                   </span>
                   <span className={`text-[10px] border font-bold px-1.5 py-0.5 rounded-full ${
                     isAdmin 
                       ? 'bg-red-500/15 text-red-900 border-red-500/20' 
                       : 'bg-amber-500/20 text-amber-900 border-amber-500/30'
                   }`}>
-                    {isAdmin ? 'ADMIN' : 'VIP'}
+                    {tr(isAdmin ? 'ADMIN' : 'VIP')}
                   </span>
                   <ChevronDown className="w-3 h-3 text-[#727D88]" />
                 </button>
@@ -330,9 +351,9 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="absolute right-0 mt-2 w-52 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.15)] border border-white/80 py-2 text-[#191C1F] z-50 animate-in fade-in zoom-in-95">
                     <div className="px-3.5 py-2 border-b border-black/[0.06] mb-1">
                       <p className="text-xs font-bold text-[#191C1F]">
-                        {user.firstName || user.name || 'Client'} {user.lastName || ''}
+                        {tr(user.firstName || user.name || 'Client')} {tr(user.lastName || '')}
                       </p>
-                      <p className="text-[10px] text-[#727D88] truncate">{user.email}</p>
+                      <p className="text-[10px] text-[#727D88] truncate">{tr(user.email)}</p>
                     </div>
 
                     {isAdmin && (
@@ -342,7 +363,7 @@ export const Header: React.FC<HeaderProps> = ({
                         className="w-full text-left px-3.5 py-2 text-xs hover:bg-black/5 rounded-xl flex items-center gap-2 font-bold text-[#A84A3B] transition-colors"
                       >
                         <Grid className="w-3.5 h-3.5" />
-                        <span>Tableau de bord Admin</span>
+                        <span>{tr("Tableau de bord Admin")}</span>
                       </Link>
                     )}
 
@@ -352,7 +373,7 @@ export const Header: React.FC<HeaderProps> = ({
                       className="w-full text-left px-3.5 py-2 text-xs hover:bg-black/5 rounded-xl flex items-center gap-2 font-bold text-[#2C3E56] transition-colors"
                     >
                       <Clock className="w-3.5 h-3.5" />
-                      <span>Mes réservations</span>
+                      <span>{tr("Mes réservations")}</span>
                     </Link>
 
                     <Link
@@ -362,11 +383,11 @@ export const Header: React.FC<HeaderProps> = ({
                     >
                       <div className="flex items-center gap-2">
                         <Heart className="w-3.5 h-3.5 text-[#A84A3B]" />
-                        <span>Mes favoris</span>
+                        <span>{tr("Mes favoris")}</span>
                       </div>
                       {wishlistCount > 0 && (
                         <span className="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-[#A84A3B] text-white">
-                          {wishlistCount}
+                          {tr(wishlistCount)}
                         </span>
                       )}
                     </Link>
@@ -377,7 +398,7 @@ export const Header: React.FC<HeaderProps> = ({
                       className="w-full text-left px-3.5 py-2 text-xs hover:bg-red-50 text-red-600 rounded-xl flex items-center gap-2 font-bold transition-colors cursor-pointer border-t border-black/[0.04] mt-1 pt-2"
                     >
                       <LogOut className="w-3.5 h-3.5" />
-                      <span>Déconnexion</span>
+                      <span>{tr("Déconnexion")}</span>
                     </button>
                   </div>
                 )}
@@ -387,7 +408,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={() => openAuthModal && openAuthModal('login')}
                 className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 hover:bg-white text-xs font-bold text-[#191C1F] border border-[#EBE6DC] shadow-xs hover:border-[#A84A3B]/40 hover:text-[#A84A3B] transition-all cursor-pointer"
-                title="Se connecter à votre compte"
+                title={tr("Se connecter à votre compte")}
               >
                 <User className="w-3.5 h-3.5 text-[#A84A3B]" />
                 <span>{t('nav.login', 'Connexion')}</span>
@@ -398,12 +419,12 @@ export const Header: React.FC<HeaderProps> = ({
             <Link
               to="/favoris"
               className="relative p-2 rounded-full bg-white/70 hover:bg-white text-[#4A525A] hover:text-[#A84A3B] border border-[#EBE6DC] shadow-xs transition-colors cursor-pointer"
-              title="Mes favoris"
+              title={tr("Mes favoris")}
             >
               <Heart className={`w-4 h-4 ${wishlistCount > 0 ? 'fill-[#A84A3B] text-[#A84A3B]' : ''}`} />
               {wishlistCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#A84A3B] text-white text-[9px] font-black flex items-center justify-center shadow-xs">
-                  {wishlistCount}
+                  {tr(wishlistCount)}
                 </span>
               )}
             </Link>
@@ -423,7 +444,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-2xl bg-white/60 backdrop-blur-md text-[#191C1F] hover:bg-white/90 border border-white/80 shadow-sm cursor-pointer"
-              aria-label="Ouvrir le menu"
+              aria-label={tr("Ouvrir le menu")}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -436,7 +457,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Currency & Language row in mobile menu */}
             <div className="flex items-center justify-between gap-3 pb-3 border-b border-black/[0.06]">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold text-[#727D88] uppercase tracking-wider">Devise</span>
+                <span className="text-[11px] font-bold text-[#727D88] uppercase tracking-wider">{tr("Devise")}</span>
                 <div className="flex items-center bg-black/[0.04] p-0.5 rounded-full border border-black/[0.05]">
                   {(['TND', 'EUR', 'USD'] as Currency[]).map((curr) => (
                     <button
@@ -448,7 +469,7 @@ export const Header: React.FC<HeaderProps> = ({
                           : 'text-[#727D88]'
                       }`}
                     >
-                      {curr}
+                      {tr(curr)}
                     </button>
                   ))}
                 </div>
@@ -475,6 +496,16 @@ export const Header: React.FC<HeaderProps> = ({
                   <img src="/Ar.png" alt="AR" className="w-3.5 h-2.5 object-cover rounded-xs" />
                   <span>AR</span>
                 </button>
+                  <button
+                  type="button"
+                  onClick={() => setLanguage('en')}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold cursor-pointer transition-all ${
+                    lang === 'en' ? 'bg-[#A84A3B] text-white shadow-xs' : 'text-[#727D88]'
+                  }`}
+                >
+                  <img src="/En.svg" alt="EN" className="w-3.5 h-2.5 object-cover rounded-xs" />
+                  <span>EN</span>
+                </button>
               </div>
             </div>
 
@@ -486,7 +517,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="px-3.5 py-2.5 rounded-2xl text-sm font-semibold text-[#191C1F] hover:bg-black/5 flex items-center justify-between transition-colors"
                 >
-                  <span>{item.label}</span>
+                  <span>{tr(item.label)}</span>
                   <span className="text-[#A84A3B] text-xs font-bold">→</span>
                 </Link>
               ))}
@@ -499,18 +530,18 @@ export const Header: React.FC<HeaderProps> = ({
                     {user.avatar ? (
                       <img
                         src={user.avatar}
-                        alt={user.firstName || 'Profil'}
+                        alt={tr(user.firstName || 'Profil')}
                         className="w-8 h-8 rounded-full object-cover shadow-xs border border-black/10"
                         referrerPolicy="no-referrer"
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-[#2C3E56] text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                        {user.firstName ? user.firstName.charAt(0).toUpperCase() : (user.name ? user.name.charAt(0).toUpperCase() : 'U')}
+                        {tr(user.firstName ? user.firstName.charAt(0).toUpperCase() : (user.name ? user.name.charAt(0).toUpperCase() : 'U'))}
                       </div>
                     )}
                     <div className="min-w-0 flex-1">
-                      <p className="font-bold text-xs text-[#191C1F] truncate">{user.firstName || user.name} {user.lastName || ''}</p>
-                      <p className="text-[10px] text-[#727D88] truncate">{isAdmin ? 'Mode Administrateur' : 'Client Privilège'}</p>
+                      <p className="font-bold text-xs text-[#191C1F] truncate">{tr(user.firstName || user.name)} {tr(user.lastName || '')}</p>
+                      <p className="text-[10px] text-[#727D88] truncate">{tr(isAdmin ? 'Mode Administrateur' : 'Client Privilège')}</p>
                     </div>
                   </div>
 
@@ -521,7 +552,7 @@ export const Header: React.FC<HeaderProps> = ({
                       className="w-full py-2 px-3 rounded-xl bg-[#A84A3B] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs"
                     >
                       <Grid className="w-3.5 h-3.5" />
-                      <span>Tableau de bord Admin</span>
+                      <span>{tr("Tableau de bord Admin")}</span>
                     </Link>
                   )}
 
@@ -532,7 +563,7 @@ export const Header: React.FC<HeaderProps> = ({
                       className="px-3 py-2 rounded-xl bg-white border border-[#EBE6DC] text-xs font-bold text-[#2C3E56] flex items-center justify-center gap-1.5 shadow-xs"
                     >
                       <Clock className="w-3.5 h-3.5" />
-                      <span>Réservations</span>
+                      <span>{tr("Réservations")}</span>
                     </Link>
                     <Link
                       to="/favoris"
@@ -540,7 +571,7 @@ export const Header: React.FC<HeaderProps> = ({
                       className="px-3 py-2 rounded-xl bg-white border border-[#EBE6DC] text-xs font-bold text-[#A84A3B] flex items-center justify-center gap-1.5 shadow-xs"
                     >
                       <Heart className="w-3.5 h-3.5 fill-[#A84A3B]" />
-                      <span>Favoris ({wishlistCount})</span>
+                      <span>{tr("Favoris (")}{tr(wishlistCount)})</span>
                     </Link>
                   </div>
                   <button
@@ -552,7 +583,7 @@ export const Header: React.FC<HeaderProps> = ({
                     className="w-full py-2 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-600 flex items-center justify-center gap-1.5 cursor-pointer mt-1"
                   >
                     <LogOut className="w-3.5 h-3.5" />
-                    <span>Déconnexion</span>
+                    <span>{tr("Déconnexion")}</span>
                   </button>
                 </div>
               ) : (
@@ -566,7 +597,7 @@ export const Header: React.FC<HeaderProps> = ({
                     className="w-full py-2.5 px-4 rounded-xl bg-white border border-[#EBE6DC] text-xs font-bold text-[#191C1F] hover:text-[#A84A3B] flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                   >
                     <User className="w-4 h-4 text-[#A84A3B]" />
-                    <span>Se connecter / Inscription</span>
+                    <span>{tr("Se connecter / Inscription")}</span>
                   </button>
                   <Link
                     to="/favoris"
@@ -574,7 +605,7 @@ export const Header: React.FC<HeaderProps> = ({
                     className="w-full py-2 px-4 rounded-xl bg-white border border-[#EBE6DC] text-xs font-bold text-[#4A525A] flex items-center justify-center gap-2 shadow-xs"
                   >
                     <Heart className="w-4 h-4 text-[#A84A3B]" />
-                    <span>Mes favoris ({wishlistCount})</span>
+                    <span>{tr("Mes favoris (")}{tr(wishlistCount)})</span>
                   </Link>
                 </div>
               )}
@@ -585,7 +616,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="w-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2"
               >
                 <Car className="w-4 h-4" />
-                <span>Rechercher un véhicule</span>
+                <span>{tr("Rechercher un véhicule")}</span>
               </Link>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { normalizeMediaFields } from '../utils/mediaUrl'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
@@ -16,7 +17,10 @@ api.interceptors.request.use((config) => {
 
 // Handle 401 globally — clear token and redirect to home
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    res.data = normalizeMediaFields(res.data, API_BASE)
+    return res
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('tcr_token')

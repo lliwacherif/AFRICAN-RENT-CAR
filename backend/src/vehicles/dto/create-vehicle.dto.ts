@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString,
-  IsBoolean, IsArray, IsDateString, Min, Max, ValidateNested,
+  IsBoolean, IsArray, IsDateString, IsMongoId, ArrayUnique, Min, Max, ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { VehicleCategory, VehicleFuel, VehicleTransmission, VehicleStatus } from '../schemas/vehicle.schema';
@@ -81,7 +81,10 @@ export class CreateVehicleDto {
   @IsOptional() @IsNumber() @Min(0) depositAmount?: number;
 
   @ApiPropertyOptional({ example: '64abc...', description: 'Parc (parking location) ID' })
-  @IsOptional() @IsString() parcId?: string;
+  @IsOptional() @IsMongoId() parcId?: string | null;
+
+  @ApiPropertyOptional({ type: [String], description: 'All parcs where this vehicle is offered; [] removes all assignments' })
+  @IsOptional() @IsArray() @ArrayUnique() @IsMongoId({ each: true }) parcIds?: string[];
 
   @ApiPropertyOptional({ example: 21 })
   @IsOptional() @IsNumber() @Min(18) minDriverAge?: number;

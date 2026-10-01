@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiCalendar, FiUser, FiCheck, FiHome, FiCompass, FiMapPin, FiUsers } from 'react-icons/fi'
@@ -31,6 +32,8 @@ const EXCURSION_CATEGORIES = [
 ]
 
 export default function BookingForm() {
+  const tr = useText()
+
   const navigate = useNavigate()
   const { user } = useAuth()
   const { t } = useLanguage()
@@ -154,7 +157,7 @@ export default function BookingForm() {
                       location: parcName,
                     }))
                   }}
-                  placeholder={t('booking.selectParc', 'Sélectionnez un parc')}
+                  placeholder={tr(t('booking.selectParc', 'Sélectionnez un parc'))}
                   variant="dark"
                 />
               </div>
@@ -200,7 +203,7 @@ export default function BookingForm() {
                   <FiUser className="booking__input-icon" size={15} />
                   {user?.age ? (
                     <span className="booking__input" style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'default' }}>
-                      <span style={{ fontWeight: 600 }}>{user.age} {t('booking.years', 'ans')}</span>
+                      <span style={{ fontWeight: 600 }}>{tr(user.age)} {t('booking.years', 'ans')}</span>
                       <span style={{ fontSize: 10, color: '#f97316', background: '#fff7ed', borderRadius: 4, padding: '1px 5px', border: '1px solid #fed7aa' }}>{t('booking.accountLocked', '🔒 compte')}</span>
                     </span>
                   ) : (
@@ -211,7 +214,7 @@ export default function BookingForm() {
                       min={18}
                       max={99}
                       onChange={setCar('driverAge')}
-                      placeholder="ex: 25"
+                      placeholder={tr("ex: 25")}
                     />
                   )}
                 </div>
@@ -244,7 +247,7 @@ export default function BookingForm() {
           <div className="booking__form">
             <div className="booking__fields">
               <div className="booking__field booking__field--wide">
-                <label className="booking__label">Destination en Tunisie</label>
+                <label className="booking__label">{tr("Destination en Tunisie")}</label>
                 <div className="booking__input-wrap">
                   <FiMapPin className="booking__input-icon" size={15} />
                   <select
@@ -253,16 +256,16 @@ export default function BookingForm() {
                     onChange={setApt('city')}
                     style={{ paddingLeft: 34 }}
                   >
-                    <option value="">Toutes les destinations</option>
+                    <option value="">{tr("Toutes les destinations")}</option>
                     {POPULAR_CITIES.map(c => (
-                      <option key={c} value={c}>{c}</option>
+                      <option key={c} value={c}>{tr(c)}</option>
                     ))}
                   </select>
                 </div>
               </div>
 
               <div className="booking__field">
-                <label className="booking__label">Date d'arrivée</label>
+                <label className="booking__label">{tr("Date d'arrivée")}</label>
                 <div className="booking__input-wrap">
                   <input
                     type="date"
@@ -283,7 +286,7 @@ export default function BookingForm() {
               </div>
 
               <div className="booking__field">
-                <label className="booking__label">Date de départ</label>
+                <label className="booking__label">{tr("Date de départ")}</label>
                 <div className="booking__input-wrap">
                   <input
                     type="date"
@@ -297,7 +300,7 @@ export default function BookingForm() {
               </div>
 
               <div className="booking__field booking__field--narrow">
-                <label className="booking__label">Voyageurs</label>
+                <label className="booking__label">{tr("Voyageurs")}</label>
                 <div className="booking__input-wrap">
                   <FiUsers className="booking__input-icon" size={15} />
                   <select
@@ -306,24 +309,24 @@ export default function BookingForm() {
                     onChange={setApt('guests')}
                     style={{ paddingLeft: 34 }}
                   >
-                    <option value="1">1 pers</option>
-                    <option value="2">2 pers</option>
-                    <option value="3">3 pers</option>
-                    <option value="4">4 pers</option>
-                    <option value="6">6+ pers</option>
+                    <option value="1">{tr("1 pers")}</option>
+                    <option value="2">{tr("2 pers")}</option>
+                    <option value="3">{tr("3 pers")}</option>
+                    <option value="4">{tr("4 pers")}</option>
+                    <option value="6">{tr("6+ pers")}</option>
                   </select>
                 </div>
               </div>
 
               <div className="booking__field booking__field--btn">
-                <label className="booking__label booking__label--hidden">Explorer</label>
+                <label className="booking__label booking__label--hidden">{tr("Explorer")}</label>
                 <button className="booking__search-btn" onClick={handleSearchApts}>
-                  Explorer
+                  {tr("Explorer")}
                 </button>
               </div>
             </div>
             <div className="booking__footer" style={{ color: 'var(--white-70)', fontSize: 13, fontWeight: 500 }}>
-              ✨ Dars traditionnels, villas avec piscine privée, penthouses vue mer dans toute la Tunisie.
+              {tr("✨ Dars traditionnels, villas avec piscine privée, penthouses vue mer dans toute la Tunisie.")}
             </div>
           </div>
         )}
@@ -333,7 +336,7 @@ export default function BookingForm() {
           <div className="booking__form">
             <div className="booking__fields">
               <div className="booking__field booking__field--wide">
-                <label className="booking__label">Thème du circuit / excursion</label>
+                <label className="booking__label">{tr("Thème du circuit / excursion")}</label>
                 <div className="booking__input-wrap">
                   <FiCompass className="booking__input-icon" size={15} />
                   <select
@@ -343,14 +346,14 @@ export default function BookingForm() {
                     style={{ paddingLeft: 34 }}
                   >
                     {EXCURSION_CATEGORIES.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <option key={cat} value={cat}>{tr(cat)}</option>
                     ))}
                   </select>
                 </div>
               </div>
 
               <div className="booking__field booking__field--wide">
-                <label className="booking__label">Ville de départ</label>
+                <label className="booking__label">{tr("Ville de départ")}</label>
                 <div className="booking__input-wrap">
                   <FiMapPin className="booking__input-icon" size={15} />
                   <select
@@ -359,24 +362,24 @@ export default function BookingForm() {
                     onChange={setExc('departureCity')}
                     style={{ paddingLeft: 34 }}
                   >
-                    <option value="">Tous les départs (Tunis, Sousse, Djerba...)</option>
-                    <option value="Tunis">Départ Tunis</option>
-                    <option value="Sousse">Départ Sousse / Monastir</option>
-                    <option value="Djerba">Départ Djerba</option>
-                    <option value="Hammamet">Départ Hammamet</option>
+                    <option value="">{tr("Tous les départs (Tunis, Sousse, Djerba...)")}</option>
+                    <option value="Tunis">{tr("Départ Tunis")}</option>
+                    <option value="Sousse">{tr("Départ Sousse / Monastir")}</option>
+                    <option value="Djerba">{tr("Départ Djerba")}</option>
+                    <option value="Hammamet">{tr("Départ Hammamet")}</option>
                   </select>
                 </div>
               </div>
 
               <div className="booking__field booking__field--btn">
-                <label className="booking__label booking__label--hidden">Découvrir</label>
+                <label className="booking__label booking__label--hidden">{tr("Découvrir")}</label>
                 <button className="booking__search-btn" onClick={handleSearchExcursions}>
-                  Découvrir
+                  {tr("Découvrir")}
                 </button>
               </div>
             </div>
             <div className="booking__footer" style={{ color: '#a0a0ab', fontSize: 13 }}>
-              🐪 Safaris désertiques, randonnées vertes à Tabarka, voiliers aux îles Kuriat et cités antiques.
+              {tr("🐪 Safaris désertiques, randonnées vertes à Tabarka, voiliers aux îles Kuriat et cités antiques.")}
             </div>
           </div>
         )}

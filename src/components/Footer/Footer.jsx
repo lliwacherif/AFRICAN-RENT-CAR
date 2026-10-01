@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FiPhone, FiMail, FiMapPin, FiSend, FiFacebook, FiInstagram, FiLinkedin, FiTwitter } from 'react-icons/fi'
@@ -7,6 +8,8 @@ import './Footer.css'
 const YEAR = new Date().getFullYear()
 
 export default function Footer() {
+  const tr = useText()
+
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
   const { t } = useLanguage()
@@ -61,7 +64,7 @@ export default function Footer() {
           <h4 className="footer__col-title">{t('footer.information', 'Informations')}</h4>
           <ul className="footer__links">
             {infoList.map(l => (
-              <li key={l}><span className="footer__link footer__link--text">{l}</span></li>
+              <li key={l}><span className="footer__link footer__link--text">{tr(l)}</span></li>
             ))}
           </ul>
         </div>
@@ -83,7 +86,7 @@ export default function Footer() {
             </li>
             <li className="footer__contact-item">
               <FiMapPin size={13} style={{ flexShrink: 0, marginTop: '2px' }} />
-              <span className="footer__address">Avenue Habib Bourguiba<br />Bizerte 7000, Tunisie</span>
+              <span className="footer__address">Avenue Habib Bourguiba<br />{tr("Bizerte 7000, Tunisie")}</span>
             </li>
           </ul>
         </div>
@@ -99,12 +102,12 @@ export default function Footer() {
               <input
                 type="email"
                 className="footer__newsletter-input"
-                placeholder={t('footer.emailPlaceholder', 'Votre email')}
+                placeholder={tr(t('footer.emailPlaceholder', 'Votre email'))}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
               />
-              <button type="submit" className="footer__newsletter-btn" aria-label={t('footer.subscribeBtn', "S'abonner")}>
+              <button type="submit" className="footer__newsletter-btn" aria-label={tr(t('footer.subscribeBtn', "S'abonner"))}>
                 <FiSend size={14} />
               </button>
             </form>
@@ -114,7 +117,7 @@ export default function Footer() {
 
       <div className="footer__bottom">
         <div className="container">
-          <p className="footer__copyright">© {YEAR} African Rent Car. {t('footer.copyright', 'Tous droits réservés.')}</p>
+          <p className="footer__copyright">© {tr(YEAR)} African Rent Car. {t('footer.copyright', 'Tous droits réservés.')}</p>
         </div>
       </div>
     </footer>

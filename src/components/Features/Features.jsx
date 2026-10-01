@@ -1,7 +1,10 @@
+import { useText } from '../../context/LanguageContext'
 import { useLanguage } from '../../context/LanguageContext'
 import './Features.css'
 
 export default function Features() {
+  const tr = useText()
+
   const { t } = useLanguage()
 
   const items = [
@@ -61,10 +64,10 @@ export default function Features() {
       <div className="features__inner container">
         {items.map(f => (
           <div key={f.id} className="features__item">
-            <div className="features__icon">{f.icon}</div>
+            <div className="features__icon">{tr(f.icon)}</div>
             <div className="features__text">
-              <h3 className="features__title">{f.title}</h3>
-              <p className="features__desc">{f.desc}</p>
+              <h3 className="features__title">{tr(f.title)}</h3>
+              <p className="features__desc">{tr(f.desc)}</p>
             </div>
           </div>
         ))}

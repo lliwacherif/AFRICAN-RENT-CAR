@@ -20,11 +20,12 @@ export class VehiclesService {
   ) {}
 
   async create(dto: CreateVehicleDto) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { parcId, ...rest } = dto as any;
+    const { parcId, parcIds, ...rest } = dto;
+    const parcs = (parcIds ?? (parcId ? [parcId] : [])).map(id => new Types.ObjectId(id));
     return this.vehicleModel.create({
       ...rest,
-      ...(parcId ? { parc: new Types.ObjectId(parcId) } : {}),
+      parcs,
+      parc: parcs[0] ?? null,
     });
   }
 
@@ -61,7 +62,11 @@ export class VehiclesService {
     // ── Parc filter ───────────────────────────────────────────────────────────
     // Only show vehicles assigned to the selected parc
     if (parcId) {
-      filter.parc = new Types.ObjectId(parcId);
+      const parc = new Types.ObjectId(parcId);
+      filter.$or = [
+        { parcs: parc },
+        { parcs: { $exists: false }, parc },
+      ];
     }
     // ── Availability filter ──────────────────────────────────────────────────
     // Exclude any vehicle that has a pending/confirmed reservation overlapping
@@ -92,7 +97,7 @@ export class VehiclesService {
     const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
 
     const [vehicles, total] = await Promise.all([
-      this.vehicleModel.find(filter).sort(sort).skip(skip).limit(limit).exec(),
+      this.vehicleModel.find(filter).populate('parc parcs', 'name city address').sort(sort).skip(skip).limit(limit).exec(),
       this.vehicleModel.countDocuments(filter),
     ]);
 
@@ -103,20 +108,20 @@ export class VehiclesService {
   }
 
   async findOne(id: string) {
-    const vehicle = await this.vehicleModel.findById(id).exec();
+    const vehicle = await this.vehicleModel.findById(id).populate('parc parcs', 'name city address').exec();
     if (!vehicle) throw new NotFoundException('Vehicle not found');
     return vehicle;
   }
 
   async update(id: string, dto: UpdateVehicleDto) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { parcId, ...rest } = dto as any;
+    const { parcId, parcIds, ...rest } = dto;
     const update: Record<string, any> = { ...rest };
-    if (parcId !== undefined) {
-      update.parc = parcId ? new Types.ObjectId(parcId) : null;
+    if (parcIds !== undefined || parcId !== undefined) {
+      update.parcs = (parcIds ?? (parcId ? [parcId] : [])).map(id => new Types.ObjectId(id));
+      update.parc = update.parcs[0] ?? null;
     }
     const vehicle = await this.vehicleModel
-      .findByIdAndUpdate(id, update, { returnDocument: 'after' })
+      .findByIdAndUpdate(id, update, { returnDocument: 'after', runValidators: true })
       .exec();
     if (!vehicle) throw new NotFoundException('Vehicle not found');
     return vehicle;
@@ -156,7 +161,7 @@ export class VehiclesService {
 
   // Admin: find all regardless of isActive, with parc populated
   async findAllAdmin() {
-    return this.vehicleModel.find().populate('parc', 'name city address').exec();
+    return this.vehicleModel.find().populate('parc parcs', 'name city address').exec();
   }
 
   // ── Status sync ─────────────────────────────────────────────────────────────

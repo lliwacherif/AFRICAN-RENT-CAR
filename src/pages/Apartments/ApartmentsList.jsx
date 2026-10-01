@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -60,6 +61,8 @@ const POPULAR_AMENITIES = [
 ];
 
 export default function ApartmentsList() {
+  const tr = useText()
+
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
@@ -168,13 +171,13 @@ export default function ApartmentsList() {
         <div className="max-w-7xl mx-auto relative z-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5 text-[#F4A261]" />
-            <span>Sélection Exclusivité & Charme • Dars & Villas en Tunisie</span>
+            <span>{tr("Sélection Exclusivité & Charme • Dars & Villas en Tunisie")}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-display">
-            Dars Traditionnels & Villas d'Exception
+            {tr("Dars Traditionnels & Villas d'Exception")}
           </h1>
           <p className="text-sm sm:text-base text-white/75 mt-2 max-w-2xl">
-            Villas avec piscine privée, demeures mauresques restaurées à Sidi Bou Saïd et penthouses face à la Méditerranée.
+            {tr("Villas avec piscine privée, demeures mauresques restaurées à Sidi Bou Saïd et penthouses face à la Méditerranée.")}
           </p>
 
           {/* Quick Destination Pills */}
@@ -189,7 +192,7 @@ export default function ApartmentsList() {
                     : 'bg-white/15 hover:bg-white/25 text-white/90 border border-white/10'
                 }`}
               >
-                {c.label}
+                {tr(c.label)}
               </button>
             ))}
           </div>
@@ -198,7 +201,7 @@ export default function ApartmentsList() {
 
       {/* 3. MAIN LAYOUT */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        
+
         {/* Mobile Filter Button */}
         <div className="lg:hidden mb-4 flex items-center justify-between">
           <button
@@ -206,7 +209,7 @@ export default function ApartmentsList() {
             className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#EBE6DC] text-sm font-bold text-[#191C1F] shadow-xs cursor-pointer"
           >
             <SlidersHorizontal className="w-4 h-4 text-[#A84A3B]" />
-            <span>Filtres ({apartments.length})</span>
+            <span>{tr("Filtres (")}{tr(apartments.length)})</span>
           </button>
 
           {/* Toggle View for Mobile */}
@@ -214,32 +217,32 @@ export default function ApartmentsList() {
             <button
               onClick={() => handleViewModeChange('list')}
               className={`view-toggle-item ${viewMode === 'list' ? 'active' : 'inactive'}`}
-              title="Vue Liste"
+              title={tr("Vue Liste")}
             >
               <LayoutList className="w-4 h-4" />
-              <span className="hidden sm:inline">Liste</span>
+              <span className="hidden sm:inline">{tr("Liste")}</span>
             </button>
             <button
               onClick={() => handleViewModeChange('grid')}
               className={`view-toggle-item ${viewMode === 'grid' ? 'active' : 'inactive'}`}
-              title="Vue Mosaïque"
+              title={tr("Vue Mosaïque")}
             >
               <LayoutGrid className="w-4 h-4" />
-              <span className="hidden sm:inline">Mosaïque</span>
+              <span className="hidden sm:inline">{tr("Mosaïque")}</span>
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
+
           {/* ================= LEFT SIDEBAR (FILTERS) ================= */}
           <aside className={`lg:col-span-4 xl:col-span-3 space-y-6 ${mobileFilterOpen ? 'block' : 'hidden lg:block'}`}>
-            
+
             {/* Filter: Destination City */}
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <h3 className="font-bold text-sm text-[#191C1F] mb-3 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[#A84A3B]" />
-                <span>Destination en Tunisie</span>
+                <span>{tr("Destination en Tunisie")}</span>
               </h3>
               <select
                 value={selectedCity}
@@ -248,7 +251,7 @@ export default function ApartmentsList() {
               >
                 {CITIES.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.label}
+                    {tr(c.label)}
                   </option>
                 ))}
               </select>
@@ -258,7 +261,7 @@ export default function ApartmentsList() {
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <h3 className="font-bold text-sm text-[#191C1F] mb-3 flex items-center gap-2">
                 <Home className="w-4 h-4 text-[#2C3E56]" />
-                <span>Type d'hébergement</span>
+                <span>{tr("Type d'hébergement")}</span>
               </h3>
               <div className="space-y-1.5">
                 {TYPES.map((tItem) => {
@@ -273,7 +276,7 @@ export default function ApartmentsList() {
                           : 'text-[#4A525A] hover:bg-[#F8F7EE]'
                       }`}
                     >
-                      <span>{tItem.label}</span>
+                      <span>{tr(tItem.label)}</span>
                       {isActive && <Check className="w-3.5 h-3.5" />}
                     </button>
                   );
@@ -285,7 +288,7 @@ export default function ApartmentsList() {
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <h3 className="font-bold text-sm text-[#191C1F] mb-3 flex items-center gap-2">
                 <Users className="w-4 h-4 text-[#2C3E56]" />
-                <span>Voyageurs minimum</span>
+                <span>{tr("Voyageurs minimum")}</span>
               </h3>
               <div className="grid grid-cols-4 gap-1.5">
                 {[1, 2, 4, 6].map((count) => (
@@ -298,7 +301,7 @@ export default function ApartmentsList() {
                         : 'bg-[#F8F7EE] text-[#4A525A] hover:bg-[#EBE6DC]'
                     }`}
                   >
-                    {count}+ pers.
+                    {tr(count)}{tr("+ pers.")}
                   </button>
                 ))}
               </div>
@@ -307,7 +310,7 @@ export default function ApartmentsList() {
             {/* Filter: Max Price per night */}
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-sm text-[#191C1F]">Budget max / nuitée</h3>
+                <h3 className="font-bold text-sm text-[#191C1F]">{tr("Budget max / nuitée")}</h3>
                 <span className="text-xs font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 px-2 py-0.5 rounded-full">
                   {formatPrice(maxPrice, isRtl)}
                 </span>
@@ -330,7 +333,7 @@ export default function ApartmentsList() {
 
             {/* Filter: Amenities */}
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
-              <h3 className="font-bold text-sm text-[#191C1F] mb-3">Équipements recherchés</h3>
+              <h3 className="font-bold text-sm text-[#191C1F] mb-3">{tr("Équipements recherchés")}</h3>
               <div className="space-y-2">
                 {POPULAR_AMENITIES.map((amenity) => {
                   const active = selectedAmenities.includes(amenity.id);
@@ -340,7 +343,7 @@ export default function ApartmentsList() {
                       onClick={() => toggleAmenity(amenity.id)}
                       className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#4A525A] hover:bg-[#F8F7EE] cursor-pointer"
                     >
-                      <span>{amenity.label}</span>
+                      <span>{tr(amenity.label)}</span>
                       <div
                         className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${
                           active ? 'bg-[#A84A3B] border-[#A84A3B] text-white' : 'border-[#DAD3C5] bg-white'
@@ -360,25 +363,25 @@ export default function ApartmentsList() {
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[#DAD3C5] text-xs font-bold text-[#727D88] hover:text-[#191C1F] hover:bg-white transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Réinitialiser tous les filtres</span>
+              <span>{tr("Réinitialiser tous les filtres")}</span>
             </button>
 
           </aside>
 
           {/* ================= RIGHT MAIN LISTINGS ================= */}
           <main className="lg:col-span-8 xl:col-span-9 space-y-6">
-            
+
             {/* Header bar with Count, Sort and Toggle [ Liste | Mosaïque ] */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#EBE6DC] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-extrabold text-[#191C1F] font-display">
-                  {loading
+                  {tr(loading
                     ? 'Chargement des résidences...'
-                    : `${apartments.length} hébergement${apartments.length > 1 ? 's' : ''} disponible${apartments.length > 1 ? 's' : ''}`
+                    : `${apartments.length} hébergement${apartments.length > 1 ? 's' : ''} disponible${apartments.length > 1 ? 's' : ''}`)
                   }
                 </h2>
                 <p className="text-xs text-[#727D88] mt-0.5">
-                  Demeures certifiées avec conciergerie VIP et ménage hôtelier inclus
+                  {tr("Demeures certifiées avec conciergerie VIP et ménage hôtelier inclus")}
                 </p>
               </div>
 
@@ -391,9 +394,9 @@ export default function ApartmentsList() {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="bg-transparent font-bold text-xs text-[#191C1F] focus:outline-hidden cursor-pointer"
                   >
-                    <option value="rating">Mieux notés</option>
-                    <option value="price_asc">Prix croissant</option>
-                    <option value="price_desc">Prix décroissant</option>
+                    <option value="rating">{tr("Mieux notés")}</option>
+                    <option value="price_asc">{tr("Prix croissant")}</option>
+                    <option value="price_desc">{tr("Prix décroissant")}</option>
                   </select>
                 </div>
 
@@ -402,18 +405,18 @@ export default function ApartmentsList() {
                   <button
                     onClick={() => handleViewModeChange('list')}
                     className={`view-toggle-item ${viewMode === 'list' ? 'active' : 'inactive'}`}
-                    title="Affichage en Liste"
+                    title={tr("Affichage en Liste")}
                   >
                     <LayoutList className="w-4 h-4" />
-                    <span className="hidden sm:inline">Liste</span>
+                    <span className="hidden sm:inline">{tr("Liste")}</span>
                   </button>
                   <button
                     onClick={() => handleViewModeChange('grid')}
                     className={`view-toggle-item ${viewMode === 'grid' ? 'active' : 'inactive'}`}
-                    title="Affichage en Mosaïque"
+                    title={tr("Affichage en Mosaïque")}
                   >
                     <LayoutGrid className="w-4 h-4" />
-                    <span className="hidden sm:inline">Mosaïque</span>
+                    <span className="hidden sm:inline">{tr("Mosaïque")}</span>
                   </button>
                 </div>
               </div>
@@ -424,13 +427,13 @@ export default function ApartmentsList() {
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-center justify-between text-xs font-semibold">
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-                  <span>{error}</span>
+                  <span>{tr(error)}</span>
                 </div>
                 <button
                   onClick={fetchApartments}
                   className="px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
                 >
-                  Réessayer
+                  {tr("Réessayer")}
                 </button>
               </div>
             )}
@@ -461,16 +464,16 @@ export default function ApartmentsList() {
                   <Search className="w-7 h-7" />
                 </div>
                 <h3 className="text-lg font-bold text-[#191C1F]">
-                  Aucun hébergement ne correspond à vos critères
+                  {tr("Aucun hébergement ne correspond à vos critères")}
                 </h3>
                 <p className="text-sm text-[#727D88] mt-1 max-w-md mx-auto">
-                  Ajustez vos filtres de destination ou augmentez votre budget par nuitée.
+                  {tr("Ajustez vos filtres de destination ou augmentez votre budget par nuitée.")}
                 </p>
                 <button
                   onClick={resetFilters}
                   className="mt-5 px-6 py-2.5 rounded-full bg-[#A84A3B] text-white font-bold text-xs hover:bg-[#8A372A] transition-colors cursor-pointer"
                 >
-                  Réinitialiser les filtres
+                  {tr("Réinitialiser les filtres")}
                 </button>
               </div>
             )}
@@ -492,7 +495,7 @@ export default function ApartmentsList() {
                       <div className="md:w-72 lg:w-84 shrink-0 relative bg-neutral-900 overflow-hidden min-h-[220px] md:min-h-full">
                         <img
                           src={itemImg}
-                          alt={item.title}
+                          alt={tr(item.title)}
                           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
@@ -500,11 +503,11 @@ export default function ApartmentsList() {
                         {/* Badges */}
                         <div className="absolute top-3 left-3 flex items-center gap-1.5">
                           <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {item.type || 'Villa'}
+                            {tr(item.type || 'Villa')}
                           </span>
                           {item.featured && (
                             <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#A84A3B] text-white shadow-xs">
-                              ⭐ Coup de cœur
+                              {tr("⭐ Coup de cœur")}
                             </span>
                           )}
                         </div>
@@ -513,7 +516,7 @@ export default function ApartmentsList() {
                         <button
                           onClick={() => toggleFavorite(item, 'apartment')}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-neutral-700 hover:text-[#A84A3B] transition-colors cursor-pointer"
-                          title={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+                          title={tr(isFav ? "Retirer des favoris" : "Ajouter aux favoris")}
                         >
                           <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A84A3B] text-[#A84A3B]' : ''}`} />
                         </button>
@@ -521,7 +524,7 @@ export default function ApartmentsList() {
                         {/* City pin on photo */}
                         <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold bg-black/60 backdrop-blur-md text-white border border-white/20 flex items-center gap-1.5">
                           <MapPin className="w-3.5 h-3.5 text-[#F4A261]" />
-                          <span>{item.city || item.location || 'Tunisie'}</span>
+                          <span>{tr(item.city || item.location || 'Tunisie')}</span>
                         </div>
                       </div>
 
@@ -533,16 +536,16 @@ export default function ApartmentsList() {
                             <div>
                               <div className="flex items-center gap-1 text-xs text-[#727D88] mb-0.5">
                                 <MapPin className="w-3.5 h-3.5 text-[#A84A3B]" />
-                                <span>{item.city || item.location}</span>
+                                <span>{tr(item.city || item.location)}</span>
                               </div>
                               <h3 className="text-xl font-extrabold text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors">
-                                {item.title}
+                                {tr(item.title)}
                               </h3>
                             </div>
 
                             <div className="flex items-center gap-1.5 shrink-0 bg-[#F8F7EE] px-2.5 py-1 rounded-xl border border-[#EBE6DC]">
                               <span className="text-xs font-black text-[#A84A3B]">★ {(item.rating || 4.95).toFixed(2)}</span>
-                              <span className="text-[10px] text-[#727D88]">({item.reviewsCount || 18} avis)</span>
+                              <span className="text-[10px] text-[#727D88]">({tr(item.reviewsCount || 18)} {tr("avis)")}</span>
                             </div>
                           </div>
 
@@ -550,26 +553,26 @@ export default function ApartmentsList() {
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 my-3 py-2.5 px-3 rounded-2xl bg-[#F8F7EE]/80 border border-[#EBE6DC]/80 text-xs text-[#4A525A]">
                             <div className="flex items-center gap-1.5">
                               <Users className="w-3.5 h-3.5 text-[#A84A3B]" />
-                              <span className="font-semibold">{item.capacityGuests || item.maxGuests || 4} personnes</span>
+                              <span className="font-semibold">{tr(item.capacityGuests || item.maxGuests || 4)} {tr("personnes")}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Bed className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span className="font-semibold">{item.bedrooms || 2} chambres</span>
+                              <span className="font-semibold">{tr(item.bedrooms || 2)} {tr("chambres")}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Bath className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span className="font-semibold">{item.baths || 2} sdb</span>
+                              <span className="font-semibold">{tr(item.baths || 2)} {tr("sdb")}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Maximize2 className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span className="font-semibold">{item.surfaceM2 || 180} m²</span>
+                              <span className="font-semibold">{tr(item.surfaceM2 || 180)} m²</span>
                             </div>
                           </div>
 
                           {/* Short Description */}
                           {item.description && (
                             <p className="text-xs text-[#727D88] line-clamp-2 mb-3">
-                              {item.description}
+                              {tr(item.description)}
                             </p>
                           )}
 
@@ -577,22 +580,22 @@ export default function ApartmentsList() {
                           <div className="flex flex-wrap gap-1.5 text-[11px]">
                             {item.amenities?.pool && (
                               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-[#EBE6DC] text-[#4A525A] font-medium">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Piscine privée
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {tr("Piscine privée")}
                               </span>
                             )}
                             {item.amenities?.seaView && (
                               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-[#EBE6DC] text-[#4A525A] font-medium">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Vue panoramique mer
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {tr("Vue panoramique mer")}
                               </span>
                             )}
                             {item.amenities?.wifi && (
                               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-[#EBE6DC] text-[#4A525A] font-medium">
-                                <Wifi className="w-3 h-3 text-sky-600" /> Wifi Fibre
+                                <Wifi className="w-3 h-3 text-sky-600" /> {tr("Wifi Fibre")}
                               </span>
                             )}
                             {item.amenities?.ac && (
                               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-[#EBE6DC] text-[#4A525A] font-medium">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Climatisation
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {tr("Climatisation")}
                               </span>
                             )}
                           </div>
@@ -601,7 +604,7 @@ export default function ApartmentsList() {
                         {/* Guarantee tag */}
                         <div className="pt-2 border-t border-[#EBE6DC] flex items-center gap-2 text-xs font-bold text-[#2C3E56]">
                           <Key className="w-3.5 h-3.5 text-[#A84A3B]" />
-                          <span>Conciergerie VIP dédiée & ménage d'arrivée inclus</span>
+                          <span>{tr("Conciergerie VIP dédiée & ménage d'arrivée inclus")}</span>
                         </div>
                       </div>
 
@@ -609,16 +612,16 @@ export default function ApartmentsList() {
                       <div className="md:w-60 lg:w-64 p-5 sm:p-6 bg-[#F8F7EE] border-t md:border-t-0 md:border-l border-[#EBE6DC] flex flex-col justify-between shrink-0">
                         <div>
                           <div className="text-right mb-1">
-                            <p className="text-[11px] uppercase tracking-wider font-bold text-[#727D88]">Par nuitée</p>
+                            <p className="text-[11px] uppercase tracking-wider font-bold text-[#727D88]">{tr("Par nuitée")}</p>
                             <p className="text-2xl font-black text-[#191C1F] font-display">
                               {formatPrice(item.pricePerNight, isRtl)}
                             </p>
                           </div>
                           <p className="text-right text-xs font-semibold text-[#727D88]">
-                            estimé à {formatPrice(estimatedTotal, isRtl)} pour {nightsCount} nuits
+                            {tr("estimé à")} {formatPrice(estimatedTotal, isRtl)} {tr("pour")} {tr(nightsCount)} {tr("nuits")}
                           </p>
                           <p className="text-right text-[10px] text-emerald-700 font-bold mt-0.5">
-                            Taxes de séjour & frais inclus
+                            {tr("Taxes de séjour & frais inclus")}
                           </p>
                         </div>
 
@@ -628,14 +631,14 @@ export default function ApartmentsList() {
                             className="w-full py-2 px-3 rounded-xl border border-[#DAD3C5] bg-white hover:bg-[#EBE6DC] text-[#191C1F] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                           >
                             <Eye className="w-3.5 h-3.5 text-[#2C3E56]" />
-                            <span>Voir la propriété</span>
+                            <span>{tr("Voir la propriété")}</span>
                           </button>
 
                           <button
                             onClick={() => navigate(`/appartements/${item._id || item.id}`)}
                             className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#A84A3B] to-[#C25847] hover:from-[#8A372A] hover:to-[#A84A3B] text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1.5 transition-all transform active:scale-95 cursor-pointer"
                           >
-                            <span>Réserver ce séjour</span>
+                            <span>{tr("Réserver ce séjour")}</span>
                             <ChevronRight className="w-4 h-4" />
                           </button>
                         </div>
@@ -663,7 +666,7 @@ export default function ApartmentsList() {
                       <div className="relative aspect-16/10 bg-neutral-900 overflow-hidden">
                         <img
                           src={itemImg}
-                          alt={item.title}
+                          alt={tr(item.title)}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
@@ -671,7 +674,7 @@ export default function ApartmentsList() {
                         {/* Top Badges */}
                         <div className="absolute top-3 left-3 flex items-center gap-1.5">
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {item.type || 'Villa'}
+                            {tr(item.type || 'Villa')}
                           </span>
                         </div>
 
@@ -679,7 +682,7 @@ export default function ApartmentsList() {
                         <button
                           onClick={() => toggleFavorite(item, 'apartment')}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-neutral-700 hover:text-[#A84A3B] transition-colors cursor-pointer"
-                          title={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+                          title={tr(isFav ? "Retirer des favoris" : "Ajouter aux favoris")}
                         >
                           <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A84A3B] text-[#A84A3B]' : ''}`} />
                         </button>
@@ -687,7 +690,7 @@ export default function ApartmentsList() {
                         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs">
                           <span className="font-extrabold flex items-center gap-1">
                             <MapPin className="w-3.5 h-3.5 text-[#F4A261]" />
-                            {item.city || item.location}
+                            {tr(item.city || item.location)}
                           </span>
                           <span className="bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[10px] font-bold text-[#F4A261]">
                             ★ {(item.rating || 4.95).toFixed(2)}
@@ -699,34 +702,34 @@ export default function ApartmentsList() {
                       <div className="p-5 flex-1 flex flex-col justify-between">
                         <div>
                           <h3 className="font-extrabold text-lg text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors">
-                            {item.title}
+                            {tr(item.title)}
                           </h3>
                           <p className="text-xs text-[#727D88] line-clamp-1 mt-0.5">
-                            {item.location}
+                            {tr(item.location)}
                           </p>
 
                           {/* Compact Specs Grid */}
                           <div className="grid grid-cols-2 gap-2 my-3 py-2 px-2.5 rounded-xl bg-[#F8F7EE] text-[11px] text-[#4A525A] font-semibold">
                             <div className="flex items-center gap-1.5">
                               <Users className="w-3.5 h-3.5 text-[#A84A3B]" />
-                              <span>{item.capacityGuests || item.maxGuests || 4} pers.</span>
+                              <span>{tr(item.capacityGuests || item.maxGuests || 4)} {tr("pers.")}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Bed className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span>{item.bedrooms || 2} chambres</span>
+                              <span>{tr(item.bedrooms || 2)} {tr("chambres")}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Bath className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span>{item.baths || 2} sdb</span>
+                              <span>{tr(item.baths || 2)} {tr("sdb")}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Maximize2 className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span>{item.surfaceM2 || 180} m²</span>
+                              <span>{tr(item.surfaceM2 || 180)} m²</span>
                             </div>
                           </div>
 
                           <p className="text-[11px] font-bold text-[#2C3E56] flex items-center gap-1">
-                            <Key className="w-3.5 h-3.5 text-[#A84A3B]" /> Conciergerie VIP & ménage inclus
+                            <Key className="w-3.5 h-3.5 text-[#A84A3B]" /> {tr("Conciergerie VIP & ménage inclus")}
                           </p>
                         </div>
 
@@ -734,13 +737,13 @@ export default function ApartmentsList() {
                         <div className="pt-4 mt-4 border-t border-[#EBE6DC]">
                           <div className="flex items-baseline justify-between mb-3">
                             <div>
-                              <p className="text-[10px] uppercase font-bold text-[#727D88]">Par nuitée</p>
+                              <p className="text-[10px] uppercase font-bold text-[#727D88]">{tr("Par nuitée")}</p>
                               <p className="text-xl font-black text-[#191C1F] font-display">
                                 {formatPrice(item.pricePerNight, isRtl)}
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="text-[10px] text-emerald-700 font-bold">Frais inclus</p>
+                              <p className="text-[10px] text-emerald-700 font-bold">{tr("Frais inclus")}</p>
                             </div>
                           </div>
 
@@ -749,13 +752,13 @@ export default function ApartmentsList() {
                               onClick={() => navigate(`/appartements/${item._id || item.id}`)}
                               className="py-2 rounded-xl border border-[#DAD3C5] text-xs font-bold text-[#191C1F] hover:bg-[#F8F7EE] transition-colors cursor-pointer"
                             >
-                              Détails
+                              {tr("Détails")}
                             </button>
                             <button
                               onClick={() => navigate(`/appartements/${item._id || item.id}`)}
                               className="py-2 rounded-xl bg-[#A84A3B] hover:bg-[#8A372A] text-white text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
                             >
-                              Réserver
+                              {tr("Réserver")}
                             </button>
                           </div>
                         </div>
@@ -804,8 +807,8 @@ export default function ApartmentsList() {
                     <Icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-extrabold text-[#191C1F]">{g.title}</h4>
-                    <p className="text-xs text-[#727D88] mt-0.5 leading-relaxed">{g.desc}</p>
+                    <h4 className="text-sm font-extrabold text-[#191C1F]">{tr(g.title)}</h4>
+                    <p className="text-xs text-[#727D88] mt-0.5 leading-relaxed">{tr(g.desc)}</p>
                   </div>
                 </div>
               );
@@ -822,14 +825,14 @@ export default function ApartmentsList() {
         <button
           onClick={() => setIsConciergeOpen(true)}
           className="group flex items-center gap-2.5 apple-glass-dark text-white px-4 py-3 rounded-full shadow-[0_16px_36px_rgba(0,0,0,0.35)] hover:bg-[#1E293B]/90 border border-white/25 transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer"
-          aria-label="Contacter le Concierge VIP"
+          aria-label={tr("Contacter le Concierge VIP")}
         >
           <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div className="text-left hidden sm:block pr-1">
-            <p className="text-[10px] font-extrabold uppercase tracking-wider text-white/70 leading-none">Concierge VIP</p>
-            <p className="text-xs font-black leading-tight">Conseiller Voyage IA</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-white/70 leading-none">{tr("Concierge VIP")}</p>
+            <p className="text-xs font-black leading-tight">{tr("Conseiller Voyage IA")}</p>
           </div>
         </button>
       </div>

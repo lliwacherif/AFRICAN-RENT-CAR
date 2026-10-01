@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -28,6 +29,8 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Wishlist() {
+  const tr = useText()
+
   const navigate = useNavigate();
   const { user, openAuthModal } = useAuth();
   const { wishlist, cars, apartments, excursions, count, loading, removeFromWishlist, clearWishlist } = useWishlist();
@@ -49,29 +52,29 @@ export default function Wishlist() {
             </div>
             <div>
               <span className="text-[11px] uppercase tracking-wider font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 px-3 py-1 rounded-full">
-                Espace Client Sécurisé
+                {tr("Espace Client Sécurisé")}
               </span>
               <h2 className="text-2xl font-black text-[#191C1F] font-display mt-3">
-                Connexion requise
+                {tr("Connexion requise")}
               </h2>
               <p className="text-xs sm:text-sm text-[#727D88] mt-2 leading-relaxed">
-                Votre liste de favoris est enregistrée directement sur votre compte client. Connectez-vous pour retrouver vos véhicules, dars et excursions sauvegardés.
+                {tr("Votre liste de favoris est enregistrée directement sur votre compte client. Connectez-vous pour retrouver vos véhicules, dars et excursions sauvegardés.")}
               </p>
             </div>
             <button
               onClick={() => openAuthModal && openAuthModal('login')}
               className="w-full py-3 px-6 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>Se connecter à mon compte</span>
+              <span>{tr("Se connecter à mon compte")}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <p className="text-xs text-[#727D88]">
-              Nouveau sur African Rent Car ?{' '}
+              {tr("Nouveau sur African Rent Car ?")}{' '}
               <button
                 onClick={() => openAuthModal && openAuthModal('register')}
                 className="text-[#A84A3B] font-bold hover:underline cursor-pointer"
               >
-                Créer un compte
+                {tr("Créer un compte")}
               </button>
             </p>
           </div>
@@ -100,13 +103,13 @@ export default function Wishlist() {
         <div className="max-w-7xl mx-auto relative z-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-semibold mb-3">
             <Heart className="w-3.5 h-3.5 fill-[#F4A261] text-[#F4A261]" />
-            <span>Sélection privée • Compte de {user.firstName || user.name || 'Client'}</span>
+            <span>{tr("Sélection privée • Compte de")} {tr(user.firstName || user.name || 'Client')}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-display">
-            Mes Coups de Cœur ({count})
+            {tr("Mes Coups de Cœur (")}{tr(count)})
           </h1>
           <p className="text-sm sm:text-base text-white/75 mt-2 max-w-2xl">
-            Retrouvez tous vos coups de cœur enregistrés sur votre compte client. Comparez et finalisez vos réservations en toute sérénité.
+            {tr("Retrouvez tous vos coups de cœur enregistrés sur votre compte client. Comparez et finalisez vos réservations en toute sérénité.")}
           </p>
 
           {/* Category Filter Tabs */}
@@ -119,7 +122,7 @@ export default function Wishlist() {
                   : 'bg-white/15 hover:bg-white/25 text-white/90 border border-white/10'
               }`}
             >
-              Tous les favoris ({count})
+              {tr("Tous les favoris (")}{tr(count)})
             </button>
             <button
               onClick={() => setActiveTab('car')}
@@ -130,7 +133,7 @@ export default function Wishlist() {
               }`}
             >
               <Car className="w-3.5 h-3.5" />
-              <span>Voitures ({cars.length})</span>
+              <span>{tr("Voitures (")}{tr(cars.length)})</span>
             </button>
             <button
               onClick={() => setActiveTab('apartment')}
@@ -141,7 +144,7 @@ export default function Wishlist() {
               }`}
             >
               <HomeIcon className="w-3.5 h-3.5" />
-              <span>Hébergements ({apartments.length})</span>
+              <span>{tr("Hébergements (")}{tr(apartments.length)})</span>
             </button>
             <button
               onClick={() => setActiveTab('excursion')}
@@ -152,17 +155,17 @@ export default function Wishlist() {
               }`}
             >
               <Compass className="w-3.5 h-3.5" />
-              <span>Excursions ({excursions.length})</span>
+              <span>{tr("Excursions (")}{tr(excursions.length)})</span>
             </button>
 
             {count > 0 && (
               <button
                 onClick={clearWishlist}
                 className="ml-auto text-xs font-semibold text-white/60 hover:text-white flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
-                title="Vider la liste"
+                title={tr("Vider la liste")}
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Vider la liste</span>
+                <span>{tr("Vider la liste")}</span>
               </button>
             )}
           </div>
@@ -171,12 +174,12 @@ export default function Wishlist() {
 
       {/* 3. MAIN WISHLIST GRID */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        
+
         {/* LOADING STATE */}
         {loading ? (
           <div className="bg-white rounded-3xl p-16 text-center border border-[#EBE6DC] shadow-xs max-w-xl mx-auto my-8 space-y-4">
             <div className="w-12 h-12 border-4 border-[#A84A3B] border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-sm font-bold text-[#191C1F]">Chargement de vos favoris depuis votre compte...</p>
+            <p className="text-sm font-bold text-[#191C1F]">{tr("Chargement de vos favoris depuis votre compte...")}</p>
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 sm:p-16 text-center border border-[#EBE6DC] shadow-xs max-w-2xl mx-auto my-8 space-y-5">
@@ -186,12 +189,12 @@ export default function Wishlist() {
 
             <div>
               <h3 className="text-xl sm:text-2xl font-extrabold text-[#191C1F] font-display">
-                {activeTab === 'all'
+                {tr(activeTab === 'all'
                   ? 'Votre liste de favoris est vide'
-                  : `Aucun favori dans la catégorie sélectionnée`}
+                  : `Aucun favori dans la catégorie sélectionnée`)}
               </h3>
               <p className="text-xs sm:text-sm text-[#727D88] mt-2 max-w-md mx-auto leading-relaxed">
-                Cliquez sur l'icône cœur <strong className="text-[#A84A3B]">♥</strong> sur n'importe quel véhicule, dar ou excursion pour les enregistrer et les retrouver instantanément ici.
+                {tr("Cliquez sur l'icône cœur")} <strong className="text-[#A84A3B]">♥</strong> {tr("sur n'importe quel véhicule, dar ou excursion pour les enregistrer et les retrouver instantanément ici.")}
               </p>
             </div>
 
@@ -201,21 +204,21 @@ export default function Wishlist() {
                 className="px-5 py-2.5 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
               >
                 <Car className="w-3.5 h-3.5" />
-                <span>Explorer les voitures</span>
+                <span>{tr("Explorer les voitures")}</span>
               </Link>
               <Link
                 to="/appartements"
                 className="px-5 py-2.5 rounded-full bg-[#2C3E56] hover:bg-[#1F2C3D] text-white text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
               >
                 <HomeIcon className="w-3.5 h-3.5" />
-                <span>Voir les hébergements</span>
+                <span>{tr("Voir les hébergements")}</span>
               </Link>
               <Link
                 to="/excursions"
                 className="px-5 py-2.5 rounded-full bg-white border border-[#EBE6DC] hover:bg-[#F8F7EE] text-[#191C1F] text-xs font-bold transition-all flex items-center gap-1.5"
               >
                 <Compass className="w-3.5 h-3.5 text-[#A84A3B]" />
-                <span>Découvrir les circuits</span>
+                <span>{tr("Découvrir les circuits")}</span>
               </Link>
             </div>
           </div>
@@ -237,14 +240,14 @@ export default function Wishlist() {
                       <div className="relative h-52 bg-neutral-900 overflow-hidden">
                         <img
                           src={carImg}
-                          alt={item.name}
+                          alt={tr(item.name)}
                           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        
+
                         <div className="absolute top-3 left-3 flex items-center gap-2">
                           <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {item.category || 'Voiture'}
+                            {tr(item.category || 'Voiture')}
                           </span>
                         </div>
 
@@ -252,13 +255,13 @@ export default function Wishlist() {
                         <button
                           onClick={() => removeFromWishlist(id)}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-[#A84A3B] hover:scale-110 shadow-xs transition-transform cursor-pointer"
-                          title="Retirer des favoris"
+                          title={tr("Retirer des favoris")}
                         >
                           <Heart className="w-4 h-4 fill-[#A84A3B]" />
                         </button>
 
                         <div className="absolute bottom-3 left-3 text-white text-xs font-bold">
-                          Année {item.year || 2025} • {item.brand}
+                          {tr("Année")} {tr(item.year || 2025)} • {tr(item.brand)}
                         </div>
                       </div>
 
@@ -267,9 +270,9 @@ export default function Wishlist() {
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <div>
                             <h3 className="font-extrabold text-lg text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors">
-                              {item.name}
+                              {tr(item.name)}
                             </h3>
-                            <p className="text-xs text-[#727D88]">{item.tagline || 'Véhicule certifié 2025/2026'}</p>
+                            <p className="text-xs text-[#727D88]">{tr(item.tagline || 'Véhicule certifié 2025/2026')}</p>
                           </div>
                           <div className="flex items-center gap-1 bg-[#F8F7EE] px-2 py-0.5 rounded-lg border border-[#EBE6DC] shrink-0">
                             <Star className="w-3 h-3 fill-[#A84A3B] text-[#A84A3B]" />
@@ -281,15 +284,15 @@ export default function Wishlist() {
                         <div className="grid grid-cols-3 gap-2 py-2.5 px-3 rounded-2xl bg-[#F8F7EE]/80 border border-[#EBE6DC] text-xs text-[#4A525A] my-3">
                           <div className="flex items-center gap-1">
                             <Gauge className="w-3.5 h-3.5 text-[#A84A3B]" />
-                            <span className="truncate">{item.transmission || 'Manuelle'}</span>
+                            <span className="truncate">{tr(item.transmission || 'Manuelle')}</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Fuel className="w-3.5 h-3.5 text-[#2C3E56]" />
-                            <span className="truncate">{item.fuel || 'Essence'}</span>
+                            <span className="truncate">{tr(item.fuel || 'Essence')}</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Users className="w-3.5 h-3.5 text-[#2C3E56]" />
-                            <span>{item.seats || 5} pl.</span>
+                            <span>{tr(item.seats || 5)} {tr("pl.")}</span>
                           </div>
                         </div>
                       </div>
@@ -299,13 +302,13 @@ export default function Wishlist() {
                     <div className="p-5 pt-0">
                       <div className="flex items-center justify-between pt-3 border-t border-[#EBE6DC] mb-3">
                         <div>
-                          <p className="text-[10px] font-bold uppercase text-[#727D88]">Tarif journalier</p>
+                          <p className="text-[10px] font-bold uppercase text-[#727D88]">{tr("Tarif journalier")}</p>
                           <p className="text-xl font-black text-[#191C1F] font-display">
-                            {formatPrice(item.pricePerDay || 90, isRtl)} <span className="text-xs font-semibold text-[#727D88]">/ jour</span>
+                            {formatPrice(item.pricePerDay || 90, isRtl)} <span className="text-xs font-semibold text-[#727D88]">{tr("/ jour")}</span>
                           </p>
                         </div>
                         <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                          Kilométrage adapté
+                          {tr("Kilométrage adapté")}
                         </span>
                       </div>
 
@@ -315,13 +318,13 @@ export default function Wishlist() {
                           className="py-2.5 rounded-full border border-[#DAD3C5] bg-white hover:bg-[#F8F7EE] text-[#191C1F] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5 text-[#2C3E56]" />
-                          <span>Détails</span>
+                          <span>{tr("Détails")}</span>
                         </button>
                         <button
                           onClick={() => navigate(`/voitures/${id}?book=true`)}
                           className="py-2.5 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1.5 transition-all transform active:scale-95 cursor-pointer"
                         >
-                          <span>Réserver</span>
+                          <span>{tr("Réserver")}</span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -341,28 +344,28 @@ export default function Wishlist() {
                       <div className="relative h-52 bg-neutral-900 overflow-hidden">
                         <img
                           src={aptImg}
-                          alt={item.title}
+                          alt={tr(item.title)}
                           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        
+
                         <div className="absolute top-3 left-3 flex items-center gap-2">
                           <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {item.type || 'Dar & Villa'}
+                            {tr(item.type || 'Dar & Villa')}
                           </span>
                         </div>
 
                         <button
                           onClick={() => removeFromWishlist(id)}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-[#A84A3B] hover:scale-110 shadow-xs transition-transform cursor-pointer"
-                          title="Retirer des favoris"
+                          title={tr("Retirer des favoris")}
                         >
                           <Heart className="w-4 h-4 fill-[#A84A3B]" />
                         </button>
 
                         <div className="absolute bottom-3 left-3 text-white text-xs font-bold flex items-center gap-1">
                           <MapPin className="w-3.5 h-3.5 text-[#F4A261]" />
-                          <span>{item.city || 'Tunisie'}</span>
+                          <span>{tr(item.city || 'Tunisie')}</span>
                         </div>
                       </div>
 
@@ -370,9 +373,9 @@ export default function Wishlist() {
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <div>
                             <h3 className="font-extrabold text-lg text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors line-clamp-1">
-                              {item.title}
+                              {tr(item.title)}
                             </h3>
-                            <p className="text-xs text-[#727D88]">{item.city}, Tunisie</p>
+                            <p className="text-xs text-[#727D88]">{tr(item.city)}{tr(", Tunisie")}</p>
                           </div>
                           <div className="flex items-center gap-1 bg-[#F8F7EE] px-2 py-0.5 rounded-lg border border-[#EBE6DC] shrink-0">
                             <Star className="w-3 h-3 fill-[#A84A3B] text-[#A84A3B]" />
@@ -381,11 +384,11 @@ export default function Wishlist() {
                         </div>
 
                         <div className="flex items-center gap-3 py-2 text-xs text-[#4A525A]">
-                          <span>👥 Jusqu'à {item.capacity?.maxGuests || 4} pers.</span>
+                          <span>{tr("👥 Jusqu'à")} {tr(item.capacity?.maxGuests || 4)} {tr("pers.")}</span>
                           <span>•</span>
-                          <span>🛏 {item.capacity?.bedrooms || 2} ch.</span>
+                          <span>🛏 {tr(item.capacity?.bedrooms || 2)} {tr("ch.")}</span>
                           <span>•</span>
-                          <span>🏊‍♂️ {item.amenities?.pool ? 'Piscine' : 'Vue mer'}</span>
+                          <span>🏊‍♂️ {tr(item.amenities?.pool ? 'Piscine' : 'Vue mer')}</span>
                         </div>
                       </div>
                     </div>
@@ -393,9 +396,9 @@ export default function Wishlist() {
                     <div className="p-5 pt-0">
                       <div className="flex items-center justify-between pt-3 border-t border-[#EBE6DC] mb-3">
                         <div>
-                          <p className="text-[10px] font-bold uppercase text-[#727D88]">Par nuitée</p>
+                          <p className="text-[10px] font-bold uppercase text-[#727D88]">{tr("Par nuitée")}</p>
                           <p className="text-xl font-black text-[#191C1F] font-display">
-                            {formatPrice(item.pricing?.pricePerNight || 220, isRtl)} <span className="text-xs font-semibold text-[#727D88]">/ nuit</span>
+                            {formatPrice(item.pricing?.pricePerNight || 220, isRtl)} <span className="text-xs font-semibold text-[#727D88]">{tr("/ nuit")}</span>
                           </p>
                         </div>
                       </div>
@@ -406,13 +409,13 @@ export default function Wishlist() {
                           className="py-2.5 rounded-full border border-[#DAD3C5] bg-white hover:bg-[#F8F7EE] text-[#191C1F] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5 text-[#2C3E56]" />
-                          <span>Détails</span>
+                          <span>{tr("Détails")}</span>
                         </button>
                         <button
                           onClick={() => navigate(`/appartements/${id}`)}
                           className="py-2.5 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1.5 transition-all transform active:scale-95 cursor-pointer"
                         >
-                          <span>Réserver</span>
+                          <span>{tr("Réserver")}</span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -432,28 +435,28 @@ export default function Wishlist() {
                       <div className="relative h-52 bg-neutral-900 overflow-hidden">
                         <img
                           src={excImg}
-                          alt={item.title}
+                          alt={tr(item.title)}
                           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        
+
                         <div className="absolute top-3 left-3 flex items-center gap-2">
                           <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {item.category || 'Circuit'}
+                            {tr(item.category || 'Circuit')}
                           </span>
                         </div>
 
                         <button
                           onClick={() => removeFromWishlist(id)}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-[#A84A3B] hover:scale-110 shadow-xs transition-transform cursor-pointer"
-                          title="Retirer des favoris"
+                          title={tr("Retirer des favoris")}
                         >
                           <Heart className="w-4 h-4 fill-[#A84A3B]" />
                         </button>
 
                         <div className="absolute bottom-3 left-3 text-white text-xs font-bold flex items-center gap-1">
                           <Clock className="w-3.5 h-3.5 text-[#F4A261]" />
-                          <span>{item.duration || 'Journée complète'}</span>
+                          <span>{tr(item.duration || 'Journée complète')}</span>
                         </div>
                       </div>
 
@@ -461,9 +464,9 @@ export default function Wishlist() {
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <div>
                             <h3 className="font-extrabold text-lg text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors line-clamp-1">
-                              {item.title}
+                              {tr(item.title)}
                             </h3>
-                            <p className="text-xs text-[#727D88]">{item.departureCity ? `Départ : ${item.departureCity}` : 'Sud & Sahara'}</p>
+                            <p className="text-xs text-[#727D88]">{tr(item.departureCity ? `Départ : ${item.departureCity}` : 'Sud & Sahara')}</p>
                           </div>
                           <div className="flex items-center gap-1 bg-[#F8F7EE] px-2 py-0.5 rounded-lg border border-[#EBE6DC] shrink-0">
                             <Star className="w-3 h-3 fill-[#A84A3B] text-[#A84A3B]" />
@@ -472,7 +475,7 @@ export default function Wishlist() {
                         </div>
 
                         <p className="text-xs text-[#727D88] line-clamp-2 my-2">
-                          {item.shortDescription || item.description || 'Guide certifié, transfert 4x4 et expérience VIP privative.'}
+                          {tr(item.shortDescription || item.description || 'Guide certifié, transfert 4x4 et expérience VIP privative.')}
                         </p>
                       </div>
                     </div>
@@ -480,13 +483,13 @@ export default function Wishlist() {
                     <div className="p-5 pt-0">
                       <div className="flex items-center justify-between pt-3 border-t border-[#EBE6DC] mb-3">
                         <div>
-                          <p className="text-[10px] font-bold uppercase text-[#727D88]">Par adulte</p>
+                          <p className="text-[10px] font-bold uppercase text-[#727D88]">{tr("Par adulte")}</p>
                           <p className="text-xl font-black text-[#191C1F] font-display">
                             {formatPrice(item.pricePerAdult || 140, isRtl)}
                           </p>
                         </div>
                         <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                          Guide & Déjeuner inclus
+                          {tr("Guide & Déjeuner inclus")}
                         </span>
                       </div>
 
@@ -496,13 +499,13 @@ export default function Wishlist() {
                           className="py-2.5 rounded-full border border-[#DAD3C5] bg-white hover:bg-[#F8F7EE] text-[#191C1F] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5 text-[#2C3E56]" />
-                          <span>Circuit</span>
+                          <span>{tr("Circuit")}</span>
                         </button>
                         <button
                           onClick={() => navigate(`/excursions/${id}`)}
                           className="py-2.5 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1.5 transition-all transform active:scale-95 cursor-pointer"
                         >
-                          <span>Réserver</span>
+                          <span>{tr("Réserver")}</span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -528,8 +531,8 @@ export default function Wishlist() {
             <Sparkles className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">Concierge VIP</p>
-            <p className="text-xs font-extrabold text-white">Conseiller Voyage IA</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">{tr("Concierge VIP")}</p>
+            <p className="text-xs font-extrabold text-white">{tr("Conseiller Voyage IA")}</p>
           </div>
         </button>
       </div>

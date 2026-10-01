@@ -1,9 +1,12 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useRef, useState, useEffect } from 'react'
 import '@google/model-viewer'
 import { FiRefreshCw, FiRotateCw, FiMaximize, FiMinimize, FiInfo, FiMove } from 'react-icons/fi'
 import './Car3DViewer.css'
 
 export default function Car3DViewer({ src, carName }) {
+  const tr = useText()
+
   const modelRef = useRef(null)
   const containerRef = useRef(null)
   const [loading, setLoading] = useState(true)
@@ -71,7 +74,7 @@ export default function Car3DViewer({ src, carName }) {
       {loading && (
         <div className="car-3d-loading">
           <div className="car-3d-spinner" />
-          <p className="car-3d-loading-text">Chargement du modèle 3D... {progress}%</p>
+          <p className="car-3d-loading-text">{tr("Chargement du modèle 3D...")} {tr(progress)}%</p>
           <div className="car-3d-progress-bar">
             <div className="car-3d-progress-fill" style={{ width: `${progress}%` }} />
           </div>
@@ -82,7 +85,7 @@ export default function Car3DViewer({ src, carName }) {
       {showHint && !loading && (
         <div className="car-3d-hint">
           <FiMove className="car-3d-hint-icon" />
-          <span>Cliquez & glissez pour pivoter en 360° | Molette pour zoomer</span>
+          <span>{tr("Cliquez & glissez pour pivoter en 360° | Molette pour zoomer")}</span>
         </div>
       )}
 
@@ -92,17 +95,17 @@ export default function Car3DViewer({ src, carName }) {
           <button
             className={`car-3d-btn ${autoRotate ? 'car-3d-btn--active' : ''}`}
             onClick={toggleAutoRotate}
-            title={autoRotate ? 'Arrêter la rotation automatique' : 'Activer la rotation automatique'}
+            title={tr(autoRotate ? 'Arrêter la rotation automatique' : 'Activer la rotation automatique')}
           >
-            <FiRotateCw /> <span>{autoRotate ? 'Auto: ON' : 'Auto-rotation'}</span>
+            <FiRotateCw /> <span>{tr(autoRotate ? 'Auto: ON' : 'Auto-rotation')}</span>
           </button>
 
-          <button className="car-3d-btn" onClick={handleResetCamera} title="Réinitialiser la vue">
-            <FiRefreshCw /> <span>Reset vue</span>
+          <button className="car-3d-btn" onClick={handleResetCamera} title={tr("Réinitialiser la vue")}>
+            <FiRefreshCw /> <span>{tr("Reset vue")}</span>
           </button>
 
-          <button className="car-3d-btn" onClick={toggleFullscreen} title="Plein écran">
-            {isFullscreen ? <FiMinimize /> : <FiMaximize />} <span>{isFullscreen ? 'Quitter' : 'Plein écran'}</span>
+          <button className="car-3d-btn" onClick={toggleFullscreen} title={tr("Plein écran")}>
+            {isFullscreen ? <FiMinimize /> : <FiMaximize />} <span>{tr(isFullscreen ? 'Quitter' : 'Plein écran')}</span>
           </button>
         </div>
       )}
@@ -111,7 +114,7 @@ export default function Car3DViewer({ src, carName }) {
       <model-viewer
         ref={modelRef}
         src={src}
-        alt={`Modèle 3D interactif de ${carName}`}
+        alt={tr(`Modèle 3D interactif de ${carName}`)}
         camera-controls
         touch-action="pan-y"
         auto-rotate={autoRotate ? '' : undefined}

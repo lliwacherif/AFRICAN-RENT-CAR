@@ -1,8 +1,11 @@
+import { useText } from '../../context/LanguageContext'
 import React from 'react';
 import { Star, ShieldCheck, Users, MapPin, ThumbsUp, Clock, Quote } from 'lucide-react';
 import { REVIEWS } from '../data/mockData';
 
 export const SocialProof: React.FC = () => {
+  const tr = useText()
+
   const stats = [
     {
       value: '+5 000',
@@ -50,13 +53,13 @@ export const SocialProof: React.FC = () => {
                   <Icon className="w-6 h-6" />
                 </div>
                 <div className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white font-display mb-1">
-                  {stat.value}
+                  {tr(stat.value)}
                 </div>
                 <div className="text-sm font-bold text-white/90 mb-0.5">
-                  {stat.label}
+                  {tr(stat.label)}
                 </div>
                 <div className="text-xs text-white/60">
-                  {stat.detail}
+                  {tr(stat.detail)}
                 </div>
               </div>
             );
@@ -67,13 +70,13 @@ export const SocialProof: React.FC = () => {
         <div className="mt-16 text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#F8F7EE] text-xs font-extrabold uppercase tracking-wider mb-3">
             <Quote className="w-3.5 h-3.5 text-[#C25847]" />
-            <span>Retours d'Expérience</span>
+            <span>{tr("Retours d'Expérience")}</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
-            Ce que disent nos clients privilégiés
+            {tr("Ce que disent nos clients privilégiés")}
           </h2>
           <p className="mt-2 text-sm sm:text-base text-white/70">
-            Découvrez les témoignages certifiés de voyageurs d'affaires, familles et vacanciers ayant fait confiance à African Rent Car.
+            {tr("Découvrez les témoignages certifiés de voyageurs d'affaires, familles et vacanciers ayant fait confiance à African Rent Car.")}
           </p>
         </div>
 
@@ -95,17 +98,17 @@ export const SocialProof: React.FC = () => {
                   {rev.verified && (
                     <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                       <ShieldCheck className="w-3 h-3" />
-                      <span>Vérifié</span>
+                      <span>{tr("Vérifié")}</span>
                     </span>
                   )}
                 </div>
 
                 {/* Review Title & Content */}
                 <h3 className="font-extrabold text-sm text-[#191C1F] mb-2 leading-snug">
-                  "{rev.title}"
+                  "{tr(rev.title)}"
                 </h3>
                 <p className="text-xs sm:text-sm text-[#4A525A] leading-relaxed mb-4">
-                  {rev.comment}
+                  {tr(rev.comment)}
                 </p>
               </div>
 
@@ -113,19 +116,19 @@ export const SocialProof: React.FC = () => {
               <div className="pt-4 border-t border-[#EBE6DC] flex items-center gap-3">
                 <img
                   src={rev.avatar}
-                  alt={rev.author}
+                  alt={tr(rev.author)}
                   className="w-10 h-10 rounded-full object-cover border border-[#DAD3C5]"
                 />
                 <div className="overflow-hidden">
                   <div className="flex items-center gap-1">
                     <p className="font-bold text-xs text-[#191C1F] truncate">
-                      {rev.author}
+                      {tr(rev.author)}
                     </p>
-                    <span className="text-xs">{rev.flag}</span>
+                    <span className="text-xs">{tr(rev.flag)}</span>
                   </div>
-                  <p className="text-[11px] text-[#727D88] truncate">{rev.location}</p>
+                  <p className="text-[11px] text-[#727D88] truncate">{tr(rev.location)}</p>
                   <p className="text-[10px] text-[#A84A3B] font-semibold truncate mt-0.5">
-                    {rev.serviceUsed}
+                    {tr(rev.serviceUsed)}
                   </p>
                 </div>
               </div>

@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { FiUser, FiPhone, FiChevronDown, FiMenu, FiX, FiLogOut, FiGrid, FiClock } from 'react-icons/fi'
@@ -7,6 +8,8 @@ import CurrencyToggle from '../CurrencyToggle/CurrencyToggle'
 import './Navbar.css'
 
 export default function Navbar() {
+  const tr = useText()
+
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langDropdownOpen, setLangDropdownOpen] = useState(false)
   const { user, openAuthModal, logout } = useAuth()
@@ -58,7 +61,7 @@ export default function Navbar() {
               to={link.href}
               className={`navbar__link ${location.pathname === link.href ? 'navbar__link--active' : ''}`}
             >
-              {link.label}
+              {tr(link.label)}
             </Link>
           ))}
         </nav>
@@ -77,11 +80,11 @@ export default function Navbar() {
               style={{ display: 'flex', alignItems: 'center', gap: 7 }}
             >
               <img
-                src={lang === 'ar' ? '/Ar.png' : '/Fr.png'}
-                alt={lang}
+                src={lang === 'ar' ? '/Ar.png' : lang === 'en' ? '/En.svg' : '/Fr.png'}
+                alt={tr(lang)}
                 style={{ width: 20, height: 14, objectFit: 'cover', borderRadius: 2 }}
               />
-              <span>{lang === 'ar' ? 'العربية' : 'Français'}</span>
+              <span>{tr(lang === 'ar' ? 'العربية' : lang === 'en' ? 'English' : 'Français')}</span>
               <FiChevronDown size={13} style={{ transform: langDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
             </button>
 
@@ -120,8 +123,8 @@ export default function Navbar() {
                     fontFamily: 'inherit',
                   }}
                 >
-                  <img src="/Fr.png" alt="Français" style={{ width: 20, height: 14, objectFit: 'cover', borderRadius: 2 }} />
-                  <span>Français</span>
+                  <img src="/Fr.png" alt={tr("Français")} style={{ width: 20, height: 14, objectFit: 'cover', borderRadius: 2 }} />
+                  <span>{tr("Français")}</span>
                 </button>
                 <button
                   type="button"
@@ -145,6 +148,28 @@ export default function Navbar() {
                   <img src="/Ar.png" alt="العربية" style={{ width: 20, height: 14, objectFit: 'cover', borderRadius: 2 }} />
                   <span>العربية</span>
                 </button>
+                  <button
+                  type="button"
+                  className={`navbar__lang-opt ${lang === 'en' ? 'active' : ''}`}
+                  onClick={() => { setLanguage('en'); setLangDropdownOpen(false) }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    width: '100%',
+                    padding: '9px 14px',
+                    border: 'none',
+                    background: lang === 'en' ? 'rgba(168,74,59,0.1)' : 'transparent',
+                    color: lang === 'en' ? '#A84A3B' : '#191c1f',
+                    fontWeight: lang === 'en' ? 700 : 500,
+                    fontSize: 13,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  <img src="/En.svg" alt="English" style={{ width: 20, height: 14, objectFit: 'cover', borderRadius: 2 }} />
+                  <span>English</span>
+                </button>
               </div>
             )}
           </div>
@@ -160,25 +185,25 @@ export default function Navbar() {
                 <Link
                   to="/historique"
                   className="navbar__admin-badge"
-                  title={t('nav.historique', 'Historique')}
+                  title={tr(t('nav.historique', 'Historique'))}
                   style={{ gap: 5 }}
                 >
                   <FiClock size={13} /> {t('nav.historique', 'Historique')}
                 </Link>
               )}
               <span className="navbar__user-name">
-                <FiUser size={15} /> {user.firstName || user.name || 'Client'}
+                <FiUser size={15} /> {tr(user.firstName || user.name || 'Client')}
               </span>
               <button
                 className="navbar__user navbar__user--logout"
                 onClick={handleLogout}
-                title={t('nav.logout', 'Déconnexion')}
+                title={tr(t('nav.logout', 'Déconnexion'))}
               >
                 <FiLogOut size={16} />
               </button>
             </div>
           ) : (
-            <button className="navbar__user" onClick={() => openAuthModal('login')} title={t('nav.login', 'Se connecter')}>
+            <button className="navbar__user" onClick={() => openAuthModal('login')} title={tr(t('nav.login', 'Se connecter'))}>
               <FiUser size={17} />
             </button>
           )}
@@ -208,7 +233,7 @@ export default function Navbar() {
               className="navbar__mobile-link"
               onClick={() => setMobileOpen(false)}
             >
-              {link.label}
+              {tr(link.label)}
             </Link>
           ))}
           {user ? (

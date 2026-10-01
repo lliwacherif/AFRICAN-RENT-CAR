@@ -1,8 +1,11 @@
+import { useText } from '../../context/LanguageContext'
 import { useState, useEffect, useRef } from 'react'
 import { FiMapPin, FiChevronDown, FiCheck } from 'react-icons/fi'
 import './ParcSelect.css'
 
 export default function ParcSelect({ parcs = [], value, onChange, placeholder = 'Choisir un parc', variant = 'dark' }) {
+  const tr = useText()
+
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef(null)
 
@@ -49,12 +52,12 @@ export default function ParcSelect({ parcs = [], value, onChange, placeholder = 
         <span className="parc-select__value">
           {selectedParc ? (
             <>
-              <span className="parc-select__name">{selectedParc.name}</span>
-              {selectedParc.city && <span className="parc-select__city">{selectedParc.city}</span>}
+              <span className="parc-select__name">{tr(selectedParc.name)}</span>
+              {selectedParc.city && <span className="parc-select__city">{tr(selectedParc.city)}</span>}
             </>
           ) : (
             <span className="parc-select__placeholder">
-              {parcs.length === 0 ? 'Chargement des parcs...' : placeholder}
+              {tr(parcs.length === 0 ? 'Chargement des parcs...' : placeholder)}
             </span>
           )}
         </span>
@@ -64,7 +67,7 @@ export default function ParcSelect({ parcs = [], value, onChange, placeholder = 
       {isOpen && (
         <div className="parc-select__dropdown" role="listbox">
           {parcs.length === 0 ? (
-            <div className="parc-select__empty">Aucun parc disponible</div>
+            <div className="parc-select__empty">{tr("Aucun parc disponible")}</div>
           ) : (
             <div className="parc-select__list">
               {parcs.map(parc => {
@@ -80,14 +83,14 @@ export default function ParcSelect({ parcs = [], value, onChange, placeholder = 
                     <div className="parc-select__option-main">
                       <FiMapPin className="parc-select__option-icon" size={14} />
                       <div className="parc-select__option-text">
-                        <div className="parc-select__option-name">{parc.name}</div>
+                        <div className="parc-select__option-name">{tr(parc.name)}</div>
                         {parc.address && (
-                          <div className="parc-select__option-sub">{parc.address}</div>
+                          <div className="parc-select__option-sub">{tr(parc.address)}</div>
                         )}
                       </div>
                     </div>
                     {parc.city && (
-                      <span className="parc-select__option-badge">{parc.city}</span>
+                      <span className="parc-select__option-badge">{tr(parc.city)}</span>
                     )}
                     {isSelected && (
                       <FiCheck className="parc-select__option-check" size={14} />

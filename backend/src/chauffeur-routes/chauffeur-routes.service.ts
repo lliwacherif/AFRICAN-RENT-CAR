@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ChauffeurRoute, ChauffeurRouteDocument } from './schemas/chauffeur-route.schema';
+import { ChauffeurRoute, ChauffeurRouteDocument, DEFAULT_PRIVATE_CHAUFFEUR, withPrivateChauffeur } from './schemas/chauffeur-route.schema';
 import { ChauffeurReservation, ChauffeurReservationDocument } from './schemas/chauffeur-reservation.schema';
 import { Chauffeur, ChauffeurDocument } from './schemas/chauffeur.schema';
 import { ChauffeurLocation, ChauffeurLocationDocument } from './schemas/chauffeur-location.schema';
@@ -274,7 +274,10 @@ export class ChauffeurRoutesService implements OnModuleInit {
   async onModuleInit() {
     const count = await this.routeModel.countDocuments();
     if (count === 0) {
-      await this.routeModel.insertMany(DEFAULT_CHAUFFEUR_ROUTES);
+      await this.routeModel.insertMany(DEFAULT_CHAUFFEUR_ROUTES.map(route => ({
+        ...route,
+        assignedChauffeur: withPrivateChauffeur(route.assignedChauffeur),
+      })));
       console.log(`[ChauffeurRoutesService] Seeded ${DEFAULT_CHAUFFEUR_ROUTES.length} default chauffeur routes`);
     } else {
       // Migrate existing routes that lack coordinates or need accurate coords
@@ -294,39 +297,6 @@ export class ChauffeurRoutesService implements OnModuleInit {
       }
     }
 
-    // Seed default standalone chauffeurs if empty
-    const chfCount = await this.chauffeurModel.countDocuments();
-    if (chfCount === 0) {
-      const uniqueChauffeursMap = new Map();
-      for (const r of (DEFAULT_CHAUFFEUR_ROUTES as any[])) {
-        if (r.assignedChauffeur && r.assignedChauffeur.name) {
-          if (!uniqueChauffeursMap.has(r.assignedChauffeur.name)) {
-            uniqueChauffeursMap.set(r.assignedChauffeur.name, {
-              name: r.assignedChauffeur.name,
-              phone: r.assignedChauffeur.phone || '+216 22 000 000',
-              email: `${r.assignedChauffeur.name.toLowerCase().replace(/\s+/g, '.')}@africanrentcar.tn`,
-              avatar: r.assignedChauffeur.avatar,
-              rating: r.assignedChauffeur.rating || 4.95,
-              experienceYears: r.assignedChauffeur.experienceYears || (r.assignedChauffeur.tripsCount ? Math.floor(r.assignedChauffeur.tripsCount / 100) + 5 : 8),
-              languages: r.assignedChauffeur.languages || r.assignedChauffeur.spokenLanguages || ['Français', 'العربية', 'English'],
-              vehicleModel: r.assignedChauffeur.vehicleModel || 'Mercedes-Benz Classe E',
-              vehicleType: r.vehicleType || 'business-sedan',
-              vehiclePlate: r.assignedChauffeur.vehiclePlate || '220 TU 1000',
-              vehicleColor: r.assignedChauffeur.vehicleColor || 'Noir Obsidienne',
-              city: r.from?.includes('Tunis') ? 'Tunis' : (r.from?.includes('Djerba') ? 'Djerba' : 'Sousse'),
-              status: 'active',
-              available: true,
-              bio: 'Chauffeur d’élite certifié pour liaisons aéroport, transferts interurbains et délégations VIP.',
-            });
-          }
-        }
-      }
-      if (uniqueChauffeursMap.size > 0) {
-        await this.chauffeurModel.insertMany(Array.from(uniqueChauffeursMap.values()));
-        console.log(`[ChauffeurRoutesService] Seeded ${uniqueChauffeursMap.size} default chauffeurs`);
-      }
-    }
-
     // Seed default transfer locations if empty
     const locCount = await this.locationModel.countDocuments();
     if (locCount === 0) {
@@ -336,13 +306,19 @@ export class ChauffeurRoutesService implements OnModuleInit {
   }
 
   async getAll(): Promise<ChauffeurRouteDocument[]> {
-    return this.routeModel.find().sort({ popular: -1, createdAt: -1 }).exec();
+    const routes = await this.routeModel.find().sort({ popular: -1, createdAt: -1 }).exec();
+    return routes.map(route => this.includePrivateChauffeur(route));
+  }
+
+  private includePrivateChauffeur(route: ChauffeurRouteDocument): ChauffeurRouteDocument {
+    route.assignedChauffeur = withPrivateChauffeur(route.assignedChauffeur);
+    return route;
   }
 
   async getOne(id: string): Promise<ChauffeurRouteDocument> {
     const route = await this.routeModel.findById(id).exec();
     if (!route) throw new NotFoundException('Liaison chauffeur introuvable');
-    return route;
+    return this.includePrivateChauffeur(route);
   }
 
   async checkRoute(from: string, to: string) {
@@ -366,8 +342,8 @@ export class ChauffeurRoutesService implements OnModuleInit {
     if (matched) {
       return {
         found: true,
-        hasChauffeur: matched.available && !!matched.assignedChauffeur?.name,
-        route: matched,
+        hasChauffeur: matched.available,
+        route: this.includePrivateChauffeur(matched),
       };
     }
 
@@ -378,13 +354,18 @@ export class ChauffeurRoutesService implements OnModuleInit {
     if (!dto.title || !dto.title.trim()) {
       dto.title = `${dto.from} ➔ ${dto.to}`;
     }
-    return this.routeModel.create(dto);
+    return this.routeModel.create({ ...dto, assignedChauffeur: withPrivateChauffeur(dto.assignedChauffeur) });
   }
 
   async update(id: string, dto: Partial<CreateChauffeurRouteDto>): Promise<ChauffeurRouteDocument> {
-    const route = await this.routeModel.findByIdAndUpdate(id, dto, { new: true }).exec();
+    const existing = await this.getOne(id);
+    const update = {
+      ...dto,
+      assignedChauffeur: withPrivateChauffeur({ ...existing.assignedChauffeur, ...dto.assignedChauffeur }),
+    };
+    const route = await this.routeModel.findByIdAndUpdate(id, update, { new: true }).exec();
     if (!route) throw new NotFoundException('Liaison chauffeur introuvable');
-    return route;
+    return this.includePrivateChauffeur(route);
   }
 
   async delete(id: string): Promise<{ success: boolean }> {
@@ -400,7 +381,7 @@ export class ChauffeurRoutesService implements OnModuleInit {
       routeName: dto.routeName || (route ? `${route.from} ➔ ${route.to}` : 'Liaison Chauffeur'),
       from: dto.from || route?.from || '',
       to: dto.to || route?.to || '',
-      chauffeurName: dto.chauffeurName || route?.assignedChauffeur?.name || 'Chauffeur Dédié',
+      chauffeurName: DEFAULT_PRIVATE_CHAUFFEUR.name,
       vehicleModel: dto.vehicleModel || route?.assignedChauffeur?.vehicleModel || 'Berline Prestige',
       fullName: dto.fullName,
       email: dto.email.toLowerCase(),

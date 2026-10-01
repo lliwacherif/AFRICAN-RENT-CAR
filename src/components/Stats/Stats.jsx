@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useState, useEffect } from 'react'
 import { vehiclesService } from '../../services/vehiclesService'
 import { useLanguage } from '../../context/LanguageContext'
@@ -38,6 +39,8 @@ const ICONS = {
 }
 
 export default function Stats() {
+  const tr = useText()
+
   const { t } = useLanguage()
   const [counts, setCounts] = useState({ total: null, available: null })
 
@@ -79,10 +82,10 @@ export default function Stats() {
       <div className="stats__inner container">
         {stats.map(s => (
           <div key={s.id} className="stats__item">
-            <div className="stats__icon">{s.icon}</div>
+            <div className="stats__icon">{tr(s.icon)}</div>
             <div className="stats__text">
-              <span className="stats__value">{s.value}</span>
-              <span className="stats__label">{s.label}</span>
+              <span className="stats__value">{tr(s.value)}</span>
+              <span className="stats__label">{tr(s.label)}</span>
             </div>
           </div>
         ))}

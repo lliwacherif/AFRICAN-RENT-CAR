@@ -1,13 +1,16 @@
+import { useText } from '../../context/LanguageContext'
 import { useLanguage } from '../../context/LanguageContext'
 import './Hero.css'
 
 export default function Hero() {
+  const tr = useText()
+
   const { t } = useLanguage()
 
   return (
     <section className="hero" id="accueil">
       <div className="hero__bg">
-        <img src="/hero_background.png" alt="Voitures de luxe en Tunisie" className="hero__bg-img" />
+        <img src="/hero_background.png" alt={tr("Voitures de luxe en Tunisie")} className="hero__bg-img" />
         <div className="hero__overlay" />
       </div>
       <div className="hero__content container">

@@ -1,4 +1,5 @@
 import api from './api'
+import { normalizeMediaUrl } from '../utils/mediaUrl'
 
 export const vehiclesService = {
   async getAll(params = {}) {
@@ -97,13 +98,18 @@ export const reservationsService = {
 
 export const uploadService = {
   async uploadImage(file, folder = 'tunisia-car-rental') {
+    if (!file || !/^image\/(jpeg|png|webp|gif|avif)$/.test(file.type)) throw new Error('Choisissez une image JPG, PNG, WebP, GIF ou AVIF.')
+    if (file.size > 5 * 1024 * 1024) throw new Error('L’image ne doit pas dépasser 5 Mo.')
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folder', folder)
     const res = await api.post('/upload/image', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000,
     })
-    return res.data.data // { url, publicId, width, height, format }
+    const data = res.data?.data ?? res.data
+    const url = normalizeMediaUrl(data?.url || data?.secure_url, api.defaults.baseURL)
+    if (!url) throw new Error('Le serveur n’a pas renvoyé une URL d’image valide.')
+    return { ...data, url }
   },
 
   async uploadGlb(file, folder = 'tunisia-car-rental/3d-models') {

@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -14,6 +15,8 @@ import {
 import { AGENCIES } from '../data/mockData';
 
 export const Footer: React.FC = () => {
+  const tr = useText()
+
   const [emailInput, setEmailInput] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -33,13 +36,13 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-6 space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold text-[#F8F7EE]">
               <Sparkles className="w-3.5 h-3.5 text-[#C25847]" />
-              <span>Offres Privilèges & Itinéraires Secrets</span>
+              <span>{tr("Offres Privilèges & Itinéraires Secrets")}</span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-display">
-              Rejoignez le Cercle African Rent Car
+              {tr("Rejoignez le Cercle African Rent Car")}
             </h3>
             <p className="text-xs sm:text-sm text-white/75 leading-relaxed">
-              Recevez en avant-première nos tarifs exclusifs sur les nouveautés de la flotte et nos guides confidentiels de Tunisie.
+              {tr("Recevez en avant-première nos tarifs exclusifs sur les nouveautés de la flotte et nos guides confidentiels de Tunisie.")}
             </p>
           </div>
 
@@ -47,14 +50,14 @@ export const Footer: React.FC = () => {
             {subscribed ? (
               <div className="bg-emerald-800/60 border border-emerald-500/40 p-4 rounded-2xl flex items-center gap-3 text-white text-sm">
                 <Check className="w-5 h-5 text-emerald-300 shrink-0" />
-                <span>Merci ! Vous êtes désormais inscrit(e) à nos invitations exclusives.</span>
+                <span>{tr("Merci ! Vous êtes désormais inscrit(e) à nos invitations exclusives.")}</span>
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
                   required
-                  placeholder="Votre adresse e-mail professionnelle ou personnelle"
+                  placeholder={tr("Votre adresse e-mail professionnelle ou personnelle")}
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
                   className="flex-1 px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:border-[#C25847]"
@@ -63,7 +66,7 @@ export const Footer: React.FC = () => {
                   type="submit"
                   className="px-6 py-3.5 bg-[#A84A3B] hover:bg-[#8A372A] text-white rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
                 >
-                  <span>S'inscrire</span>
+                  <span>{tr("S'inscrire")}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
@@ -85,13 +88,13 @@ export const Footer: React.FC = () => {
                   <span className="text-[#C25847]">RENT CAR</span>
                 </div>
                 <span className="text-[10px] text-white/60 tracking-wider uppercase font-semibold">
-                  Excellence & Mobilité en Tunisie
+                  {tr("Excellence & Mobilité en Tunisie")}
                 </span>
               </div>
             </div>
 
             <p className="text-xs sm:text-sm text-white/70 leading-relaxed max-w-sm">
-              Leader de la mobilité haut de gamme en Tunisie. Véhicules d'exception révisés en concession officielle, hébergements de prestige et conciergerie sur mesure.
+              {tr("Leader de la mobilité haut de gamme en Tunisie. Véhicules d'exception révisés en concession officielle, hébergements de prestige et conciergerie sur mesure.")}
             </p>
 
             <div className="pt-2 space-y-2 text-xs">
@@ -112,28 +115,28 @@ export const Footer: React.FC = () => {
               Navigation
             </h4>
             <ul className="space-y-2 text-xs text-white/75">
-              <li><Link to="/" className="hover:text-white transition-colors">Accueil</Link></li>
-              <li><Link to="/voitures" className="hover:text-white transition-colors">Voitures & Flotte</Link></li>
-              <li><Link to="/appartements" className="hover:text-white transition-colors">Hébergements & Villas</Link></li>
-              <li><Link to="/excursions" className="hover:text-white transition-colors">Circuits & Excursions</Link></li>
-              <li><Link to="/guide" className="hover:text-white transition-colors">Guide Tunisie</Link></li>
-              <li><Link to="/contact" className="hover:text-white transition-colors">À Propos & Contact</Link></li>
+              <li><Link to="/" className="hover:text-white transition-colors">{tr("Accueil")}</Link></li>
+              <li><Link to="/voitures" className="hover:text-white transition-colors">{tr("Voitures & Flotte")}</Link></li>
+              <li><Link to="/appartements" className="hover:text-white transition-colors">{tr("Hébergements & Villas")}</Link></li>
+              <li><Link to="/excursions" className="hover:text-white transition-colors">{tr("Circuits & Excursions")}</Link></li>
+              <li><Link to="/guide" className="hover:text-white transition-colors">{tr("Guide Tunisie")}</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">{tr("À Propos & Contact")}</Link></li>
             </ul>
           </div>
 
           {/* Key Airports & Agencies */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-white">
-              Comptoirs Aéroports (24/7)
+              {tr("Comptoirs Aéroports (24/7)")}
             </h4>
             <ul className="space-y-2 text-xs text-white/75">
               <li className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#C25847]" />
-                <span>Tunis-Carthage (Terminal VIP)</span>
+                <span>{tr("Tunis-Carthage (Terminal VIP)")}</span>
               </li>
               <li className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#C25847]" />
-                <span>Djerba-Zarzis (Hall Arrivées)</span>
+                <span>{tr("Djerba-Zarzis (Hall Arrivées)")}</span>
               </li>
               <li className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#C25847]" />
@@ -145,7 +148,7 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#C25847]" />
-                <span>Agences Sousse, Hammamet & Bizerte</span>
+                <span>{tr("Agences Sousse, Hammamet & Bizerte")}</span>
               </li>
             </ul>
           </div>
@@ -153,19 +156,19 @@ export const Footer: React.FC = () => {
           {/* Legal & Reassurance */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-white">
-              Engagements & Sécurité
+              {tr("Engagements & Sécurité")}
             </h4>
             <div className="space-y-2 text-xs text-white/75">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Assurances tous risques tous contrats</span>
+                <span>{tr("Assurances tous risques tous contrats")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-emerald-400" />
-                <span>Paiement sécurisé ou sur place</span>
+                <span>{tr("Paiement sécurisé ou sur place")}</span>
               </div>
               <p className="text-[11px] text-white/60 pt-2 leading-relaxed">
-                Agrément du Ministère du Tourisme et de l'Artisanat de Tunisie. Membre de la Chambre Syndicale Nationale des Loueurs de Voitures.
+                {tr("Agrément du Ministère du Tourisme et de l'Artisanat de Tunisie. Membre de la Chambre Syndicale Nationale des Loueurs de Voitures.")}
               </p>
             </div>
           </div>
@@ -174,16 +177,16 @@ export const Footer: React.FC = () => {
         {/* Bottom bar: Copyright & Payment badges */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
           <div>
-            © {new Date().getFullYear()} African Rent Car Tunisie. Tous droits réservés.
+            © {new Date().getFullYear()} {tr("African Rent Car Tunisie. Tous droits réservés.")}
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-[11px] text-white/50">Moyens de paiement acceptés :</span>
+            <span className="text-[11px] text-white/50">{tr("Moyens de paiement acceptés :")}</span>
             <span className="px-2 py-1 bg-white/10 rounded text-[10px] font-bold text-white">VISA</span>
             <span className="px-2 py-1 bg-white/10 rounded text-[10px] font-bold text-white">Mastercard</span>
             <span className="px-2 py-1 bg-white/10 rounded text-[10px] font-bold text-white">Konnect</span>
             <span className="px-2 py-1 bg-white/10 rounded text-[10px] font-bold text-white">ClicToPay</span>
-            <span className="px-2 py-1 bg-white/10 rounded text-[10px] font-bold text-white">Espèces</span>
+            <span className="px-2 py-1 bg-white/10 rounded text-[10px] font-bold text-white">{tr("Espèces")}</span>
           </div>
         </div>
       </div>

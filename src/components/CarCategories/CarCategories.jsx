@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
@@ -29,6 +30,8 @@ const CATEGORY_NAMES_AR = {
 const CATEGORY_ORDER = ['Économique', 'Compacte', 'Berline', 'SUV', 'Luxe', 'Monospace', 'Utilitaire']
 
 export default function CarCategories() {
+  const tr = useText()
+
   const sliderRef = useRef(null)
   const navigate = useNavigate()
   const { t, isRtl } = useLanguage()
@@ -86,7 +89,7 @@ export default function CarCategories() {
         </div>
 
         <div className="categories__slider-wrap">
-          <button className="categories__arrow categories__arrow--left" onClick={() => scroll(-1)} aria-label={t('categories.prev', 'Précédent')}>
+          <button className="categories__arrow categories__arrow--left" onClick={() => scroll(-1)} aria-label={tr(t('categories.prev', 'Précédent'))}>
             <FiChevronLeft size={20} />
           </button>
 
@@ -104,18 +107,18 @@ export default function CarCategories() {
                   >
                     <div className="categories__card-img-wrap">
                       {cat.image
-                        ? <img src={cat.image} alt={cat.name} className="categories__card-img" />
+                        ? <img src={cat.image} alt={tr(cat.name)} className="categories__card-img" />
                         : <span style={{ fontSize: 40 }}>🚗</span>
                       }
                     </div>
                     <div className="categories__card-info">
                       <h3 className="categories__card-name">
-                        {isRtl ? (CATEGORY_NAMES_AR[cat.name] || cat.name) : cat.name}
+                        {tr(isRtl ? (CATEGORY_NAMES_AR[cat.name] || cat.name) : cat.name)}
                       </h3>
                       <p className="categories__card-price">
-                        {cat.minPrice != null
+                        {tr(cat.minPrice != null
                           ? `${t('categories.from', 'À partir de')} ${formatPrice(cat.minPrice, isRtl)} / ${t('searchResults.day', 'jour')}`
-                          : t('categories.priceOnDemand', 'Prix sur demande')}
+                          : t('categories.priceOnDemand', 'Prix sur demande'))}
                       </p>
                     </div>
                   </div>
@@ -123,7 +126,7 @@ export default function CarCategories() {
             }
           </div>
 
-          <button className="categories__arrow categories__arrow--right" onClick={() => scroll(1)} aria-label={t('categories.next', 'Suivant')}>
+          <button className="categories__arrow categories__arrow--right" onClick={() => scroll(1)} aria-label={tr(t('categories.next', 'Suivant'))}>
             <FiChevronRight size={20} />
           </button>
         </div>

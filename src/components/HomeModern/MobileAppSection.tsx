@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import { 
   Smartphone, 
@@ -14,6 +15,8 @@ import {
 } from 'lucide-react';
 
 export const MobileAppSection: React.FC = () => {
+  const tr = useText()
+
   const [scanned, setScanned] = useState(false);
 
   const features = [
@@ -51,18 +54,18 @@ export const MobileAppSection: React.FC = () => {
           <div className="lg:col-span-7 space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-extrabold uppercase tracking-wider text-[#F8F7EE]">
               <Smartphone className="w-3.5 h-3.5 text-[#C25847]" />
-              <span>Application Officielle African Rent Car</span>
+              <span>{tr("Application Officielle African Rent Car")}</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight font-display">
-              Emportez l'Excellence <br />
+              {tr("Emportez l'Excellence")} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#F8F7EE] to-[#C25847]">
-                au creux de votre main.
+                {tr("au creux de votre main.")}
               </span>
             </h2>
 
             <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-xl">
-              Gérez votre réservation, activez votre clé digitale et accédez aux meilleures recommandations d'itinéraires en Tunisie avec l'application mobile dédiée.
+              {tr("Gérez votre réservation, activez votre clé digitale et accédez aux meilleures recommandations d'itinéraires en Tunisie avec l'application mobile dédiée.")}
             </p>
 
             {/* 4 Feature Items */}
@@ -75,8 +78,8 @@ export const MobileAppSection: React.FC = () => {
                       <Icon className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-xs sm:text-sm font-bold text-white mb-0.5">{feat.title}</h3>
-                      <p className="text-[11px] text-white/70 leading-snug">{feat.desc}</p>
+                      <h3 className="text-xs sm:text-sm font-bold text-white mb-0.5">{tr(feat.title)}</h3>
+                      <p className="text-[11px] text-white/70 leading-snug">{tr(feat.desc)}</p>
                     </div>
                   </div>
                 );
@@ -94,7 +97,7 @@ export const MobileAppSection: React.FC = () => {
                   <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.85-.9.04-2 .61-2.65 1.37-.56.65-.98 1.7-0.86 2.73 1 .08 1.98-.5 2.59-1.25z"/>
                 </svg>
                 <div className="text-left">
-                  <p className="text-[10px] text-white/60 leading-none">Disponible sur</p>
+                  <p className="text-[10px] text-white/60 leading-none">{tr("Disponible sur")}</p>
                   <p className="text-xs font-bold leading-tight">App Store</p>
                 </div>
               </a>
@@ -108,7 +111,7 @@ export const MobileAppSection: React.FC = () => {
                   <path d="M3.609 1.814L13.792 12 3.61 22.186c-.36-.36-.61-.92-.61-1.6V3.414c0-.68.25-1.24.61-1.6zm11.3 11.3l2.5 2.5-12.8 7.37 10.3-9.87zm0-2.23L4.609.914l12.8 7.37-2.5 2.6zm1.7 1.11l3.58 2.06c.9.52.9 1.36 0 1.88l-3.58 2.06-2.14-2.14 2.14-2.14z"/>
                 </svg>
                 <div className="text-left">
-                  <p className="text-[10px] text-white/60 leading-none">Disponible sur</p>
+                  <p className="text-[10px] text-white/60 leading-none">{tr("Disponible sur")}</p>
                   <p className="text-xs font-bold leading-tight">Google Play</p>
                 </div>
               </a>
@@ -119,7 +122,7 @@ export const MobileAppSection: React.FC = () => {
                 className="inline-flex items-center gap-2 text-xs font-bold text-[#F8F7EE] hover:text-white bg-white/10 px-4 py-2.5 rounded-2xl border border-white/20"
               >
                 <QrCode className="w-4 h-4 text-[#C25847]" />
-                <span>Tester le scan QR</span>
+                <span>{tr("Tester le scan QR")}</span>
               </button>
             </div>
           </div>
@@ -140,7 +143,7 @@ export const MobileAppSection: React.FC = () => {
                   <div className="flex items-center justify-between pt-2">
                     <div>
                       <p className="text-[10px] text-[#727D88] font-bold uppercase">African Rent Car</p>
-                      <p className="text-xs font-extrabold text-[#191C1F]">Bienvenue, Ahmed</p>
+                      <p className="text-xs font-extrabold text-[#191C1F]">{tr("Bienvenue, Ahmed")}</p>
                     </div>
                     <div className="w-7 h-7 rounded-full bg-[#A84A3B] text-white flex items-center justify-center text-[10px] font-bold">
                       VIP
@@ -152,9 +155,9 @@ export const MobileAppSection: React.FC = () => {
                     <div className="flex items-center justify-between text-[11px] font-bold text-[#2C3E56]">
                       <span className="flex items-center gap-1">
                         <Key className="w-3.5 h-3.5 text-[#A84A3B]" />
-                        <span>Clé Mobile Active</span>
+                        <span>{tr("Clé Mobile Active")}</span>
                       </span>
-                      <span className="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded text-[9px]">Connectée</span>
+                      <span className="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded text-[9px]">{tr("Connectée")}</span>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -165,33 +168,33 @@ export const MobileAppSection: React.FC = () => {
                       />
                       <div>
                         <p className="text-xs font-extrabold text-[#191C1F]">Porsche Macan GTS</p>
-                        <p className="text-[10px] text-[#727D88]">Immatriculation : 241 TUN 8800</p>
+                        <p className="text-[10px] text-[#727D88]">{tr("Immatriculation : 241 TUN 8800")}</p>
                       </div>
                     </div>
 
                     {/* Unlock button in app */}
                     <button className="w-full py-2 bg-[#A84A3B] text-white rounded-xl text-xs font-bold shadow-sm flex items-center justify-center gap-1.5">
-                      <span>Déverrouiller le véhicule</span>
+                      <span>{tr("Déverrouiller le véhicule")}</span>
                     </button>
                   </div>
 
                   {/* Trip progress */}
                   <div className="bg-[#F8F7EE] rounded-2xl p-3 border border-[#EBE6DC] text-xs space-y-1.5">
                     <div className="flex justify-between font-bold text-[#191C1F]">
-                      <span>Séjour Tunis - Djerba</span>
-                      <span className="text-[#A84A3B]">Jour 3 / 7</span>
+                      <span>{tr("Séjour Tunis - Djerba")}</span>
+                      <span className="text-[#A84A3B]">{tr("Jour 3 / 7")}</span>
                     </div>
                     <div className="w-full bg-[#EBE6DC] h-1.5 rounded-full overflow-hidden">
                       <div className="bg-[#A84A3B] h-full w-[45%]" />
                     </div>
-                    <p className="text-[10px] text-[#727D88]">Restitution prévue : Aéroport Djerba-Zarzis</p>
+                    <p className="text-[10px] text-[#727D88]">{tr("Restitution prévue : Aéroport Djerba-Zarzis")}</p>
                   </div>
 
                   {/* Interactive QR box on phone */}
                   <div className="bg-white p-3 rounded-2xl border border-[#EBE6DC] flex items-center justify-between">
                     <div>
-                      <p className="text-[10px] font-bold text-[#191C1F]">Passager Aéroport</p>
-                      <p className="text-[9px] text-[#727D88]">Scannez au comptoir VIP</p>
+                      <p className="text-[10px] font-bold text-[#191C1F]">{tr("Passager Aéroport")}</p>
+                      <p className="text-[9px] text-[#727D88]">{tr("Scannez au comptoir VIP")}</p>
                     </div>
                     <div className="w-10 h-10 bg-[#191C1F] p-1 rounded-lg flex items-center justify-center">
                       <QrCode className="w-8 h-8 text-white" />
@@ -206,8 +209,8 @@ export const MobileAppSection: React.FC = () => {
                   <QrCode className="w-9 h-9 text-[#A84A3B]" />
                 </div>
                 <div>
-                  <p className="text-xs font-extrabold text-[#191C1F]">Scannez pour installer</p>
-                  <p className="text-[10px] text-[#727D88]">iOS & Android • Gratuit</p>
+                  <p className="text-xs font-extrabold text-[#191C1F]">{tr("Scannez pour installer")}</p>
+                  <p className="text-[10px] text-[#727D88]">{tr("iOS & Android • Gratuit")}</p>
                 </div>
               </div>
 
@@ -216,7 +219,7 @@ export const MobileAppSection: React.FC = () => {
                 <div className="absolute top-10 inset-x-2 bg-emerald-700 text-white p-3 rounded-2xl shadow-2xl text-xs flex items-center justify-between z-40 animate-in fade-in slide-in-from-top-4">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Lien d'installation de l'application envoyé !</span>
+                    <span>{tr("Lien d'installation de l'application envoyé !")}</span>
                   </div>
                   <button onClick={() => setScanned(false)} className="text-white/80 hover:text-white font-bold ml-2">
                     ✕

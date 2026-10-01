@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  FiPlus, FiEdit2, FiTrash2, FiSearch,
-  FiCalendar, FiDollarSign, FiUsers, FiCheck, FiX,
-  FiAlertCircle, FiRefreshCw, FiClock, FiStar, FiFilter,
-  FiMapPin, FiPhone, FiCompass, FiShield, FiTrendingUp,
-  FiTrendingDown, FiBarChart2, FiNavigation, FiEye, FiCheckCircle,
-  FiUser, FiMail, FiAward, FiCheckSquare, FiSquare
+  FiPlus, FiEdit2, FiTrash2, FiSearch, FiCalendar, FiDollarSign, FiX, FiAlertCircle, FiRefreshCw, FiClock, FiMapPin, FiTrendingUp, FiTrendingDown, FiBarChart2, FiNavigation
 } from 'react-icons/fi';
 import { chauffeurService } from '../../services/chauffeurService';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -84,46 +79,13 @@ export default function ChauffeursAdmin() {
   const fmtMoney = (n) => (formatPrice ? formatPrice(n) : `${(n || 0).toLocaleString('fr-FR')} TND`);
 
   // Sub-tabs identical to Voitures & Hébergements
-  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' | 'routes' | 'chauffeurs' | 'reservations' | 'calendar'
+  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' | 'routes' | 'reservations' | 'calendar'
   const [routes, setRoutes] = useState([]);
   const [reservations, setReservations] = useState([]);
-  const [chauffeurs, setChauffeurs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
   const [previewMapRoute, setPreviewMapRoute] = useState(null);
-
-  // Chauffeurs Management State
-  const [chauffeurSearch, setChauffeurSearch] = useState('');
-  const [chauffeurFilterCity, setChauffeurFilterCity] = useState('all');
-  const [chauffeurFilterStatus, setChauffeurFilterStatus] = useState('all');
-  const [togglingChauffeurId, setTogglingChauffeurId] = useState(null);
-
-  // Chauffeur Modal State
-  const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState(false);
-  const [editingChauffeur, setEditingChauffeur] = useState(null);
-  const [savingChauffeur, setSavingChauffeur] = useState(false);
-  const [chauffeurModalError, setChauffeurModalError] = useState(null);
-
-  const initialChauffeurForm = {
-    name: '',
-    phone: '+216 ',
-    email: '',
-    city: 'Tunis',
-    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
-    vehicleModel: 'Mercedes-Benz Classe E',
-    vehicleType: 'business-sedan',
-    vehiclePlate: '',
-    vehicleColor: 'Noir Obsidienne',
-    rating: 4.95,
-    experienceYears: 8,
-    languages: ['Français', 'العربية', 'English'],
-    status: 'active',
-    available: true,
-    bio: '',
-  };
-
-  const [chauffeurFormData, setChauffeurFormData] = useState(initialChauffeurForm);
 
   // Calendar offset
   const [calOffset, setCalOffset] = useState(0);
@@ -142,8 +104,6 @@ export default function ChauffeursAdmin() {
   const [editingRoute, setEditingRoute] = useState(null);
   const [saving, setSaving] = useState(false);
   const [modalError, setModalError] = useState(null);
-  const [selectedChauffeurId, setSelectedChauffeurId] = useState('');
-  const [showManualChauffeurFields, setShowManualChauffeurFields] = useState(false);
 
   // Form State
   const initialForm = {
@@ -160,8 +120,8 @@ export default function ChauffeursAdmin() {
     available: true,
     status: 'active',
     assignedChauffeur: {
-      name: '',
-      phone: '+216 ',
+      name: 'Chauffeur privé',
+      phone: '+216 27 908 060',
       avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
       rating: 4.95,
       experienceYears: 8,
@@ -185,17 +145,15 @@ export default function ChauffeursAdmin() {
     setLoading(true);
     setError(null);
     try {
-      const [routesData, resData, chauffeursData] = await Promise.all([
+      const [routesData, resData] = await Promise.all([
         chauffeurService.getAll(),
         chauffeurService.getReservations(),
-        chauffeurService.getChauffeurs(),
       ]);
       setRoutes(Array.isArray(routesData) ? routesData : []);
       setReservations(Array.isArray(resData) ? resData : []);
-      setChauffeurs(Array.isArray(chauffeursData) ? chauffeursData : []);
     } catch (err) {
       console.error('Error loading chauffeur admin data:', err);
-      setError('Impossible de charger les données des chauffeurs et lignes.');
+      setError('Impossible de charger les lignes et les demandes de trajet.');
     } finally {
       setLoading(false);
     }
@@ -207,20 +165,11 @@ export default function ChauffeursAdmin() {
 
   const safeRoutes = Array.isArray(routes) ? routes : [];
   const safeReservations = Array.isArray(reservations) ? reservations : [];
-  const safeChauffeurs = Array.isArray(chauffeurs) ? chauffeurs : [];
   const DAYS = getWeekDays(calOffset);
 
   // Metrics
   const totalRoutes = safeRoutes.length;
-  const activeRoutes = safeRoutes.filter(r => r.available && r.assignedChauffeur?.name).length;
-  const totalChauffeurs = safeChauffeurs.length;
-  const activeChauffeurs = safeChauffeurs.filter(c => c.status === 'active' || c.available).length;
-  const uniqueDrivers = totalChauffeurs > 0 
-    ? totalChauffeurs 
-    : new Set(safeRoutes.map(r => r.assignedChauffeur?.name).filter(Boolean)).size;
-  const avgChauffeurRating = totalChauffeurs > 0
-    ? (safeChauffeurs.reduce((acc, c) => acc + (c.rating || 5.0), 0) / totalChauffeurs).toFixed(2)
-    : '4.96';
+  const activeRoutes = safeRoutes.filter(r => r.available).length;
   const avgRoutePrice = totalRoutes > 0
     ? Math.round(safeRoutes.reduce((acc, r) => acc + (r.basePriceTND || 0), 0) / totalRoutes)
     : 0;
@@ -309,46 +258,10 @@ export default function ChauffeursAdmin() {
     }
   };
 
-  const handleSelectChauffeurForRoute = (chauffeurId) => {
-    setSelectedChauffeurId(chauffeurId);
-    if (!chauffeurId || chauffeurId === 'manual') {
-      setShowManualChauffeurFields(true);
-      return;
-    }
-    const selected = safeChauffeurs.find(c => c._id === chauffeurId);
-    if (selected) {
-      setShowManualChauffeurFields(false);
-      setFormData(prev => ({
-        ...prev,
-        vehicleType: selected.vehicleType || prev.vehicleType || 'business-sedan',
-        assignedChauffeur: {
-          ...prev.assignedChauffeur,
-          name: selected.name,
-          phone: selected.phone,
-          avatar: selected.avatar,
-          rating: selected.rating,
-          experienceYears: selected.experienceYears,
-          spokenLanguages: selected.languages || ['Français', 'العربية'],
-          vehicleModel: selected.vehicleModel,
-          vehiclePlate: selected.vehiclePlate || prev.assignedChauffeur?.vehiclePlate || '230 TU 1234',
-          vehicleColor: selected.vehicleColor || prev.assignedChauffeur?.vehicleColor || 'Noir Obsidienne',
-        }
-      }));
-    }
-  };
-
   const handleOpenModal = (route = null) => {
     setModalError(null);
-    setShowManualChauffeurFields(false);
     if (route) {
       setEditingRoute(route);
-      const matched = safeChauffeurs.find(c =>
-        c.name?.toLowerCase().trim() === route.assignedChauffeur?.name?.toLowerCase().trim()
-      );
-      setSelectedChauffeurId(matched ? matched._id : (route.assignedChauffeur?.name ? 'manual' : ''));
-      if (!matched && route.assignedChauffeur?.name) {
-        setShowManualChauffeurFields(true);
-      }
       setFormData({
         title: route.title || `${route.from} ➔ ${route.to}`,
         from: route.from || '',
@@ -363,8 +276,8 @@ export default function ChauffeursAdmin() {
         available: route.available ?? true,
         status: route.status || 'active',
         assignedChauffeur: {
-          name: route.assignedChauffeur?.name || '',
-          phone: route.assignedChauffeur?.phone || '+216 ',
+          name: 'Chauffeur privé',
+          phone: route.assignedChauffeur?.phone || '+216 27 908 060',
           avatar: route.assignedChauffeur?.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
           rating: route.assignedChauffeur?.rating || 4.95,
           experienceYears: route.assignedChauffeur?.experienceYears || 8,
@@ -378,24 +291,7 @@ export default function ChauffeursAdmin() {
       });
     } else {
       setEditingRoute(null);
-      const firstChf = safeChauffeurs[0];
-      setSelectedChauffeurId(firstChf ? firstChf._id : '');
-      setFormData({
-        ...initialForm,
-        assignedChauffeur: firstChf ? {
-          name: firstChf.name,
-          phone: firstChf.phone,
-          avatar: firstChf.avatar,
-          rating: firstChf.rating,
-          experienceYears: firstChf.experienceYears,
-          spokenLanguages: firstChf.languages || ['Français', 'العربية'],
-          vehicleModel: firstChf.vehicleModel,
-          vehiclePlate: firstChf.vehiclePlate || '230 TU 1234',
-          vehicleColor: firstChf.vehicleColor || 'Noir Obsidienne',
-          amenities: ['Climatisation bi-zone', 'Wi-Fi 5G illimité', 'Bouteilles d\'eau minérale', 'Accueil nominatif pancarte']
-        } : initialForm.assignedChauffeur,
-        vehicleType: firstChf?.vehicleType || 'business-sedan'
-      });
+      setFormData(initialForm);
     }
     setIsModalOpen(true);
   };
@@ -419,6 +315,7 @@ export default function ChauffeursAdmin() {
         title: formData.title?.trim() || `${formData.from.trim()} ➔ ${formData.to.trim()}`,
         assignedChauffeur: {
           ...formData.assignedChauffeur,
+          name: 'Chauffeur privé',
           languages: formData.assignedChauffeur?.spokenLanguages || formData.assignedChauffeur?.languages || ['Français', 'العربية'],
         },
       };
@@ -444,162 +341,6 @@ export default function ChauffeursAdmin() {
     }
   };
 
-  // ── Chauffeurs Management Handlers ──
-  const filteredChauffeurs = safeChauffeurs.filter((c) => {
-    const q = (chauffeurSearch || '').toLowerCase().trim();
-    const matchSearch =
-      !q ||
-      c.name?.toLowerCase().includes(q) ||
-      c.phone?.toLowerCase().includes(q) ||
-      c.vehicleModel?.toLowerCase().includes(q) ||
-      c.city?.toLowerCase().includes(q) ||
-      (c.languages || []).some((l) => l.toLowerCase().includes(q));
-
-    const matchCity =
-      chauffeurFilterCity === 'all' ||
-      c.city?.toLowerCase().includes(chauffeurFilterCity.toLowerCase());
-
-    const matchStatus =
-      chauffeurFilterStatus === 'all' ||
-      (chauffeurFilterStatus === 'active' && (c.status === 'active' || c.available)) ||
-      (chauffeurFilterStatus === 'inactive' && (c.status === 'inactive' || !c.available));
-
-    return matchSearch && matchCity && matchStatus;
-  });
-
-  const handleToggleChauffeurActive = async (ch) => {
-    setTogglingChauffeurId(ch._id);
-    try {
-      await chauffeurService.toggleChauffeur(ch._id);
-      setChauffeurs((prev) =>
-        prev.map((item) =>
-          item._id === ch._id
-            ? {
-                ...item,
-                status: item.status === 'active' ? 'inactive' : 'active',
-                available: item.status !== 'active',
-              }
-            : item,
-        ),
-      );
-    } catch (err) {
-      console.error('Error toggling chauffeur status:', err);
-    } finally {
-      setTogglingChauffeurId(null);
-    }
-  };
-
-  const handleDeleteChauffeur = async (ch) => {
-    if (!window.confirm(`Êtes-vous sûr de vouloir supprimer définitivement le chauffeur "${ch.name}" ?`)) {
-      return;
-    }
-    try {
-      await chauffeurService.deleteChauffeur(ch._id);
-      setChauffeurs((prev) => prev.filter((item) => item._id !== ch._id));
-    } catch (err) {
-      console.error('Error deleting chauffeur:', err);
-      alert('Erreur lors de la suppression du chauffeur.');
-    }
-  };
-
-  const handleOpenChauffeurModal = (chauffeurToEdit = null) => {
-    setEditingChauffeur(chauffeurToEdit);
-    setChauffeurModalError(null);
-    if (chauffeurToEdit) {
-      setChauffeurFormData({
-        name: chauffeurToEdit.name || '',
-        phone: chauffeurToEdit.phone || '+216 ',
-        email: chauffeurToEdit.email || '',
-        city: chauffeurToEdit.city || 'Tunis',
-        avatar:
-          chauffeurToEdit.avatar ||
-          'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
-        vehicleModel: chauffeurToEdit.vehicleModel || 'Mercedes-Benz Classe E',
-        vehicleType: chauffeurToEdit.vehicleType || 'business-sedan',
-        vehiclePlate: chauffeurToEdit.vehiclePlate || '',
-        vehicleColor: chauffeurToEdit.vehicleColor || 'Noir Obsidienne',
-        rating: chauffeurToEdit.rating || 4.95,
-        experienceYears: chauffeurToEdit.experienceYears || 8,
-        languages: chauffeurToEdit.languages || ['Français', 'العربية', 'English'],
-        status: chauffeurToEdit.status || 'active',
-        available: chauffeurToEdit.available !== false,
-        bio: chauffeurToEdit.bio || '',
-      });
-    } else {
-      setChauffeurFormData(initialChauffeurForm);
-    }
-    setIsChauffeurModalOpen(true);
-  };
-
-  const handleSaveChauffeurModal = async (e) => {
-    e.preventDefault();
-    if (!chauffeurFormData.name.trim() || !chauffeurFormData.phone.trim()) {
-      setChauffeurModalError('Le nom et le numéro de téléphone sont obligatoires.');
-      return;
-    }
-    setSavingChauffeur(true);
-    setChauffeurModalError(null);
-    try {
-      if (editingChauffeur && editingChauffeur._id) {
-        const updated = await chauffeurService.updateChauffeur(editingChauffeur._id, chauffeurFormData);
-        const merged = { ...editingChauffeur, ...updated, ...chauffeurFormData };
-        setChauffeurs((prev) =>
-          prev.map((c) => (c._id === editingChauffeur._id ? merged : c)),
-        );
-        if (isModalOpen && selectedChauffeurId === editingChauffeur._id) {
-          setFormData(prev => ({
-            ...prev,
-            vehicleType: merged.vehicleType || prev.vehicleType,
-            assignedChauffeur: {
-              ...prev.assignedChauffeur,
-              name: merged.name,
-              phone: merged.phone,
-              avatar: merged.avatar,
-              rating: merged.rating,
-              experienceYears: merged.experienceYears,
-              spokenLanguages: merged.languages || ['Français', 'العربية'],
-              vehicleModel: merged.vehicleModel,
-              vehiclePlate: merged.vehiclePlate || prev.assignedChauffeur?.vehiclePlate,
-              vehicleColor: merged.vehicleColor || prev.assignedChauffeur?.vehicleColor,
-            }
-          }));
-        }
-      } else {
-        const created = await chauffeurService.createChauffeur(chauffeurFormData);
-        const newObj = created || { ...chauffeurFormData, _id: Date.now().toString() };
-        setChauffeurs((prev) => [newObj, ...prev]);
-        if (isModalOpen && newObj._id) {
-          setSelectedChauffeurId(newObj._id);
-          setShowManualChauffeurFields(false);
-          setFormData(prev => ({
-            ...prev,
-            vehicleType: newObj.vehicleType || prev.vehicleType,
-            assignedChauffeur: {
-              ...prev.assignedChauffeur,
-              name: newObj.name,
-              phone: newObj.phone,
-              avatar: newObj.avatar,
-              rating: newObj.rating,
-              experienceYears: newObj.experienceYears,
-              spokenLanguages: newObj.languages || ['Français', 'العربية'],
-              vehicleModel: newObj.vehicleModel,
-              vehiclePlate: newObj.vehiclePlate || '230 TU 1234',
-              vehicleColor: newObj.vehicleColor || 'Noir Obsidienne',
-            }
-          }));
-        }
-      }
-      setIsChauffeurModalOpen(false);
-      setEditingChauffeur(null);
-    } catch (err) {
-      console.error('Error saving chauffeur:', err);
-      const msg = err.response?.data?.message || err.message || "Erreur lors de l'enregistrement.";
-      setChauffeurModalError(Array.isArray(msg) ? msg.join(', ') : msg);
-    } finally {
-      setSavingChauffeur(false);
-    }
-  };
-
   return (
     <div>
       {/* ── Sub Tabs Bar (Matches Voitures & Hébergements 1:1) ── */}
@@ -608,7 +349,6 @@ export default function ChauffeursAdmin() {
           ['dashboard', '📊 Dashboard'],
           ['routes', '🗺️ Lignes Fixes'],
           ['locations', '📍 Points & Destinations'],
-          ['chauffeurs', '👤 Chauffeurs'],
           ['reservations', '📋 Demandes de Trajet'],
           ['calendar', '📅 Planning Semaine'],
         ].map(([k, l]) => (
@@ -656,7 +396,7 @@ export default function ChauffeursAdmin() {
               icon={<FiMapPin size={20}/>}
               label="Total Liaisons & Chauffeurs"
               value={totalRoutes}
-              sub={`${uniqueDrivers} chauffeurs agréés affectés`}
+              sub="Chauffeur privé inclus sur chaque ligne"
             />
           </div>
 
@@ -712,7 +452,7 @@ export default function ChauffeursAdmin() {
                         </td>
                         <td>
                           <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--white)' }}>
-                            {route.assignedChauffeur?.name || 'Non assigné'}
+                            {'Chauffeur privé'}
                           </div>
                           <div style={{ fontSize: 11, color: 'var(--white-30)' }}>
                             ★ {route.assignedChauffeur?.rating || 4.9} · {route.assignedChauffeur?.phone || '—'}
@@ -949,8 +689,8 @@ export default function ChauffeursAdmin() {
               <div style={{ fontSize: 11, color: 'var(--white-50)', marginTop: 2 }}>Suspendues</div>
             </div>
             <div className="admin-summary-card">
-              <div style={{ fontSize: 24, fontWeight: 800, color: '#38bdf8' }}>{uniqueDrivers}</div>
-              <div style={{ fontSize: 11, color: 'var(--white-50)', marginTop: 2 }}>Chauffeurs dédiés</div>
+              <div style={{ fontSize: 24, fontWeight: 800, color: '#38bdf8' }}>{totalRoutes}</div>
+              <div style={{ fontSize: 11, color: 'var(--white-50)', marginTop: 2 }}>Lignes avec chauffeur privé</div>
             </div>
             <div className="admin-summary-card">
               <div style={{ fontSize: 24, fontWeight: 800, color: '#a78bfa' }}>{fmtMoney(avgRoutePrice)}</div>
@@ -1091,7 +831,7 @@ export default function ChauffeursAdmin() {
                       {/* Chauffeur */}
                       <td>
                         <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--white)' }}>
-                          {route.assignedChauffeur?.name || <span style={{ color: 'var(--danger)', fontStyle: 'italic' }}>Non assigné</span>}
+                          {'Chauffeur privé'}
                         </div>
                         <div style={{ fontSize: 11, color: 'var(--white-50)' }}>
                           ★ {route.assignedChauffeur?.rating || 4.9} · {route.assignedChauffeur?.phone || '—'}
@@ -1173,343 +913,6 @@ export default function ChauffeursAdmin() {
       {/* ══════════ TAB: LOCATIONS MANAGEMENT (CRUD) ══════════ */}
       {activeTab === 'locations' && (
         <ChauffeurLocationsAdmin />
-      )}
-
-      {/* ══════════ TAB 3: CHAUFFEURS LIST (CRUD Matches Voitures & Hébergements 1:1) ══════════ */}
-      {activeTab === 'chauffeurs' && (
-        <div className="admin-full">
-          {/* Summary Row */}
-          <div className="admin-summary-row">
-            <div className="admin-summary-card">
-              <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--gold)' }}>{totalChauffeurs}</div>
-              <div style={{ fontSize: 11, color: 'var(--white-50)', marginTop: 2 }}>Total Chauffeurs</div>
-            </div>
-            <div className="admin-summary-card">
-              <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--success)' }}>{activeChauffeurs}</div>
-              <div style={{ fontSize: 11, color: 'var(--white-50)', marginTop: 2 }}>En service</div>
-            </div>
-            <div className="admin-summary-card">
-              <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--danger)' }}>{totalChauffeurs - activeChauffeurs}</div>
-              <div style={{ fontSize: 11, color: 'var(--white-50)', marginTop: 2 }}>Hors service / Repos</div>
-            </div>
-            <div className="admin-summary-card">
-              <div style={{ fontSize: 24, fontWeight: 800, color: '#f59e0b' }}>★ {avgChauffeurRating}</div>
-              <div style={{ fontSize: 11, color: 'var(--white-50)', marginTop: 2 }}>Note moyenne</div>
-            </div>
-            <div className="admin-summary-card">
-              <div style={{ fontSize: 24, fontWeight: 800, color: '#38bdf8' }}>{totalRoutes}</div>
-              <div style={{ fontSize: 11, color: 'var(--white-50)', marginTop: 2 }}>Lignes du réseau</div>
-            </div>
-          </div>
-
-          {/* Main Card */}
-          <div className="admin-card">
-            <div className="admin-card__header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, flexWrap: 'wrap' }}>
-                <h2 className="admin-card__title">
-                  Chauffeurs Professionnels VIP <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--white-30)' }}>({filteredChauffeurs.length})</span>
-                </h2>
-
-                {/* Search */}
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <FiSearch size={13} style={{ position: 'absolute', left: 10, color: 'var(--white-30)' }} />
-                  <input
-                    type="text"
-                    placeholder="Rechercher par chauffeur, tél, véhicule..."
-                    value={chauffeurSearch}
-                    onChange={(e) => setChauffeurSearch(e.target.value)}
-                    style={{
-                      padding: '6px 12px 6px 30px',
-                      borderRadius: 6,
-                      border: '1px solid var(--black-5)',
-                      background: 'var(--black-3)',
-                      color: 'var(--white)',
-                      fontSize: 12,
-                      fontFamily: 'inherit',
-                      outline: 'none',
-                      minWidth: 230,
-                    }}
-                  />
-                </div>
-
-                {/* Filter City */}
-                <select
-                  value={chauffeurFilterCity}
-                  onChange={(e) => setChauffeurFilterCity(e.target.value)}
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: 6,
-                    border: '1px solid var(--black-5)',
-                    background: 'var(--black-3)',
-                    color: 'var(--white)',
-                    fontSize: 12,
-                    fontFamily: 'inherit',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <option value="all">Toutes les villes</option>
-                  <option value="Tunis">Tunis / Grand Tunis</option>
-                  <option value="Sousse">Sousse / Sahel</option>
-                  <option value="Hammamet">Hammamet</option>
-                  <option value="Djerba">Djerba</option>
-                  <option value="Bizerte">Bizerte</option>
-                </select>
-
-                {/* Filter Status */}
-                <select
-                  value={chauffeurFilterStatus}
-                  onChange={(e) => setChauffeurFilterStatus(e.target.value)}
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: 6,
-                    border: '1px solid var(--black-5)',
-                    background: 'var(--black-3)',
-                    color: 'var(--white)',
-                    fontSize: 12,
-                    fontFamily: 'inherit',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <option value="all">Tous les statuts</option>
-                  <option value="active">En service</option>
-                  <option value="inactive">Hors service</option>
-                </select>
-              </div>
-
-              <button
-                className="admin-btn admin-btn--primary"
-                onClick={() => handleOpenChauffeurModal(null)}
-              >
-                <FiPlus size={14} /> Ajouter un chauffeur
-              </button>
-            </div>
-
-            <div className="admin-table-wrap">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>CHAUFFEUR</th>
-                    <th>CONTACT PRO</th>
-                    <th>VÉHICULE VIP ASSIGNÉ</th>
-                    <th>EXPÉRIENCE & NOTE</th>
-                    <th>LIGNES ATTRIBUÉES</th>
-                    <th>STATUT</th>
-                    <th style={{ textAlign: 'right' }}>ACTIONS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredChauffeurs.map((ch) => (
-                    <tr key={ch._id} className="admin-table__row">
-                      {/* Chauffeur identity */}
-                      <td>
-                        <div className="admin-table__vehicle">
-                          <div
-                            className="admin-table__car-img"
-                            style={{
-                              borderRadius: '50%',
-                              overflow: 'hidden',
-                              width: 44,
-                              height: 44,
-                              border: '2px solid var(--gold-pale)',
-                              flexShrink: 0,
-                            }}
-                          >
-                            {ch.avatar ? (
-                              <img
-                                src={ch.avatar}
-                                alt={ch.name}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              />
-                            ) : (
-                              <div
-                                style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  background: 'var(--black-4)',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  color: 'var(--gold)',
-                                  fontWeight: 800,
-                                }}
-                              >
-                                {ch.name?.charAt(0) || 'C'}
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            <div className="admin-table__car-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                              {ch.name}
-                              <span
-                                style={{
-                                  fontSize: 10,
-                                  background: 'rgba(212,160,23,0.15)',
-                                  color: 'var(--gold)',
-                                  padding: '1px 6px',
-                                  borderRadius: 4,
-                                  fontWeight: 700,
-                                }}
-                              >
-                                {ch.city || 'Tunisie'}
-                              </span>
-                            </div>
-                            <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
-                              {(ch.languages || ['Français', 'العربية']).map((lang) => (
-                                <span
-                                  key={lang}
-                                  style={{
-                                    fontSize: 9.5,
-                                    background: 'var(--black-4)',
-                                    color: 'var(--white-70)',
-                                    padding: '1px 5px',
-                                    borderRadius: 3,
-                                    border: '1px solid var(--black-5)',
-                                  }}
-                                >
-                                  {lang}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Contact */}
-                      <td>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                          <a
-                            href={`tel:${ch.phone}`}
-                            style={{
-                              color: 'var(--white)',
-                              textDecoration: 'none',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 5,
-                              fontSize: 12,
-                              fontWeight: 600,
-                            }}
-                          >
-                            <FiPhone size={12} style={{ color: 'var(--gold)' }} />
-                            {ch.phone}
-                          </a>
-                          {ch.email && (
-                            <span style={{ color: 'var(--white-40)', fontSize: 11 }}>
-                              {ch.email}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Vehicle */}
-                      <td>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                          <span style={{ color: 'var(--white)', fontWeight: 700, fontSize: 12.5 }}>
-                            {ch.vehicleModel || 'Berline Prestige'}
-                          </span>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--white-50)' }}>
-                            {ch.vehiclePlate && <span>{ch.vehiclePlate}</span>}
-                            {ch.vehicleColor && <span>· {ch.vehicleColor}</span>}
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Experience & Rating */}
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <span style={{ color: '#fbbf24', fontWeight: 800, fontSize: 13, display: 'flex', alignItems: 'center', gap: 3 }}>
-                            <FiStar size={12} style={{ fill: '#fbbf24' }} /> {ch.rating || 4.95}
-                          </span>
-                          <span style={{ fontSize: 11, color: 'var(--white-40)' }}>
-                            · {ch.experienceYears || 8} ans exp.
-                          </span>
-                        </div>
-                      </td>
-
-                      {/* Assigned routes */}
-                      <td>
-                        {ch.assignedRoutes && ch.assignedRoutes.length > 0 ? (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gold)' }}>
-                              {ch.assignedRoutes.length} liaison{ch.assignedRoutes.length > 1 ? 's' : ''} :
-                            </span>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                              {ch.assignedRoutes.slice(0, 2).map((r, i) => (
-                                <span
-                                  key={i}
-                                  title={`${r.from} ➔ ${r.to}`}
-                                  style={{
-                                    fontSize: 10,
-                                    background: 'rgba(255,255,255,0.06)',
-                                    color: 'var(--white-80)',
-                                    padding: '2px 6px',
-                                    borderRadius: 4,
-                                    maxWidth: 180,
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    border: '1px solid rgba(255,255,255,0.08)',
-                                  }}
-                                >
-                                  {r.from?.split(' ')[0]} ➔ {r.to?.split(' ')[0]}
-                                </span>
-                              ))}
-                              {ch.assignedRoutes.length > 2 && (
-                                <span style={{ fontSize: 10, color: 'var(--white-40)' }}>
-                                  +{ch.assignedRoutes.length - 2}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        ) : (
-                          <span style={{ fontSize: 11, color: 'var(--white-30)', fontStyle: 'italic' }}>
-                            Aucune ligne affectée
-                          </span>
-                        )}
-                      </td>
-
-                      {/* Status Toggle */}
-                      <td>
-                        <Toggle
-                          active={ch.status === 'active' || ch.available}
-                          disabled={togglingChauffeurId === ch._id}
-                          onChange={() => handleToggleChauffeurActive(ch)}
-                        />
-                      </td>
-
-                      {/* Actions */}
-                      <td>
-                        <div className="admin-table__actions" style={{ justifyContent: 'flex-end' }}>
-                          <button
-                            className="admin-table__action"
-                            title="Modifier ce chauffeur"
-                            onClick={() => handleOpenChauffeurModal(ch)}
-                          >
-                            <FiEdit2 size={13} /> Modifier
-                          </button>
-                          <button
-                            className="admin-table__action admin-table__action--danger"
-                            title="Supprimer ce chauffeur"
-                            onClick={() => handleDeleteChauffeur(ch)}
-                          >
-                            <FiTrash2 size={13} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {filteredChauffeurs.length === 0 && (
-                    <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--white-40)' }}>
-                        Aucun chauffeur trouvé pour ces filtres.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* ══════════ TAB 4: RESERVATIONS / DEMANDES (Matches Voitures & Hébergements 1:1) ══════════ */}
@@ -1937,316 +1340,11 @@ export default function ChauffeursAdmin() {
                   </div>
                 </div>
 
-                {/* 2. Chauffeur Agréé */}
                 <div className="apt-form-section">
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
-                    <div>
-                      <h3 className="apt-form-section__title" style={{ margin: 0 }}>2. Chauffeur Professionnel Agréé</h3>
-                      <p style={{ margin: '4px 0 0 0', fontSize: 12, color: 'var(--text-muted)' }}>
-                        Sélectionnez directement l'un de vos chauffeurs enregistrés dans votre flotte.
-                      </p>
-                    </div>
-                    {safeChauffeurs.length > 0 && (
-                      <span className="res-badge" style={{ background: 'rgba(212,175,55,0.15)', color: 'var(--gold)', fontWeight: 600 }}>
-                        {safeChauffeurs.length} chauffeur(s) disponible(s)
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Chauffeur Selector Row */}
-                  <div style={{ marginBottom: 14 }}>
-                    <label className="apt-form-label" style={{ marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <FiUser size={13} style={{ color: 'var(--gold)' }} />
-                      <span>Choisir un chauffeur dans votre liste :</span>
-                    </label>
-                    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                      <div style={{ flex: 1 }}>
-                        <select
-                          className="apt-form-select"
-                          value={selectedChauffeurId}
-                          onChange={(e) => handleSelectChauffeurForRoute(e.target.value)}
-                          style={{
-                            height: 44,
-                            fontSize: 13,
-                            fontWeight: 500,
-                            borderColor: selectedChauffeurId && selectedChauffeurId !== 'manual' ? '#D4AF37' : '#dad3c5',
-                            background: '#FFFFFF',
-                            color: '#191C1F',
-                          }}
-                        >
-                          <option value="">-- Choisir parmi les chauffeurs enregistrés --</option>
-                          {safeChauffeurs.map(ch => (
-                            <option key={ch._id} value={ch._id}>
-                              👤 {ch.name} — {ch.city} ({ch.vehicleModel || 'Berline'}) · ★ {ch.rating || 5.0} · {ch.phone}
-                            </option>
-                          ))}
-                          <option value="manual">✍️ Saisie manuelle personnalisée (hors flotte)</option>
-                        </select>
-                      </div>
-                      <button
-                        type="button"
-                        className="admin-btn admin-btn--outline"
-                        onClick={() => handleOpenChauffeurModal(null)}
-                        title="Créer un nouveau chauffeur et l'ajouter à la base"
-                        style={{
-                          height: 44,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          whiteSpace: 'nowrap',
-                          padding: '0 14px',
-                          fontSize: 12,
-                          borderColor: '#D4AF37',
-                          color: '#A84A3B',
-                          background: '#FFFFFF',
-                          fontWeight: 600
-                        }}
-                      >
-                        <FiPlus size={14} />
-                        <span>Nouveau Chauffeur</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {(() => {
-                    const activeChf = safeChauffeurs.find(c => c._id === selectedChauffeurId) ||
-                      (formData.assignedChauffeur.name ? safeChauffeurs.find(c => c.name?.toLowerCase().trim() === formData.assignedChauffeur.name?.toLowerCase().trim()) : null);
-                    
-                    const isManual = selectedChauffeurId === 'manual' || (!activeChf && !formData.assignedChauffeur.name);
-
-                    return (
-                      <>
-                        {/* VIP Chauffeur Summary Card - High Contrast Luxury Light Style */}
-                        {activeChf && (
-                          <div style={{
-                            padding: '16px 18px',
-                            background: '#FFFFFF',
-                            border: '1.5px solid #E2D9C8',
-                            borderRadius: 12,
-                            boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-                            marginBottom: 16,
-                          }}>
-                            <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-                              <img
-                                src={formData.assignedChauffeur.avatar || activeChf.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80'}
-                                alt={formData.assignedChauffeur.name || activeChf.name}
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80';
-                                }}
-                                style={{
-                                  width: 68,
-                                  height: 68,
-                                  borderRadius: '50%',
-                                  objectFit: 'cover',
-                                  border: '2.5px solid #D4AF37',
-                                  boxShadow: '0 3px 10px rgba(0,0,0,0.12)',
-                                  flexShrink: 0
-                                }}
-                              />
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 5 }}>
-                                  <h4 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#111827', letterSpacing: '-0.2px' }}>
-                                    {formData.assignedChauffeur.name || activeChf.name}
-                                  </h4>
-                                  <span style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: 3,
-                                    fontSize: 12,
-                                    color: '#B45309',
-                                    fontWeight: 700,
-                                    background: 'rgba(212,175,55,0.18)',
-                                    padding: '2px 8px',
-                                    borderRadius: 6,
-                                    border: '1px solid rgba(212,175,55,0.35)',
-                                  }}>
-                                    ★ {formData.assignedChauffeur.rating || activeChf.rating || 4.95}
-                                  </span>
-                                  <span style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: 4,
-                                    fontSize: 11,
-                                    color: '#15803D',
-                                    fontWeight: 600,
-                                    background: 'rgba(34,197,94,0.12)',
-                                    padding: '2px 8px',
-                                    borderRadius: 6,
-                                    border: '1px solid rgba(34,197,94,0.25)',
-                                  }}>
-                                    <FiCheckCircle size={11} /> Chauffeur Agréé
-                                  </span>
-                                </div>
-
-                                <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontSize: 12, color: '#4B5563', marginBottom: 6 }}>
-                                  <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                                    <FiPhone size={13} color="#A84A3B" />
-                                    <strong style={{ color: '#111827' }}>{formData.assignedChauffeur.phone || activeChf.phone}</strong>
-                                  </span>
-                                  <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                                    <FiAward size={13} color="#D4AF37" />
-                                    <span>{formData.assignedChauffeur.experienceYears || activeChf.experienceYears || 8} ans d'expérience</span>
-                                  </span>
-                                  <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                                    <FiMapPin size={13} color="#A84A3B" />
-                                    <span>Base : <strong style={{ color: '#111827' }}>{activeChf.city || 'Tunis'}</strong></span>
-                                  </span>
-                                </div>
-
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, paddingTop: 4, borderTop: '1px solid #F3F4F6' }}>
-                                  <div style={{ fontSize: 12, color: '#6B7280', display: 'flex', gap: 6, alignItems: 'center' }}>
-                                    <span>🗣️ Langues :</span>
-                                    <span style={{ color: '#111827', fontWeight: 600 }}>
-                                      {(activeChf.languages || formData.assignedChauffeur.spokenLanguages || ['Français', 'العربية']).join(', ')}
-                                    </span>
-                                  </div>
-
-                                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleOpenChauffeurModal(activeChf)}
-                                      style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        color: '#A84A3B',
-                                        fontSize: 12,
-                                        fontWeight: 600,
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 4,
-                                        padding: 0
-                                      }}
-                                    >
-                                      <FiEdit2 size={12} /> Modifier la fiche chauffeur
-                                    </button>
-                                    <span style={{ color: '#D1D5DB' }}>·</span>
-                                    <button
-                                      type="button"
-                                      onClick={() => setShowManualChauffeurFields(!showManualChauffeurFields)}
-                                      style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        color: showManualChauffeurFields ? '#A84A3B' : '#6B7280',
-                                        fontSize: 12,
-                                        fontWeight: 500,
-                                        cursor: 'pointer',
-                                        padding: 0,
-                                        textDecoration: 'underline'
-                                      }}
-                                    >
-                                      {showManualChauffeurFields ? 'Masquer la personnalisation' : 'Personnaliser pour ce trajet'}
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Collapsible / Manual Override Form Fields */}
-                        {(showManualChauffeurFields || isManual || !activeChf) && (
-                          <div style={{
-                            padding: '16px',
-                            background: '#FDFCF9',
-                            border: '1.5px solid #E2D9C8',
-                            borderRadius: 10,
-                            marginBottom: 16
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                              <span style={{ fontSize: 12, fontWeight: 700, color: '#A84A3B', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                {activeChf ? 'Surcharge manuelle pour cette ligne spécifique :' : 'Coordonnées du Chauffeur :'}
-                              </span>
-                              {activeChf && (
-                                <button
-                                  type="button"
-                                  onClick={() => setShowManualChauffeurFields(false)}
-                                  style={{ background: 'none', border: 'none', color: '#6B7280', fontSize: 12, cursor: 'pointer', textDecoration: 'underline' }}
-                                >
-                                  Fermer
-                                </button>
-                              )}
-                            </div>
-
-                            <div className="apt-form-row">
-                              <div className="apt-form-field" style={{ flex: 1.2 }}>
-                                <label className="apt-form-label">Nom Complet du Chauffeur *</label>
-                                <input
-                                  type="text"
-                                  className="apt-form-input"
-                                  required
-                                  placeholder="Ex: Hassen Trabelsi"
-                                  value={formData.assignedChauffeur.name}
-                                  onChange={e => setFormData({
-                                    ...formData,
-                                    assignedChauffeur: { ...formData.assignedChauffeur, name: e.target.value }
-                                  })}
-                                />
-                              </div>
-                              <div className="apt-form-field" style={{ flex: 1 }}>
-                                <label className="apt-form-label">Téléphone WhatsApp *</label>
-                                <input
-                                  type="text"
-                                  className="apt-form-input"
-                                  required
-                                  placeholder="+216 22 555 120"
-                                  value={formData.assignedChauffeur.phone}
-                                  onChange={e => setFormData({
-                                    ...formData,
-                                    assignedChauffeur: { ...formData.assignedChauffeur, phone: e.target.value }
-                                  })}
-                                />
-                              </div>
-                            </div>
-
-                            <div className="apt-form-row">
-                              <div className="apt-form-field" style={{ flex: 1 }}>
-                                <label className="apt-form-label">Années d'Expérience</label>
-                                <input
-                                  type="number"
-                                  className="apt-form-input"
-                                  min={1}
-                                  value={formData.assignedChauffeur.experienceYears}
-                                  onChange={e => setFormData({
-                                    ...formData,
-                                    assignedChauffeur: { ...formData.assignedChauffeur, experienceYears: Number(e.target.value) }
-                                  })}
-                                />
-                              </div>
-                              <div className="apt-form-field" style={{ flex: 1 }}>
-                                <label className="apt-form-label">Note Moyenne (sur 5.0)</label>
-                                <input
-                                  type="number"
-                                  step="0.05"
-                                  min="3.0"
-                                  max="5.0"
-                                  className="apt-form-input"
-                                  value={formData.assignedChauffeur.rating}
-                                  onChange={e => setFormData({
-                                    ...formData,
-                                    assignedChauffeur: { ...formData.assignedChauffeur, rating: Number(e.target.value) }
-                                  })}
-                                />
-                              </div>
-                              <div className="apt-form-field" style={{ flex: 1.5 }}>
-                                <label className="apt-form-label">Photo / Avatar URL</label>
-                                <input
-                                  type="text"
-                                  className="apt-form-input"
-                                  value={formData.assignedChauffeur.avatar}
-                                  onChange={e => setFormData({
-                                    ...formData,
-                                    assignedChauffeur: { ...formData.assignedChauffeur, avatar: e.target.value }
-                                  })}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    );
-                  })()}
+                  <h3 className="apt-form-section__title">2. Chauffeur privé inclus</h3>
+                  <p style={{ margin: 0, fontSize: 13, color: 'var(--white-70)' }}>
+                    Un chauffeur privé est inclus automatiquement pour cette ligne.
+                  </p>
                 </div>
 
                 {/* 3. Véhicule Dédié */}
@@ -2254,7 +1352,7 @@ export default function ChauffeursAdmin() {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                     <h3 className="apt-form-section__title" style={{ margin: 0 }}>3. Véhicule de Prestige Dédié</h3>
                     <span style={{ fontSize: 11, color: 'var(--gold)', fontWeight: 600 }}>
-                      Auto-renseigné selon le chauffeur choisi
+                      Véhicule utilisé pour cette ligne
                     </span>
                   </div>
 
@@ -2318,342 +1416,6 @@ export default function ChauffeursAdmin() {
                   className="admin-btn admin-btn--primary"
                 >
                   {saving ? 'Enregistrement...' : editingRoute ? 'Enregistrer les Modifications' : 'Créer la Ligne Fixe'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ══════════ MODAL: ADD / EDIT CHAUFFEUR (Matches ApartmentModal 1:1) ══════════ */}
-      {isChauffeurModalOpen && (
-        <div className="apt-modal-overlay" onClick={() => setIsChauffeurModalOpen(false)}>
-          <div className="apt-modal-card" style={{ maxWidth: 700 }} onClick={e => e.stopPropagation()}>
-            {/* Header */}
-            <div className="apt-modal-header">
-              <div className="apt-modal-header__info">
-                <span className="apt-modal-badge">{editingChauffeur ? 'Édition Profil Chauffeur' : 'Nouveau Chauffeur VIP'}</span>
-                <h2 className="apt-modal-title">
-                  {editingChauffeur ? editingChauffeur.name : 'Ajouter un Chauffeur Agréé'}
-                </h2>
-              </div>
-              <button className="apt-modal-close" onClick={() => setIsChauffeurModalOpen(false)}>
-                <FiX size={20} />
-              </button>
-            </div>
-
-            {chauffeurModalError && (
-              <div className="apt-modal-alert apt-modal-alert--error">
-                <FiAlertCircle size={16} />
-                <span>{chauffeurModalError}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSaveChauffeurModal} className="apt-modal-form">
-              <div className="apt-modal-scroll">
-                {/* 1. Identité & Contact */}
-                <div className="apt-form-section">
-                  <h3 className="apt-form-section__title">1. Identité & Contact Professionnel</h3>
-
-                  <div className="apt-form-row">
-                    <div className="apt-form-field" style={{ flex: 1.2 }}>
-                      <label className="apt-form-label">Nom Complet du Chauffeur *</label>
-                      <input
-                        type="text"
-                        className="apt-form-input"
-                        required
-                        placeholder="Ex: Hassen Trabelsi"
-                        value={chauffeurFormData.name}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, name: e.target.value })}
-                      />
-                    </div>
-                    <div className="apt-form-field" style={{ flex: 1 }}>
-                      <label className="apt-form-label">Téléphone WhatsApp *</label>
-                      <input
-                        type="text"
-                        className="apt-form-input"
-                        required
-                        placeholder="+216 22 555 120"
-                        value={chauffeurFormData.phone}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, phone: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="apt-form-row">
-                    <div className="apt-form-field" style={{ flex: 1.2 }}>
-                      <label className="apt-form-label">Email Professionnel</label>
-                      <input
-                        type="email"
-                        className="apt-form-input"
-                        placeholder="hassen.trabelsi@africanrentcar.tn"
-                        value={chauffeurFormData.email}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, email: e.target.value })}
-                      />
-                    </div>
-                    <div className="apt-form-field" style={{ flex: 1 }}>
-                      <label className="apt-form-label">Ville / Région de Base</label>
-                      <select
-                        className="apt-form-select"
-                        value={chauffeurFormData.city}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, city: e.target.value })}
-                      >
-                        <option value="Tunis">Tunis / Grand Tunis</option>
-                        <option value="Sousse">Sousse / Sahel</option>
-                        <option value="Hammamet">Hammamet</option>
-                        <option value="Djerba">Djerba</option>
-                        <option value="Monastir">Monastir</option>
-                        <option value="Bizerte">Bizerte</option>
-                        <option value="Tozeur">Tozeur / Sud</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. Véhicule VIP Dédié */}
-                <div className="apt-form-section">
-                  <h3 className="apt-form-section__title">2. Véhicule VIP Rattaché</h3>
-
-                  <div className="apt-form-row">
-                    <div className="apt-form-field" style={{ flex: 1.5 }}>
-                      <label className="apt-form-label">Marque & Modèle du Véhicule *</label>
-                      <input
-                        type="text"
-                        className="apt-form-input"
-                        required
-                        placeholder="Ex: Mercedes-Benz Classe E 2025"
-                        value={chauffeurFormData.vehicleModel}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, vehicleModel: e.target.value })}
-                      />
-                    </div>
-                    <div className="apt-form-field" style={{ flex: 1 }}>
-                      <label className="apt-form-label">Catégorie</label>
-                      <select
-                        className="apt-form-select"
-                        value={chauffeurFormData.vehicleType}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, vehicleType: e.target.value })}
-                      >
-                        <option value="business-sedan">Berline Business</option>
-                        <option value="prestige">Berline Prestige</option>
-                        <option value="vip-van">Van VIP (7-8 places)</option>
-                        <option value="comfort-sedan">Berline Confort</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="apt-form-row">
-                    <div className="apt-form-field" style={{ flex: 1 }}>
-                      <label className="apt-form-label">Immatriculation / Plaque</label>
-                      <input
-                        type="text"
-                        className="apt-form-input"
-                        placeholder="Ex: 242 TU 8890"
-                        value={chauffeurFormData.vehiclePlate}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, vehiclePlate: e.target.value })}
-                      />
-                    </div>
-                    <div className="apt-form-field" style={{ flex: 1 }}>
-                      <label className="apt-form-label">Couleur de la carrosserie</label>
-                      <input
-                        type="text"
-                        className="apt-form-input"
-                        placeholder="Ex: Noir Obsidienne"
-                        value={chauffeurFormData.vehicleColor}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, vehicleColor: e.target.value })}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. Expérience, Langues & Évaluation */}
-                <div className="apt-form-section">
-                  <h3 className="apt-form-section__title">3. Expérience, Note & Langues Parlées</h3>
-
-                  <div className="apt-form-row">
-                    <div className="apt-form-field" style={{ flex: 1 }}>
-                      <label className="apt-form-label">Années d'Expérience</label>
-                      <input
-                        type="number"
-                        className="apt-form-input"
-                        min={1}
-                        max={40}
-                        value={chauffeurFormData.experienceYears}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, experienceYears: Number(e.target.value) })}
-                      />
-                    </div>
-                    <div className="apt-form-field" style={{ flex: 1 }}>
-                      <label className="apt-form-label">Note Moyenne (sur 5.0)</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="3.0"
-                        max="5.0"
-                        className="apt-form-input"
-                        value={chauffeurFormData.rating}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, rating: Number(e.target.value) })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="apt-form-field" style={{ marginTop: 8 }}>
-                    <label className="apt-form-label">Langues Maîtrisées (cliquez pour sélectionner)</label>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
-                      {['Français', 'العربية', 'English', 'Italiano', 'Deutsch', 'Español', 'Русский'].map((lang) => {
-                        const isSelected = (chauffeurFormData.languages || []).includes(lang);
-                        return (
-                          <button
-                            key={lang}
-                            type="button"
-                            onClick={() => {
-                              const cur = chauffeurFormData.languages || [];
-                              const next = isSelected ? cur.filter(l => l !== lang) : [...cur, lang];
-                              setChauffeurFormData({ ...chauffeurFormData, languages: next });
-                            }}
-                            style={{
-                              padding: '5px 12px',
-                              borderRadius: 20,
-                              fontSize: 12,
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              border: isSelected ? '1px solid var(--gold)' : '1px solid var(--black-5)',
-                              background: isSelected ? 'rgba(212,160,23,0.18)' : 'var(--black-3)',
-                              color: isSelected ? 'var(--gold)' : 'var(--white-60)',
-                              transition: 'all 0.2s',
-                            }}
-                          >
-                            {isSelected ? '✓ ' : '+ '}{lang}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                {/* 4. Photo / Avatar & Présentation */}
-                <div className="apt-form-section">
-                  <h3 className="apt-form-section__title">4. Photo de Profil & Présentation VIP</h3>
-
-                  <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 12 }}>
-                    <div
-                      style={{
-                        width: 60,
-                        height: 60,
-                        borderRadius: '50%',
-                        overflow: 'hidden',
-                        border: '2px solid var(--gold)',
-                        flexShrink: 0,
-                        background: 'var(--black-4)',
-                      }}
-                    >
-                      {chauffeurFormData.avatar ? (
-                        <img
-                          src={chauffeurFormData.avatar}
-                          alt="Aperçu"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      ) : (
-                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
-                          <FiUser size={24} />
-                        </div>
-                      )}
-                    </div>
-
-                    <div style={{ flex: 1 }}>
-                      <label className="apt-form-label">URL de la photo de profil</label>
-                      <input
-                        type="text"
-                        className="apt-form-input"
-                        placeholder="https://..."
-                        value={chauffeurFormData.avatar}
-                        onChange={e => setChauffeurFormData({ ...chauffeurFormData, avatar: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: 12 }}>
-                    <label className="apt-form-label" style={{ fontSize: 11, color: 'var(--white-50)' }}>
-                      Ou choisir une photo prédéfinie :
-                    </label>
-                    <div style={{ display: 'flex', gap: 8, marginTop: 6, flexWrap: 'wrap' }}>
-                      {[
-                        { name: 'Hassen', url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80' },
-                        { name: 'Kais', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
-                        { name: 'Sami', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80' },
-                        { name: 'Nidhal', url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80' },
-                        { name: 'Yassine', url: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80' },
-                        { name: 'Amine', url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80' },
-                      ].map((preset) => (
-                        <button
-                          key={preset.name}
-                          type="button"
-                          onClick={() => setChauffeurFormData({ ...chauffeurFormData, avatar: preset.url })}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 5,
-                            padding: '3px 8px',
-                            borderRadius: 6,
-                            border: chauffeurFormData.avatar === preset.url ? '1px solid var(--gold)' : '1px solid var(--black-5)',
-                            background: chauffeurFormData.avatar === preset.url ? 'rgba(212,160,23,0.15)' : 'var(--black-4)',
-                            color: 'var(--white)',
-                            fontSize: 11,
-                            cursor: 'pointer',
-                          }}
-                        >
-                          <img src={preset.url} alt={preset.name} style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover' }} />
-                          <span>{preset.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="apt-form-field">
-                    <label className="apt-form-label">Biographie / Présentation VIP</label>
-                    <textarea
-                      className="apt-form-textarea"
-                      rows={3}
-                      placeholder="Chauffeur d’élite certifié pour liaisons aéroport, transferts interurbains et délégations VIP..."
-                      value={chauffeurFormData.bio}
-                      onChange={e => setChauffeurFormData({ ...chauffeurFormData, bio: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                {/* 5. Statut & Disponibilité */}
-                <div className="apt-form-section">
-                  <h3 className="apt-form-section__title">5. Statut & Disponibilité</h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <label className="apt-form-label" style={{ margin: 0 }}>Statut en service (disponible pour les courses) :</label>
-                    <Toggle
-                      active={chauffeurFormData.status === 'active'}
-                      onChange={(act) => setChauffeurFormData({
-                        ...chauffeurFormData,
-                        status: act ? 'active' : 'inactive',
-                        available: act,
-                      })}
-                    />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: chauffeurFormData.status === 'active' ? 'var(--success)' : 'var(--danger)' }}>
-                      {chauffeurFormData.status === 'active' ? 'En service' : 'Hors service / En repos'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div className="apt-modal-footer" style={{ padding: '16px 24px', borderTop: '1px solid var(--black-4)', display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-                <button
-                  type="button"
-                  className="admin-btn admin-btn--outline"
-                  onClick={() => setIsChauffeurModalOpen(false)}
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  disabled={savingChauffeur}
-                  className="admin-btn admin-btn--primary"
-                >
-                  {savingChauffeur ? 'Enregistrement...' : editingChauffeur ? 'Enregistrer les Modifications' : 'Créer le Profil Chauffeur'}
                 </button>
               </div>
             </form>

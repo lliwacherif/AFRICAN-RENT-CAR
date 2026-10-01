@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -59,10 +60,10 @@ const FUELS = [
   { id: 'Électrique', label: '100% Électrique' },
 ];
 
-function fmt(dateStr) {
+function fmt(dateStr, locale = 'fr-FR') {
   if (!dateStr) return '—';
   try {
-    return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    return new Date(dateStr).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
   } catch {
     return dateStr;
   }
@@ -103,10 +104,12 @@ function getCarFeatures(car) {
 }
 
 export default function SearchResults() {
+  const tr = useText()
+
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, locale } = useLanguage();
   const { formatPrice } = useCurrency();
 
   // URL state
@@ -253,20 +256,20 @@ export default function SearchResults() {
           <div className="mb-6 text-center sm:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-semibold mb-3">
               <Sparkles className="w-3.5 h-3.5 text-[#F4A261]" />
-              <span>Flotte Haut de Gamme • Prise en charge VIP aux aéroports</span>
+              <span>{tr("Flotte Haut de Gamme • Prise en charge VIP aux aéroports")}</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
-              Location de Voitures Récentes en Tunisie
+              {tr("Location de Voitures Récentes en Tunisie")}
             </h1>
             <p className="text-sm sm:text-base text-white/70 mt-1 max-w-2xl">
-              Modèles 2025/2026 certifiés, kilométrage adapté, livraison sur mesure sans file d'attente.
+              {tr("Modèles 2025/2026 certifiés, kilométrage adapté, livraison sur mesure sans file d'attente.")}
             </p>
           </div>
 
           {/* Floating Pill Search Bar (Matching Screenshot 1) */}
           <div className="bg-[#FAF9F5] p-2 sm:p-2.5 rounded-3xl lg:rounded-full shadow-[0_16px_40px_rgba(0,0,0,0.25)] border border-white/80 max-w-6xl">
             <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2">
-              
+
               {/* Pickup Agency / Location */}
               <div className="flex-1 flex items-center gap-3 px-4 py-2 rounded-2xl lg:rounded-full bg-white/80 border border-[#EBE6DC] hover:border-[#A84A3B]/40 transition-colors min-w-0">
                 <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#A84A3B] shadow-xs shrink-0">
@@ -294,16 +297,16 @@ export default function SearchResults() {
                     {parcs.length > 0 ? (
                       parcs.map((p) => (
                         <option key={p._id || p.id} value={p._id || p.id} className="bg-white text-[#191C1F]">
-                          {p.name} {p.city ? `(${p.city})` : ''}
+                          {tr(p.name)} {tr(p.city ? `(${p.city})` : '')}
                         </option>
                       ))
                     ) : (
                       <>
-                        <option value="tunis-carthage" className="bg-white text-[#191C1F]">Aéroport International Tunis–Carthage (TUN)</option>
-                        <option value="djerba" className="bg-white text-[#191C1F]">Aéroport Djerba–Zarzis (DJE)</option>
-                        <option value="monastir" className="bg-white text-[#191C1F]">Aéroport Monastir Habib Bourguiba (MIR)</option>
-                        <option value="hammamet" className="bg-white text-[#191C1F]">Agence Hammamet Centre</option>
-                        <option value="sousse" className="bg-white text-[#191C1F]">Agence Sousse Corniche</option>
+                        <option value="tunis-carthage" className="bg-white text-[#191C1F]">{tr("Aéroport International Tunis–Carthage (TUN)")}</option>
+                        <option value="djerba" className="bg-white text-[#191C1F]">{tr("Aéroport Djerba–Zarzis (DJE)")}</option>
+                        <option value="monastir" className="bg-white text-[#191C1F]">{tr("Aéroport Monastir Habib Bourguiba (MIR)")}</option>
+                        <option value="hammamet" className="bg-white text-[#191C1F]">{tr("Agence Hammamet Centre")}</option>
+                        <option value="sousse" className="bg-white text-[#191C1F]">{tr("Agence Sousse Corniche")}</option>
                       </>
                     )}
                   </select>
@@ -355,9 +358,9 @@ export default function SearchResults() {
                   onChange={(e) => setSearchAge(e.target.value)}
                   className="bg-transparent font-bold text-xs text-[#191C1F] focus:outline-hidden cursor-pointer"
                 >
-                  <option value="25">25+ ans</option>
-                  <option value="23">21-24 ans</option>
-                  <option value="30">30+ ans</option>
+                  <option value="25">{tr("25+ ans")}</option>
+                  <option value="23">{tr("21-24 ans")}</option>
+                  <option value="30">{tr("30+ ans")}</option>
                 </select>
               </div>
 
@@ -377,7 +380,7 @@ export default function SearchResults() {
 
       {/* 3. MAIN LAYOUT: SIDEBAR (FILTERS) + MAIN LISTINGS */}
       <div id="cars-main-grid" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        
+
         {/* Mobile Filter Trigger Button */}
         <div className="lg:hidden mb-4 flex items-center justify-between">
           <button
@@ -385,7 +388,7 @@ export default function SearchResults() {
             className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#EBE6DC] text-sm font-bold text-[#191C1F] shadow-xs cursor-pointer"
           >
             <SlidersHorizontal className="w-4 h-4 text-[#A84A3B]" />
-            <span>Filtres & Préférences ({pagination?.total ?? vehicles.length})</span>
+            <span>{tr("Filtres & Préférences (")}{tr(pagination?.total ?? vehicles.length)})</span>
           </button>
 
           {/* Toggle View for Mobile */}
@@ -393,7 +396,7 @@ export default function SearchResults() {
             <button
               onClick={() => handleViewModeChange('list')}
               className={`view-toggle-item ${viewMode === 'list' ? 'active' : 'inactive'}`}
-              title="Vue Liste"
+              title={tr("Vue Liste")}
             >
               <LayoutList className="w-4 h-4" />
               <span className="hidden sm:inline">{t('view.list', 'Liste')}</span>
@@ -401,7 +404,7 @@ export default function SearchResults() {
             <button
               onClick={() => handleViewModeChange('grid')}
               className={`view-toggle-item ${viewMode === 'grid' ? 'active' : 'inactive'}`}
-              title="Vue Mosaïque"
+              title={tr("Vue Mosaïque")}
             >
               <LayoutGrid className="w-4 h-4" />
               <span className="hidden sm:inline">{t('view.grid', 'Mosaïque')}</span>
@@ -410,10 +413,10 @@ export default function SearchResults() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
+
           {/* ================= LEFT SIDEBAR (FILTERS) ================= */}
           <aside className={`lg:col-span-4 xl:col-span-3 space-y-6 ${mobileFilterOpen ? 'block' : 'hidden lg:block'}`}>
-            
+
             {/* Trip Summary Card */}
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-[#EBE6DC]">
@@ -421,29 +424,29 @@ export default function SearchResults() {
                   {t('searchResults.recap', 'Récapitulatif')}
                 </span>
                 <span className="text-xs font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 px-2 py-0.5 rounded-full">
-                  {searchDays} {searchDays > 1 ? t('searchResults.days', 'jours') : t('searchResults.day', 'jour')}
+                  {tr(searchDays)} {tr(searchDays > 1 ? t('searchResults.days', 'jours') : t('searchResults.day', 'jour'))}
                 </span>
               </div>
               <div className="mt-3 space-y-2.5 text-xs text-[#4A525A]">
                 <div className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 text-[#A84A3B] shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-bold text-[#191C1F]">{currentAgencyName}</p>
-                    <p className="text-[11px] text-[#727D88]">Accueil hall ou livraison hôtel</p>
+                    <p className="font-bold text-[#191C1F]">{tr(currentAgencyName)}</p>
+                    <p className="text-[11px] text-[#727D88]">{tr("Accueil hall ou livraison hôtel")}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
                   <Clock className="w-4 h-4 text-[#2C3E56] shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-bold text-[#191C1F]">Du {fmt(searchPickup)} au {fmt(searchDropoff)}</p>
-                    <p className="text-[11px] text-[#727D88]">Restitution flexible 24/7</p>
+                    <p className="font-bold text-[#191C1F]">{tr("Du")} {fmt(searchPickup, locale)} {tr("au")} {fmt(searchDropoff, locale)}</p>
+                    <p className="text-[11px] text-[#727D88]">{tr("Restitution flexible 24/7")}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
                   <User className="w-4 h-4 text-[#727D88] shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-bold text-[#191C1F]">Conducteur : {effectiveAge} ans</p>
-                    <p className="text-[11px] text-[#727D88]">Assurance tous risques disponible</p>
+                    <p className="font-bold text-[#191C1F]">{tr("Conducteur :")} {tr(effectiveAge)} {tr("ans")}</p>
+                    <p className="text-[11px] text-[#727D88]">{tr("Assurance tous risques disponible")}</p>
                   </div>
                 </div>
               </div>
@@ -451,7 +454,7 @@ export default function SearchResults() {
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="mt-4 w-full py-2 rounded-xl text-xs font-bold text-[#2C3E56] bg-[#F8F7EE] hover:bg-[#EBE6DC] transition-colors cursor-pointer"
               >
-                Modifier les dates ou l'agence
+                {tr("Modifier les dates ou l'agence")}
               </button>
             </div>
 
@@ -466,7 +469,7 @@ export default function SearchResults() {
                     onClick={() => setSelectedCategory('all')}
                     className="text-[11px] font-bold text-[#A84A3B] hover:underline cursor-pointer"
                   >
-                    Effacer
+                    {tr("Effacer")}
                   </button>
                 )}
               </div>
@@ -488,11 +491,11 @@ export default function SearchResults() {
                           : 'text-[#4A525A] hover:bg-[#F8F7EE] hover:text-[#191C1F]'
                       }`}
                     >
-                      <span>{cat.label}</span>
+                      <span>{tr(cat.label)}</span>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                         isActive ? 'bg-white/25 text-white' : 'bg-[#EBE6DC] text-[#727D88]'
                       }`}>
-                        {count}
+                        {tr(count)}
                       </span>
                     </button>
                   );
@@ -544,7 +547,7 @@ export default function SearchResults() {
                           : 'bg-[#F8F7EE] text-[#4A525A] hover:bg-[#EBE6DC]'
                       }`}
                     >
-                      {tItem.label}
+                      {tr(tItem.label)}
                     </button>
                   );
                 })}
@@ -569,7 +572,7 @@ export default function SearchResults() {
                       onChange={() => setSelectedFuel(fItem.id)}
                       className="accent-[#A84A3B] w-4 h-4 cursor-pointer"
                     />
-                    <span>{fItem.label}</span>
+                    <span>{tr(fItem.label)}</span>
                   </label>
                 ))}
               </div>
@@ -588,18 +591,18 @@ export default function SearchResults() {
 
           {/* ================= RIGHT MAIN LISTINGS ================= */}
           <main className="lg:col-span-8 xl:col-span-9 space-y-6">
-            
+
             {/* Header bar with Count, Sort and Toggle [ Liste | Mosaïque ] */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#EBE6DC] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-extrabold text-[#191C1F] font-display">
-                  {loading
+                  {tr(loading
                     ? 'Recherche des véhicules...'
-                    : `${pagination?.total ?? vehicles.length} véhicule${vehicles.length > 1 ? 's' : ''} disponible${vehicles.length > 1 ? 's' : ''}`
+                    : `${pagination?.total ?? vehicles.length} véhicule${vehicles.length > 1 ? 's' : ''} disponible${vehicles.length > 1 ? 's' : ''}`)
                   }
                 </h2>
                 <p className="text-xs text-[#727D88] mt-0.5">
-                  Tarifs calculés pour <strong className="text-[#191C1F]">{searchDays} jours</strong> de location • Zéro frais cachés
+                  {tr("Tarifs calculés pour")} <strong className="text-[#191C1F]">{tr(searchDays)} {tr("jours")}</strong> {tr("de location • Zéro frais cachés")}
                 </p>
               </div>
 
@@ -612,9 +615,9 @@ export default function SearchResults() {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="bg-transparent font-bold text-xs text-[#191C1F] focus:outline-hidden cursor-pointer"
                   >
-                    <option value="rating">Mieux notés</option>
-                    <option value="price_asc">Prix croissant</option>
-                    <option value="price_desc">Prix décroissant</option>
+                    <option value="rating">{tr("Mieux notés")}</option>
+                    <option value="price_asc">{tr("Prix croissant")}</option>
+                    <option value="price_desc">{tr("Prix décroissant")}</option>
                   </select>
                 </div>
 
@@ -623,7 +626,7 @@ export default function SearchResults() {
                   <button
                     onClick={() => handleViewModeChange('list')}
                     className={`view-toggle-item ${viewMode === 'list' ? 'active' : 'inactive'}`}
-                    title="Affichage en Liste"
+                    title={tr("Affichage en Liste")}
                   >
                     <LayoutList className="w-4 h-4" />
                     <span className="hidden sm:inline">{t('view.list', 'Liste')}</span>
@@ -631,7 +634,7 @@ export default function SearchResults() {
                   <button
                     onClick={() => handleViewModeChange('grid')}
                     className={`view-toggle-item ${viewMode === 'grid' ? 'active' : 'inactive'}`}
-                    title="Affichage en Mosaïque"
+                    title={tr("Affichage en Mosaïque")}
                   >
                     <LayoutGrid className="w-4 h-4" />
                     <span className="hidden sm:inline">{t('view.grid', 'Mosaïque')}</span>
@@ -645,13 +648,13 @@ export default function SearchResults() {
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-center justify-between text-xs font-semibold">
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-                  <span>{error}</span>
+                  <span>{tr(error)}</span>
                 </div>
                 <button
                   onClick={fetchVehicles}
                   className="px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
                 >
-                  Réessayer
+                  {tr("Réessayer")}
                 </button>
               </div>
             )}
@@ -685,7 +688,7 @@ export default function SearchResults() {
                   {t('searchResults.noCarsFound', 'Aucun véhicule ne correspond à vos filtres')}
                 </h3>
                 <p className="text-sm text-[#727D88] mt-1 max-w-md mx-auto">
-                  Essayez d'augmenter votre budget ou de sélectionner une autre catégorie de véhicule.
+                  {tr("Essayez d'augmenter votre budget ou de sélectionner une autre catégorie de véhicule.")}
                 </p>
                 <button
                   onClick={resetFilters}
@@ -713,7 +716,7 @@ export default function SearchResults() {
                       <div className="md:w-72 lg:w-80 shrink-0 relative bg-neutral-900 overflow-hidden min-h-[220px] md:min-h-full">
                         <img
                           src={carImg}
-                          alt={car.name}
+                          alt={tr(car.name)}
                           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
@@ -721,11 +724,11 @@ export default function SearchResults() {
                         {/* Top Badges */}
                         <div className="absolute top-3 left-3 flex items-center gap-2">
                           <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {car.category}
+                            {tr(car.category)}
                           </span>
                           {car.featured && (
                             <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#A84A3B] text-white shadow-xs">
-                              ⭐ Coup de cœur
+                              {tr("⭐ Coup de cœur")}
                             </span>
                           )}
                         </div>
@@ -734,14 +737,14 @@ export default function SearchResults() {
                         <button
                           onClick={() => toggleFavorite(car, 'car')}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-neutral-700 hover:text-[#A84A3B] transition-colors cursor-pointer"
-                          title={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+                          title={tr(isFav ? "Retirer des favoris" : "Ajouter aux favoris")}
                         >
                           <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A84A3B] text-[#A84A3B]' : ''}`} />
                         </button>
 
                         {/* Year pill on image */}
                         <div className="absolute bottom-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-black/60 backdrop-blur-md text-white border border-white/20">
-                          Année {car.year || 2025} • {car.brand}
+                          {tr("Année")} {tr(car.year || 2025)} • {tr(car.brand)}
                         </div>
                       </div>
 
@@ -752,14 +755,14 @@ export default function SearchResults() {
                           <div className="flex items-start justify-between gap-3 mb-2">
                             <div>
                               <h3 className="text-xl font-extrabold text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors">
-                                {car.name}
+                                {tr(car.name)}
                               </h3>
-                              <p className="text-xs text-[#727D88] line-clamp-1">{car.tagline || `${car.category} moderne et économique`}</p>
+                              <p className="text-xs text-[#727D88] line-clamp-1">{tr(car.tagline || `${car.category} moderne et économique`)}</p>
                             </div>
 
                             <div className="flex items-center gap-1.5 shrink-0 bg-[#F8F7EE] px-2.5 py-1 rounded-xl border border-[#EBE6DC]">
                               <span className="text-xs font-black text-[#A84A3B]">★ {(car.rating || 4.9).toFixed(2)}</span>
-                              <span className="text-[10px] text-[#727D88]">({car.reviewsCount || 28} avis)</span>
+                              <span className="text-[10px] text-[#727D88]">({tr(car.reviewsCount || 28)} {tr("avis)")}</span>
                             </div>
                           </div>
 
@@ -767,30 +770,30 @@ export default function SearchResults() {
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 my-3 py-2.5 px-3 rounded-2xl bg-[#F8F7EE]/80 border border-[#EBE6DC]/80 text-xs text-[#4A525A]">
                             <div className="flex items-center gap-1.5">
                               <Gauge className="w-3.5 h-3.5 text-[#A84A3B]" />
-                              <span className="font-semibold">{car.transmission || car.specs?.transmission || 'Manuelle'}</span>
+                              <span className="font-semibold">{tr(car.transmission || car.specs?.transmission || 'Manuelle')}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Fuel className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span className="font-semibold">{car.fuel || car.specs?.fuel || 'Essence'}</span>
+                              <span className="font-semibold">{tr(car.fuel || car.specs?.fuel || 'Essence')}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Users className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span className="font-semibold">{car.seats || car.specs?.seats || 5} places</span>
+                              <span className="font-semibold">{tr(car.seats || car.specs?.seats || 5)} {tr("places")}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Briefcase className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span className="font-semibold">{car.bags || car.specs?.luggage || 2} bagages</span>
+                              <span className="font-semibold">{tr(car.bags || car.specs?.luggage || 2)} {tr("bagages")}</span>
                             </div>
                           </div>
 
                           {/* Equipment & Features Pills */}
                           <div className="flex flex-wrap gap-1.5 text-[11px] mb-3">
                             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-[#EBE6DC] text-[#4A525A] font-medium">
-                              <Snowflake className="w-3 h-3 text-sky-600" /> Climatisation
+                              <Snowflake className="w-3 h-3 text-sky-600" /> {tr("Climatisation")}
                             </span>
                             {getCarFeatures(car).slice(0, 3).map((feat, idx) => (
                               <span key={idx} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-[#EBE6DC] text-[#4A525A] font-medium">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {feat}
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {tr(feat)}
                               </span>
                             ))}
                           </div>
@@ -808,16 +811,16 @@ export default function SearchResults() {
                         <div>
                           <div className="text-right mb-1">
                             <p className="text-[11px] uppercase tracking-wider font-bold text-[#727D88]">
-                              {t('searchResults.totalPrice', 'Prix total')} ({searchDays} {t('searchResults.days', 'j')})
+                              {t('searchResults.totalPrice', 'Prix total')} ({tr(searchDays)} {t('searchResults.days', 'j')})
                             </p>
                             <p className="text-2xl font-black text-[#191C1F] font-display">
                               {formatPrice(totalTND, isRtl)}
                             </p>
                           </div>
                           <p className="text-right text-xs font-semibold text-[#A84A3B]">
-                            soit {formatPrice(car.pricePerDay, isRtl)} / {t('searchResults.day', 'jour')}
+                            {tr("soit")} {formatPrice(car.pricePerDay, isRtl)} / {t('searchResults.day', 'jour')}
                           </p>
-                          <p className="text-right text-[10px] text-[#727D88] mt-0.5">Taxes et assurances incluses</p>
+                          <p className="text-right text-[10px] text-[#727D88] mt-0.5">{tr("Taxes et assurances incluses")}</p>
                         </div>
 
                         <div className="space-y-2 mt-4">
@@ -843,7 +846,7 @@ export default function SearchResults() {
                           <div className="pt-1 text-center">
                             <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#727D88]">
                               <CreditCard className="w-3.5 h-3.5 text-[#A84A3B]" />
-                              Payer l'acompte avec Click to Pay
+                              {tr("Payer l'acompte avec Click to Pay")}
                             </span>
                           </div>
                         </div>
@@ -872,7 +875,7 @@ export default function SearchResults() {
                       <div className="relative aspect-16/10 bg-neutral-900 overflow-hidden">
                         <img
                           src={carImg}
-                          alt={car.name}
+                          alt={tr(car.name)}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
@@ -880,7 +883,7 @@ export default function SearchResults() {
                         {/* Category badge */}
                         <div className="absolute top-3 left-3 flex items-center gap-1.5">
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {car.category}
+                            {tr(car.category)}
                           </span>
                         </div>
 
@@ -888,13 +891,13 @@ export default function SearchResults() {
                         <button
                           onClick={() => toggleFavorite(car, 'car')}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-neutral-700 hover:text-[#A84A3B] transition-colors cursor-pointer"
-                          title={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+                          title={tr(isFav ? "Retirer des favoris" : "Ajouter aux favoris")}
                         >
                           <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A84A3B] text-[#A84A3B]' : ''}`} />
                         </button>
 
                         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs">
-                          <span className="font-extrabold">{car.brand} • {car.year || 2025}</span>
+                          <span className="font-extrabold">{tr(car.brand)} • {tr(car.year || 2025)}</span>
                           <span className="bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[10px] font-bold text-[#F4A261]">
                             ★ {(car.rating || 4.9).toFixed(2)}
                           </span>
@@ -905,34 +908,34 @@ export default function SearchResults() {
                       <div className="p-5 flex-1 flex flex-col justify-between">
                         <div>
                           <h3 className="font-extrabold text-lg text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors">
-                            {car.name}
+                            {tr(car.name)}
                           </h3>
                           <p className="text-xs text-[#727D88] line-clamp-1 mt-0.5">
-                            {car.tagline || `${car.category} grand confort`}
+                            {tr(car.tagline || `${car.category} grand confort`)}
                           </p>
 
                           {/* Compact Specs Grid */}
                           <div className="grid grid-cols-2 gap-2 my-3 py-2 px-2.5 rounded-xl bg-[#F8F7EE] text-[11px] text-[#4A525A] font-semibold">
                             <div className="flex items-center gap-1.5">
                               <Gauge className="w-3.5 h-3.5 text-[#A84A3B]" />
-                              <span>{car.transmission || car.specs?.transmission || 'Manuelle'}</span>
+                              <span>{tr(car.transmission || car.specs?.transmission || 'Manuelle')}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Fuel className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span>{car.fuel || car.specs?.fuel || 'Essence'}</span>
+                              <span>{tr(car.fuel || car.specs?.fuel || 'Essence')}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Users className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span>{car.seats || car.specs?.seats || 5} places</span>
+                              <span>{tr(car.seats || car.specs?.seats || 5)} {tr("places")}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                               <Briefcase className="w-3.5 h-3.5 text-[#2C3E56]" />
-                              <span>{car.bags || car.specs?.luggage || 2} valises</span>
+                              <span>{tr(car.bags || car.specs?.luggage || 2)} {tr("valises")}</span>
                             </div>
                           </div>
 
                           <p className="text-[11px] font-bold text-emerald-700 flex items-center gap-1">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Annulation gratuite
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> {tr("Annulation gratuite")}
                           </p>
                         </div>
 
@@ -940,7 +943,7 @@ export default function SearchResults() {
                         <div className="pt-4 mt-4 border-t border-[#EBE6DC]">
                           <div className="flex items-baseline justify-between mb-3">
                             <div>
-                              <p className="text-[10px] uppercase font-bold text-[#727D88]">Total {searchDays}j</p>
+                              <p className="text-[10px] uppercase font-bold text-[#727D88]">Total {tr(searchDays)}j</p>
                               <p className="text-xl font-black text-[#191C1F] font-display">
                                 {formatPrice(totalTND, isRtl)}
                               </p>
@@ -949,7 +952,7 @@ export default function SearchResults() {
                               <p className="text-xs font-bold text-[#A84A3B]">
                                 {formatPrice(car.pricePerDay, isRtl)}
                               </p>
-                              <p className="text-[10px] text-[#727D88]">/ jour</p>
+                              <p className="text-[10px] text-[#727D88]">{tr("/ jour")}</p>
                             </div>
                           </div>
 
@@ -987,10 +990,10 @@ export default function SearchResults() {
                   }}
                   className="px-4 py-2 rounded-xl border border-[#DAD3C5] bg-white text-xs font-bold text-[#191C1F] hover:bg-[#F8F7EE] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  ← Précédent
+                  {tr("← Précédent")}
                 </button>
                 <span className="text-xs font-bold text-[#727D88]">
-                  Page {page} / {pagination.totalPages}
+                  Page {tr(page)} / {tr(pagination.totalPages)}
                 </span>
                 <button
                   disabled={page === pagination.totalPages}
@@ -1000,7 +1003,7 @@ export default function SearchResults() {
                   }}
                   className="px-4 py-2 rounded-xl border border-[#DAD3C5] bg-white text-xs font-bold text-[#191C1F] hover:bg-[#F8F7EE] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  Suivant →
+                  {tr("Suivant →")}
                 </button>
               </div>
             )}
@@ -1042,8 +1045,8 @@ export default function SearchResults() {
                     <Icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-extrabold text-[#191C1F]">{g.title}</h4>
-                    <p className="text-xs text-[#727D88] mt-0.5 leading-relaxed">{g.desc}</p>
+                    <h4 className="text-sm font-extrabold text-[#191C1F]">{tr(g.title)}</h4>
+                    <p className="text-xs text-[#727D88] mt-0.5 leading-relaxed">{tr(g.desc)}</p>
                   </div>
                 </div>
               );
@@ -1060,14 +1063,14 @@ export default function SearchResults() {
         <button
           onClick={() => setIsConciergeOpen(true)}
           className="group flex items-center gap-2.5 apple-glass-dark text-white px-4 py-3 rounded-full shadow-[0_16px_36px_rgba(0,0,0,0.35)] hover:bg-[#1E293B]/90 border border-white/25 transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer"
-          aria-label="Contacter le Concierge VIP"
+          aria-label={tr("Contacter le Concierge VIP")}
         >
           <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div className="text-left hidden sm:block pr-1">
-            <p className="text-[10px] font-extrabold uppercase tracking-wider text-white/70 leading-none">Concierge VIP</p>
-            <p className="text-xs font-black leading-tight">Conseiller Voyage IA</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-white/70 leading-none">{tr("Concierge VIP")}</p>
+            <p className="text-xs font-black leading-tight">{tr("Conseiller Voyage IA")}</p>
           </div>
         </button>
       </div>

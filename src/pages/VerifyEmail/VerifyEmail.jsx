@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import {
@@ -17,6 +18,8 @@ import { Header } from '../../components/HomeModern/Header';
 import { Footer } from '../../components/HomeModern/Footer';
 
 export default function VerifyEmail() {
+  const tr = useText()
+
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const navigate = useNavigate();
@@ -99,7 +102,7 @@ export default function VerifyEmail() {
             {/* Top Category Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-bold text-white/90 mb-6 uppercase tracking-wider shadow-sm">
               <Sparkles className="w-3.5 h-3.5 text-[#F4A261]" />
-              <span>AFRICAN RENT CAR • ESPACE PRIVILÈGE</span>
+              <span>{tr("AFRICAN RENT CAR • ESPACE PRIVILÈGE")}</span>
             </div>
 
             {/* ── STATE 1: LOADING ── */}
@@ -110,10 +113,10 @@ export default function VerifyEmail() {
                   <div className="absolute inset-0 rounded-full animate-ping bg-[#A84A3B]/10 pointer-events-none" />
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
-                  Vérification en cours...
+                  {tr("Vérification en cours...")}
                 </h1>
                 <p className="text-sm text-white/70 max-w-sm leading-relaxed">
-                  Validation de votre jeton de sécurité et activation de votre compte en temps réel.
+                  {tr("Validation de votre jeton de sécurité et activation de votre compte en temps réel.")}
                 </p>
               </div>
             )}
@@ -128,39 +131,39 @@ export default function VerifyEmail() {
 
                 <div className="space-y-1.5">
                   <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">
-                    E-mail confirmé avec succès ! 🎉
+                    {tr("E-mail confirmé avec succès ! 🎉")}
                   </h1>
                   <p className="text-sm font-semibold text-emerald-400">
-                    {message}
+                    {tr(message)}
                   </p>
                   {verifiedUser?.firstName && (
                     <div className="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/10 px-3 py-1 rounded-full mt-1 border border-white/10">
                       <UserCheck className="w-3.5 h-3.5 text-[#F4A261]" />
-                      <span>Bienvenue, <strong className="text-white font-bold">{verifiedUser.firstName} {verifiedUser.lastName}</strong></span>
+                      <span>{tr("Bienvenue,")} <strong className="text-white font-bold">{tr(verifiedUser.firstName)} {tr(verifiedUser.lastName)}</strong></span>
                     </div>
                   )}
                 </div>
 
                 <p className="text-xs sm:text-sm text-white/75 leading-relaxed max-w-md">
-                  Votre compte est désormais actif et sécurisé. Profitez dès maintenant d'un accès complet à tous nos services de mobilité premium en Tunisie.
+                  {tr("Votre compte est désormais actif et sécurisé. Profitez dès maintenant d'un accès complet à tous nos services de mobilité premium en Tunisie.")}
                 </p>
 
                 {/* Key Benefits Grid */}
                 <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-2 text-left pt-2 pb-1">
                   <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-1">
                     <Car className="w-4 h-4 text-[#A84A3B]" />
-                    <span className="text-[11px] font-bold text-white">Flotte 2025/2026</span>
-                    <span className="text-[10px] text-white/60 leading-tight">Réservation directe sans caution démesurée</span>
+                    <span className="text-[11px] font-bold text-white">{tr("Flotte 2025/2026")}</span>
+                    <span className="text-[10px] text-white/60 leading-tight">{tr("Réservation directe sans caution démesurée")}</span>
                   </div>
                   <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-1">
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span className="text-[11px] font-bold text-white">Accueil VIP</span>
-                    <span className="text-[10px] text-white/60 leading-tight">Prise en charge aéroports 24h/24 7j/7</span>
+                    <span className="text-[11px] font-bold text-white">{tr("Accueil VIP")}</span>
+                    <span className="text-[10px] text-white/60 leading-tight">{tr("Prise en charge aéroports 24h/24 7j/7")}</span>
                   </div>
                   <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-1">
                     <Heart className="w-4 h-4 text-rose-400" />
-                    <span className="text-[11px] font-bold text-white">Favoris & Suivi</span>
-                    <span className="text-[10px] text-white/60 leading-tight">Accès direct à votre liste et historique</span>
+                    <span className="text-[11px] font-bold text-white">{tr("Favoris & Suivi")}</span>
+                    <span className="text-[10px] text-white/60 leading-tight">{tr("Accès direct à votre liste et historique")}</span>
                   </div>
                 </div>
 
@@ -170,7 +173,7 @@ export default function VerifyEmail() {
                     onClick={() => navigate('/voitures')}
                     className="w-full py-3.5 px-6 rounded-xl font-bold text-sm bg-gradient-to-r from-[#A84A3B] to-[#8F3E31] text-white shadow-lg shadow-[#A84A3B]/30 hover:shadow-[#A84A3B]/50 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <span>Explorer nos véhicules</span>
+                    <span>{tr("Explorer nos véhicules")}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
 
@@ -178,7 +181,7 @@ export default function VerifyEmail() {
                     to="/"
                     className="w-full py-3 px-6 rounded-xl font-semibold text-xs text-white/80 bg-white/10 hover:bg-white/15 hover:text-white border border-white/15 transition-all text-center"
                   >
-                    Retour à l'accueil
+                    {tr("Retour à l'accueil")}
                   </Link>
                 </div>
               </div>
@@ -194,15 +197,15 @@ export default function VerifyEmail() {
 
                 <div className="space-y-1.5">
                   <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">
-                    Échec de la vérification
+                    {tr("Échec de la vérification")}
                   </h1>
                   <p className="text-sm font-semibold text-rose-400">
-                    {error}
+                    {tr(error)}
                   </p>
                 </div>
 
                 <p className="text-xs sm:text-sm text-white/75 leading-relaxed max-w-md">
-                  Le lien de confirmation que vous avez utilisé a expiré ou a déjà été validé. Vous pouvez vous connecter directement ou demander un nouvel e-mail.
+                  {tr("Le lien de confirmation que vous avez utilisé a expiré ou a déjà été validé. Vous pouvez vous connecter directement ou demander un nouvel e-mail.")}
                 </p>
 
                 <div className="w-full flex flex-col gap-3 pt-3">
@@ -216,7 +219,7 @@ export default function VerifyEmail() {
                     }}
                     className="w-full py-3.5 px-6 rounded-xl font-bold text-sm bg-gradient-to-r from-[#A84A3B] to-[#8F3E31] text-white shadow-lg shadow-[#A84A3B]/30 hover:shadow-[#A84A3B]/50 hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <span>Se connecter à mon compte</span>
+                    <span>{tr("Se connecter à mon compte")}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
 
@@ -224,7 +227,7 @@ export default function VerifyEmail() {
                     to="/"
                     className="w-full py-3 px-6 rounded-xl font-semibold text-xs text-white/80 bg-white/10 hover:bg-white/15 hover:text-white border border-white/15 transition-all text-center"
                   >
-                    Retour à l'accueil
+                    {tr("Retour à l'accueil")}
                   </Link>
                 </div>
               </div>

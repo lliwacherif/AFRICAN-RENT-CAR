@@ -1,3 +1,5 @@
+import { getVehicleParcIds } from '../../utils/vehicleParcs'
+import { normalizeMediaUrl } from '../../utils/mediaUrl'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
@@ -241,13 +243,14 @@ const EMPTY = {
   features: { ac: false, bluetooth: false, radio: false, usb: false, gps: false, cruiseControl: false, parkingSensors: false, camera360: false, sunroof: false, heatedSeats: false },
   description: '', tags: '', model3dUrl: '',
   lastMaintenanceDate: '', nextMaintenanceDate: '', maintenanceNotes: '',
-  acquisitionDate: '', acquisitionCost: '',
+  acquisitionDate: '', acquisitionCost: '', parcIds: [],
 }
 
-function VehicleModal({ vehicle, onClose, onSaved }) {
+function VehicleModal({ vehicle, parcs, onClose, onSaved }) {
   const init = vehicle
     ? {
-        ...EMPTY, ...vehicle,
+        ...EMPTY, ...Object.fromEntries(Object.keys(EMPTY).map(key => [key, vehicle[key] ?? EMPTY[key]])),
+        parcIds: getVehicleParcIds(vehicle),
         features: { ...EMPTY.features, ...(vehicle.features || {}) },
         tags: (vehicle.tags || []).join(', '),
         model3dUrl: vehicle.model3dUrl || '',
@@ -259,6 +262,7 @@ function VehicleModal({ vehicle, onClose, onSaved }) {
 
   const [form, setForm] = useState(init)
   const [images, setImages] = useState(vehicle?.images || [])
+  const [imageUrl, setImageUrl] = useState('')
   const [uploading, setUploading] = useState(false)
   const [uploading3d, setUploading3d] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -274,12 +278,13 @@ function VehicleModal({ vehicle, onClose, onSaved }) {
 
   const handleImage = async (e) => {
     const file = e.target.files[0]; if (!file) return
+    setError('')
     setUploading(true)
     try {
       const r = await uploadService.uploadImage(file, 'tunisia-car-rental/vehicles')
       setImages(p => [...p, r.url])
-    } catch { setError('Erreur upload image.') }
-    finally { setUploading(false) }
+    } catch (err) { setError(err?.response?.data?.message || err.message || 'Erreur upload image.') }
+    finally { setUploading(false); e.target.value = '' }
   }
 
   const file3dRef = useRef(null)
@@ -351,6 +356,7 @@ function VehicleModal({ vehicle, onClose, onSaved }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError('')
+    if (uploading || uploading3d) return
 
     // Validate client-side first
     const validationErrors = validateForm()
@@ -501,6 +507,20 @@ function VehicleModal({ vehicle, onClose, onSaved }) {
                 <textarea value={form.description} onChange={set('description')} rows={3} placeholder="Description du véhicule..." />
               </div>
               <div className="vm-field">
+                <label>Parcs</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                  {parcs.map(parc => (
+                    <label key={parc._id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <input type="checkbox" checked={form.parcIds.includes(parc._id)} onChange={e => setForm(prev => ({
+                        ...prev, parcIds: e.target.checked ? [...prev.parcIds, parc._id] : prev.parcIds.filter(id => id !== parc._id),
+                      }))} />
+                      {parc.name}
+                    </label>
+                  ))}
+                  {parcs.length === 0 && <span>Aucun parc disponible</span>}
+                </div>
+              </div>
+              <div className="vm-field">
                 <label>Photos</label>
                 <div className="vm-images">
                   {images.map((url, i) => (
@@ -511,8 +531,19 @@ function VehicleModal({ vehicle, onClose, onSaved }) {
                   ))}
                   <label className="vm-image-add">
                     {uploading ? <span className="admin-spinner"/> : <><FiUpload size={15}/><span>Ajouter</span></>}
-                    <input type="file" accept="image/*" onChange={handleImage} hidden disabled={uploading}/>
+                    <input type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" onChange={handleImage} hidden disabled={uploading}/>
                   </label>
+                </div>
+                <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                  <input type="text" aria-label="URL de l’image" placeholder="https://.../photo.jpg" value={imageUrl} onChange={e => setImageUrl(e.target.value)} />
+                  <button type="button" className="admin-btn" onClick={() => {
+                    const url = normalizeMediaUrl(imageUrl)
+                    if (!/^https?:\/\//i.test(url)) { setError('Saisissez une URL d’image HTTP ou HTTPS valide.'); return }
+                    try { new URL(url) } catch { setError('URL d’image invalide.'); return }
+                    setImages(previous => [...new Set([...previous, url])])
+                    setImageUrl('')
+                    setError('')
+                  }}>Ajouter URL</button>
                 </div>
               </div>
 
@@ -659,7 +690,7 @@ function VehicleModal({ vehicle, onClose, onSaved }) {
 
           <div className="vm-actions">
             <button type="button" className="admin-btn admin-btn--outline" onClick={onClose}>Annuler</button>
-            <button type="submit" className="admin-btn admin-btn--primary" disabled={saving}>
+            <button type="submit" className="admin-btn admin-btn--primary" disabled={saving || uploading || uploading3d}>
               {saving ? <span className="admin-spinner"/> : vehicle ? 'Enregistrer' : 'Créer le véhicule'}
             </button>
           </div>
@@ -998,7 +1029,7 @@ function StatusModal({ reservation, allReservations = [], onClose, onSaved }) {
 
   const [activeTab, setActiveTab] = useState('status')  // status | payment | details
   const [showClientProfile, setShowClientProfile] = useState(false)
-  
+
   // Status tab
   const [status, setStatus] = useState(reservation.status || 'recu')
   const [cancelReason, setCancelReason] = useState(reservation.cancelReason || '')
@@ -1594,7 +1625,7 @@ export default function Admin() {
   // handlers
   const handleToggle = async (id, val) => {
     setTogglingVehicleId(id)
-    try { 
+    try {
       const u = await vehiclesService.toggleActive(id)
       setVehicles(p => p.map(v => v._id === id ? { ...v, isActive: u.isActive } : v))
     } catch (e) {
@@ -1978,7 +2009,7 @@ export default function Admin() {
             <div className="admin-card__header">
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
                 <h2 className="admin-card__title">Véhicules <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--white-30)' }}>({sortedVehicles.length})</span></h2>
-                
+
                 {/* Filter */}
                 <select value={vehicleFilterStatus} onChange={e => setVehicleFilterStatus(e.target.value)} style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid var(--black-5)', background: 'var(--black-3)', color: 'var(--white)', fontSize: 12, fontFamily: 'inherit', cursor: 'pointer' }}>
                   <option value="all">Tous les statuts</option>
@@ -2449,7 +2480,7 @@ export default function Admin() {
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
             <div>
               <h2 style={{ fontSize:22, fontWeight:700, color:'var(--white)', margin:0 }}>Affectation des Véhicules par Parc</h2>
-              <p style={{ fontSize:13, color:'var(--white-50)', margin:'4px 0 0' }}>Glissez-déposez les véhicules pour les affecter à un parc</p>
+              <p style={{ fontSize:13, color:'var(--white-50)', margin:'4px 0 0' }}>Glissez-déposez pour ajouter un véhicule à plusieurs parcs. Retirez une affectation avec la croix.</p>
             </div>
             <button className="admin-btn admin-btn--primary" onClick={() => setParcModal('add')}>
               <FiPlus size={14}/> Nouveau Parc
@@ -2467,20 +2498,20 @@ export default function Admin() {
                 setDragOverParc(null)
                 if (!draggedVehicle) return
                 try {
-                  await vehiclesService.update(draggedVehicle._id, { parcId: null })
+                  await vehiclesService.update(draggedVehicle._id, { parcIds: [] })
                   await loadData()
-                } catch { /* ignore */ }
+                } catch (err) { alert(err?.response?.data?.message || 'Impossible de modifier cette affectation.') }
                 setDraggedVehicle(null)
               }}
             >
               <div className="parc-col__header">
                 <span className="parc-col__title">Véhicules non affectés</span>
                 <span className="parc-col__badge" style={{ background:'var(--white-10)', color:'var(--white-50)' }}>
-                  {vehicles.filter(v => !v.parc).length}
+                  {vehicles.filter(v => getVehicleParcIds(v).length === 0).length}
                 </span>
               </div>
               <div className="parc-col__body">
-                {vehicles.filter(v => !v.parc).map(v => (
+                {vehicles.filter(v => getVehicleParcIds(v).length === 0).map(v => (
                   <div
                     key={v._id}
                     className="parc-vehicle-card"
@@ -2499,7 +2530,7 @@ export default function Admin() {
                     <span className="parc-drag-handle">⠿</span>
                   </div>
                 ))}
-                {vehicles.filter(v => !v.parc).length === 0 && (
+                {vehicles.filter(v => getVehicleParcIds(v).length === 0).length === 0 && (
                   <p style={{ fontSize:12, color:'var(--white-30)', textAlign:'center', padding:'20px 0' }}>Tous les véhicules sont affectés</p>
                 )}
               </div>
@@ -2516,9 +2547,9 @@ export default function Admin() {
                   setDragOverParc(null)
                   if (!draggedVehicle) return
                   try {
-                    await vehiclesService.update(draggedVehicle._id, { parcId: parc._id })
+                    await vehiclesService.update(draggedVehicle._id, { parcIds: [...new Set([...getVehicleParcIds(draggedVehicle), parc._id])] })
                     await loadData()
-                  } catch { /* ignore */ }
+                  } catch (err) { alert(err?.response?.data?.message || 'Impossible de modifier cette affectation.') }
                   setDraggedVehicle(null)
                 }}
               >
@@ -2529,7 +2560,7 @@ export default function Admin() {
                   </div>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                     <span className="parc-col__badge">
-                      {vehicles.filter(v => v.parc?._id === parc._id || v.parc === parc._id).length}/{parc.capacity}
+                      {vehicles.filter(v => getVehicleParcIds(v).includes(parc._id)).length}/{parc.capacity}
                     </span>
                     <button
                       className="admin-btn admin-btn--icon"
@@ -2553,7 +2584,7 @@ export default function Admin() {
                 <div className="parc-col__drop-zone">
                   <span className="parc-drop-label">Drop Zone</span>
                   {vehicles
-                    .filter(v => v.parc?._id === parc._id || v.parc === parc._id)
+                    .filter(v => getVehicleParcIds(v).includes(parc._id))
                     .map(v => (
                       <div
                         key={v._id}
@@ -2570,7 +2601,12 @@ export default function Admin() {
                           <div className="parc-vehicle-card__name">{v.name}</div>
                           <div className="parc-vehicle-card__sub">{v.year} · {v.seats} places</div>
                         </div>
-                        <span className="parc-vehicle-card__dot" />
+                        <button type="button" className="admin-btn admin-btn--icon" title="Retirer de ce parc" onClick={async () => {
+                          try {
+                            await vehiclesService.update(v._id, { parcIds: getVehicleParcIds(v).filter(id => id !== parc._id) })
+                            await loadData()
+                          } catch (err) { alert(err?.response?.data?.message || 'Impossible de retirer cette affectation.') }
+                        }}><FiX size={14}/></button>
                       </div>
                     ))
                   }
@@ -2579,7 +2615,7 @@ export default function Admin() {
             ))}
 
             {/* Floating Drop zone to unassign */}
-            {draggedVehicle?.parc && (
+            {getVehicleParcIds(draggedVehicle).length > 0 && (
               <div
                 className={`parc-col--unassign-drop ${dragOverParc === 'unassign' ? 'parc-col--drag-over' : ''}`}
                 onDragOver={e => { e.preventDefault(); setDragOverParc('unassign') }}
@@ -2588,15 +2624,15 @@ export default function Admin() {
                   setDragOverParc(null)
                   if (!draggedVehicle) return
                   try {
-                    await vehiclesService.update(draggedVehicle._id, { parcId: null })
+                    await vehiclesService.update(draggedVehicle._id, { parcIds: [] })
                     await loadData()
-                  } catch { /* ignore */ }
+                  } catch (err) { alert(err?.response?.data?.message || 'Impossible de modifier cette affectation.') }
                   setDraggedVehicle(null)
                 }}
               >
                 <FiTrash2 size={24} color="#ef4444" />
                 <span style={{ fontSize:13, fontWeight:700, color:'#ef4444', textAlign:'center' }}>
-                  Désaffecter du parc
+                  Désaffecter de tous les parcs
                 </span>
                 <span style={{ fontSize:11, color:'rgba(255,255,255,0.5)', textAlign:'center' }}>
                   Glissez ici pour retirer
@@ -2613,11 +2649,11 @@ export default function Admin() {
             </div>
             <div className="parc-stat">
               <span className="parc-stat__icon">✅</span>
-              <div><div className="parc-stat__val">{vehicles.filter(v => v.parc).length}</div><div className="parc-stat__label">Véhicules Affectés</div></div>
+              <div><div className="parc-stat__val">{vehicles.filter(v => getVehicleParcIds(v).length > 0).length}</div><div className="parc-stat__label">Véhicules Affectés</div></div>
             </div>
             <div className="parc-stat">
               <span className="parc-stat__icon">⏳</span>
-              <div><div className="parc-stat__val">{vehicles.filter(v => !v.parc).length}</div><div className="parc-stat__label">Non Affectés</div></div>
+              <div><div className="parc-stat__val">{vehicles.filter(v => getVehicleParcIds(v).length === 0).length}</div><div className="parc-stat__label">Non Affectés</div></div>
             </div>
             <div className="parc-stat">
               <span className="parc-stat__icon">🏢</span>
@@ -2653,6 +2689,7 @@ export default function Admin() {
       {vehicleModal && (
         <VehicleModal
           vehicle={vehicleModal === 'add' ? null : vehicleModal}
+          parcs={parcs}
           onClose={() => setVehicleModal(null)}
           onSaved={handleSaved}
         />

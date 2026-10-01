@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -38,7 +39,7 @@ import { Footer } from '../../components/HomeModern/Footer';
 /* ── Helpers ─────────────────────────────────────────── */
 const fmt = (d, lang = 'fr') =>
   d
-    ? new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-TN' : 'fr-FR', {
+    ? new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-TN' : lang === 'en' ? 'en-GB' : 'fr-FR', {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
@@ -47,13 +48,15 @@ const fmt = (d, lang = 'fr') =>
 
 /* ── Status badge styling ────────────────────────────── */
 function StatusBadge({ status, label }) {
+  const tr = useText()
+
   const s = (status || '').toLowerCase();
 
   if (s === 'confirmed' || s === 'confirmee' || s === 'confirmée') {
     return (
       <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/25">
         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-        <span>{label || 'Confirmée'}</span>
+        <span>{tr(label || 'Confirmée')}</span>
       </span>
     );
   }
@@ -62,7 +65,7 @@ function StatusBadge({ status, label }) {
     return (
       <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-[#2C3E56]/10 text-[#2C3E56] border border-[#2C3E56]/25">
         <FileCheck className="w-3.5 h-3.5 text-[#2C3E56]" />
-        <span>{label || 'Terminée'}</span>
+        <span>{tr(label || 'Terminée')}</span>
       </span>
     );
   }
@@ -71,7 +74,7 @@ function StatusBadge({ status, label }) {
     return (
       <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-700 border border-rose-500/25">
         <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
-        <span>{label || 'Annulée'}</span>
+        <span>{tr(label || 'Annulée')}</span>
       </span>
     );
   }
@@ -80,13 +83,15 @@ function StatusBadge({ status, label }) {
   return (
     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-700 border border-amber-500/25">
       <Clock className="w-3.5 h-3.5 text-amber-600" />
-      <span>{label || 'Reçu'}</span>
+      <span>{tr(label || 'Reçu')}</span>
     </span>
   );
 }
 
 /* ── Car Reservation Card ─────────────────────────────── */
 function CarReservationCard({ r }) {
+  const tr = useText()
+
   const { t, lang, isRtl } = useLanguage();
   const { formatPrice } = useCurrency();
 
@@ -117,7 +122,7 @@ function CarReservationCard({ r }) {
             {r.vehicle?.images?.[0] ? (
               <img
                 src={r.vehicle.images[0]}
-                alt={r.vehicle?.name}
+                alt={tr(r.vehicle?.name)}
                 className="w-full h-full object-cover object-center"
               />
             ) : (
@@ -129,29 +134,29 @@ function CarReservationCard({ r }) {
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-base sm:text-lg font-bold text-[#191C1F]">
-                {r.vehicle?.name || 'Véhicule'}
+                {tr(r.vehicle?.name || 'Véhicule')}
               </h3>
               <span className="font-mono text-xs font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 border border-[#A84A3B]/25 px-2.5 py-0.5 rounded-md">
-                {bookingCode}
+                {tr(bookingCode)}
               </span>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 text-xs text-[#727D88]">
               {r.vehicle?.category && (
                 <span className="font-semibold text-[#191C1F]">
-                  {r.vehicle.category}
+                  {tr(r.vehicle.category)}
                 </span>
               )}
               {r.vehicle?.transmission && (
                 <>
                   <span>•</span>
-                  <span>{r.vehicle.transmission}</span>
+                  <span>{tr(r.vehicle.transmission)}</span>
                 </>
               )}
               {r.vehicle?.fuel && (
                 <>
                   <span>•</span>
-                  <span>{r.vehicle.fuel}</span>
+                  <span>{tr(r.vehicle.fuel)}</span>
                 </>
               )}
             </div>
@@ -163,16 +168,16 @@ function CarReservationCard({ r }) {
                 {fmt(r.pickupDate, lang)} → {fmt(r.dropoffDate, lang)}
               </span>
               <span className="font-bold text-[#191C1F]">
-                ({totalDays} {t('historique.days', 'jours')})
+                ({tr(totalDays)} {t('historique.days', 'jours')})
               </span>
             </div>
 
             {/* Location */}
             <div className="flex items-center gap-1.5 text-xs text-[#727D88]">
               <MapPin className="w-3.5 h-3.5 text-[#2C3E56]" />
-              <span>{r.pickupLocation}</span>
+              <span>{tr(r.pickupLocation)}</span>
               {r.dropoffLocation && r.dropoffLocation !== r.pickupLocation && (
-                <span>→ {r.dropoffLocation}</span>
+                <span>→ {tr(r.dropoffLocation)}</span>
               )}
             </div>
           </div>
@@ -182,7 +187,7 @@ function CarReservationCard({ r }) {
         <div className="sm:self-start">
           <StatusBadge
             status={r.status}
-            label={statusLabel[r.status] || r.status}
+            label={tr(statusLabel[r.status] || r.status)}
           />
         </div>
       </div>
@@ -242,6 +247,8 @@ function CarReservationCard({ r }) {
 
 /* ── Apartment Reservation Card ───────────────────────── */
 function ApartmentReservationCard({ r }) {
+  const tr = useText()
+
   const { formatPrice } = useCurrency();
   const apt = r.apartment;
   const bookingCode = r._id ? `#${r._id.slice(-6).toUpperCase()}` : '#TCR-APT';
@@ -254,7 +261,7 @@ function ApartmentReservationCard({ r }) {
             {apt?.images?.[0] ? (
               <img
                 src={apt.images[0]}
-                alt={apt?.title}
+                alt={tr(apt?.title)}
                 className="w-full h-full object-cover object-center"
               />
             ) : (
@@ -265,32 +272,32 @@ function ApartmentReservationCard({ r }) {
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-base sm:text-lg font-bold text-[#191C1F]">
-                {apt?.title || 'Hébergement'}
+                {tr(apt?.title || 'Hébergement')}
               </h3>
               <span className="font-mono text-xs font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 border border-[#A84A3B]/25 px-2.5 py-0.5 rounded-md">
-                {bookingCode}
+                {tr(bookingCode)}
               </span>
             </div>
 
             <div className="text-xs text-[#A84A3B] font-bold">
-              {apt?.type || 'Dar & Villa'}
+              {tr(apt?.type || 'Dar & Villa')}
             </div>
 
             <div className="flex items-center gap-1.5 text-xs text-[#727D88]">
               <Calendar className="w-3.5 h-3.5 text-[#A84A3B]" />
               <span>
-                Du {fmt(r.checkInDate)} au {fmt(r.checkOutDate)}
+                {tr("Du")} {fmt(r.checkInDate)} {tr("au")} {fmt(r.checkOutDate)}
               </span>
               <span className="font-bold text-[#191C1F]">
-                ({r.totalNights} nuit{r.totalNights > 1 ? 's' : ''})
+                ({tr(r.totalNights)} {tr("nuit")}{tr(r.totalNights > 1 ? 's' : '')})
               </span>
             </div>
 
             <div className="flex items-center gap-1.5 text-xs text-[#727D88]">
               <MapPin className="w-3.5 h-3.5 text-[#2C3E56]" />
               <span>
-                {apt?.city} • {r.adults} adulte(s)
-                {r.children ? `, ${r.children} enfant(s)` : ''}
+                {tr(apt?.city)} • {tr(r.adults)} {tr("adulte(s)")}
+                {tr(r.children ? `, ${r.children} enfant(s)` : '')}
               </span>
             </div>
           </div>
@@ -304,7 +311,7 @@ function ApartmentReservationCard({ r }) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-[#FFFFF0] border border-[#EBE6DC]">
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Prix / nuit
+            {tr("Prix / nuit")}
           </div>
           <div className="text-sm sm:text-base font-bold text-[#191C1F] mt-0.5">
             {formatPrice(r.pricePerNight)}
@@ -312,7 +319,7 @@ function ApartmentReservationCard({ r }) {
         </div>
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Frais ménage
+            {tr("Frais ménage")}
           </div>
           <div className="text-sm sm:text-base font-bold text-[#191C1F] mt-0.5">
             {formatPrice(r.cleaningFee || 0)}
@@ -320,7 +327,7 @@ function ApartmentReservationCard({ r }) {
         </div>
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Total TTC
+            {tr("Total TTC")}
           </div>
           <div className="text-sm sm:text-base font-extrabold text-[#191C1F] mt-0.5">
             {formatPrice(r.totalTTC)}
@@ -328,7 +335,7 @@ function ApartmentReservationCard({ r }) {
         </div>
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Caution requise
+            {tr("Caution requise")}
           </div>
           <div className="text-sm sm:text-base font-bold text-[#2C3E56] mt-0.5">
             {formatPrice(r.depositAmount || 200)}
@@ -341,6 +348,8 @@ function ApartmentReservationCard({ r }) {
 
 /* ── Excursion Reservation Card ───────────────────────── */
 function ExcursionReservationCard({ r }) {
+  const tr = useText()
+
   const { formatPrice } = useCurrency();
   const exc = r.excursion;
   const bookingCode = r._id ? `#${r._id.slice(-6).toUpperCase()}` : '#TCR-EXC';
@@ -353,7 +362,7 @@ function ExcursionReservationCard({ r }) {
             {exc?.images?.[0] ? (
               <img
                 src={exc.images[0]}
-                alt={exc?.title}
+                alt={tr(exc?.title)}
                 className="w-full h-full object-cover object-center"
               />
             ) : (
@@ -364,23 +373,23 @@ function ExcursionReservationCard({ r }) {
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-base sm:text-lg font-bold text-[#191C1F]">
-                {exc?.title || 'Excursion'}
+                {tr(exc?.title || 'Excursion')}
               </h3>
               <span className="font-mono text-xs font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 border border-[#A84A3B]/25 px-2.5 py-0.5 rounded-md">
-                {bookingCode}
+                {tr(bookingCode)}
               </span>
             </div>
 
             <div className="text-xs text-[#A84A3B] font-bold">
-              {exc?.category || 'Circuit Découverte'}
+              {tr(exc?.category || 'Circuit Découverte')}
             </div>
 
             <div className="flex items-center gap-1.5 text-xs text-[#727D88]">
               <Calendar className="w-3.5 h-3.5 text-[#A84A3B]" />
-              <span>Date prévue : {fmt(r.date)}</span>
+              <span>{tr("Date prévue :")} {fmt(r.date)}</span>
               {exc?.duration && (
                 <span className="font-bold text-[#191C1F]">
-                  ({exc.duration})
+                  ({tr(exc.duration)})
                 </span>
               )}
             </div>
@@ -388,9 +397,9 @@ function ExcursionReservationCard({ r }) {
             <div className="flex items-center gap-1.5 text-xs text-[#727D88]">
               <MapPin className="w-3.5 h-3.5 text-[#2C3E56]" />
               <span>
-                Prise en charge :{' '}
-                {r.pickupLocation || `Départ ${exc?.departureCity || 'Tunis'}`}{' '}
-                • {r.totalParticipants || r.adults} participant(s)
+                {tr("Prise en charge :")}{' '}
+                {tr(r.pickupLocation || `Départ ${exc?.departureCity || 'Tunis'}`)}{' '}
+                • {tr(r.totalParticipants || r.adults)} {tr("participant(s)")}
               </span>
             </div>
           </div>
@@ -404,23 +413,23 @@ function ExcursionReservationCard({ r }) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-[#FFFFF0] border border-[#EBE6DC]">
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Adultes
+            {tr("Adultes")}
           </div>
           <div className="text-sm sm:text-base font-bold text-[#191C1F] mt-0.5">
-            {r.adults} pers.
+            {tr(r.adults)} {tr("pers.")}
           </div>
         </div>
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Enfants
+            {tr("Enfants")}
           </div>
           <div className="text-sm sm:text-base font-bold text-[#191C1F] mt-0.5">
-            {r.children || 0} pers.
+            {tr(r.children || 0)} {tr("pers.")}
           </div>
         </div>
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Total réglé
+            {tr("Total réglé")}
           </div>
           <div className="text-sm sm:text-base font-extrabold text-[#191C1F] mt-0.5">
             {formatPrice(r.totalPrice)}
@@ -428,10 +437,10 @@ function ExcursionReservationCard({ r }) {
         </div>
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Statut paiement
+            {tr("Statut paiement")}
           </div>
           <div className="text-sm sm:text-base font-bold text-emerald-600 mt-0.5">
-            {r.paymentStatus === 'paid' ? 'Payé' : 'À régler en agence'}
+            {tr(r.paymentStatus === 'paid' ? 'Payé' : 'À régler en agence')}
           </div>
         </div>
       </div>
@@ -441,6 +450,8 @@ function ExcursionReservationCard({ r }) {
 
 /* ── Chauffeur Reservation Card ───────────────────────── */
 function ChauffeurReservationCard({ r, onOpenMap }) {
+  const tr = useText()
+
   const { formatPrice } = useCurrency();
   const bookingCode = r._id ? `#${r._id.slice(-6).toUpperCase()}` : '#TCR-CHF';
 
@@ -465,12 +476,12 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
                 r.chauffeurAvatar ||
                 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80'
               }
-              alt={r.chauffeurName || 'Chauffeur Agréé'}
+              alt={tr(r.chauffeurName || 'Chauffeur Agréé')}
               className="w-full h-full object-cover object-center"
             />
             <div
               className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center border-2 border-white shadow-xs"
-              title="Chauffeur Certifié"
+              title={tr("Chauffeur Certifié")}
             >
               <CheckCircle2 className="w-3 h-3 text-white" />
             </div>
@@ -480,10 +491,10 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
           <div className="space-y-1.5 min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-base sm:text-lg font-black text-[#191C1F]">
-                {r.routeName || `${r.from} ➔ ${r.to}`}
+                {tr(r.routeName || `${r.from} ➔ ${r.to}`)}
               </h3>
               <span className="font-mono text-xs font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 border border-[#A84A3B]/25 px-2.5 py-0.5 rounded-md">
-                {bookingCode}
+                {tr(bookingCode)}
               </span>
             </div>
 
@@ -491,18 +502,18 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="inline-flex items-center gap-1 font-bold text-[#2C3E56]">
                 <UserCheck className="w-3.5 h-3.5 text-[#A84A3B]" />
-                <span>Chauffeur : <strong>{r.chauffeurName || 'Chauffeur Assigné'}</strong></span>
+                <span>{tr("Chauffeur :")} <strong>{tr(r.chauffeurName || 'Chauffeur Assigné')}</strong></span>
               </span>
               <span className="text-[#EBE6DC]">•</span>
               <span className="font-semibold text-[#727D88]">
-                {r.vehicleModel || 'Berline Prestige'}
+                {tr(r.vehicleModel || 'Berline Prestige')}
               </span>
               {r.flightNumber && (
                 <>
                   <span className="text-[#EBE6DC]">•</span>
                   <span className="inline-flex items-center gap-1 text-[#A84A3B] font-bold">
                     <Plane className="w-3 h-3" />
-                    <span>Vol {r.flightNumber}</span>
+                    <span>{tr("Vol")} {tr(r.flightNumber)}</span>
                   </span>
                 </>
               )}
@@ -513,20 +524,20 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
               <div className="flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-[#A84A3B]" />
                 <span>
-                  Prise en charge :{' '}
+                  {tr("Prise en charge :")}{' '}
                   <strong className="text-[#191C1F]">
-                    {fmt(r.date)} à {r.time || '14:30'}
+                    {fmt(r.date)} à {tr(r.time || '14:30')}
                   </strong>
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-[#2C3E56]" />
-                <span>{r.passengers || 1} passager(s)</span>
+                <span>{tr(r.passengers || 1)} {tr("passager(s)")}</span>
               </div>
               {r.luggage > 0 && (
                 <div className="flex items-center gap-1.5">
                   <Briefcase className="w-3.5 h-3.5 text-[#2C3E56]" />
-                  <span>{r.luggage} bagage(s)</span>
+                  <span>{tr(r.luggage)} {tr("bagage(s)")}</span>
                 </div>
               )}
             </div>
@@ -537,7 +548,7 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
         <div className="sm:self-start">
           <StatusBadge
             status={r.status}
-            label={statusLabel[r.status] || r.status}
+            label={tr(statusLabel[r.status] || r.status)}
           />
         </div>
       </div>
@@ -546,16 +557,16 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-[#FFFFF0] border border-[#EBE6DC]">
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Type de Service
+            {tr("Type de Service")}
           </div>
           <div className="text-xs sm:text-sm font-bold text-[#191C1F] mt-0.5">
-            Liaison Fixe Directe
+            {tr("Liaison Fixe Directe")}
           </div>
         </div>
 
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Tarif Forfaitaire
+            {tr("Tarif Forfaitaire")}
           </div>
           <div className="text-sm sm:text-base font-extrabold text-[#A84A3B] mt-0.5">
             {formatPrice(r.priceTND || 100)}
@@ -564,19 +575,19 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
 
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Péages & Attente
+            {tr("Péages & Attente")}
           </div>
           <div className="text-xs sm:text-sm font-bold text-emerald-600 mt-0.5">
-            Inclus sans surcoût
+            {tr("Inclus sans surcoût")}
           </div>
         </div>
 
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
-            Paiement
+            {tr("Paiement")}
           </div>
           <div className="text-xs sm:text-sm font-bold text-[#2C3E56] mt-0.5">
-            À bord ou en ligne
+            {tr("À bord ou en ligne")}
           </div>
         </div>
       </div>
@@ -589,7 +600,7 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
           className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#2C3E56]/5 hover:bg-[#2C3E56]/10 text-[#2C3E56] text-xs font-extrabold border border-[#2C3E56]/15 transition-colors cursor-pointer"
         >
           <Navigation className="w-3.5 h-3.5 text-[#A84A3B]" />
-          <span>Voir l'itinéraire sur la carte Google Maps</span>
+          <span>{tr("Voir l'itinéraire sur la carte Google Maps")}</span>
         </button>
 
         <a
@@ -599,7 +610,7 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
           className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-800 text-xs font-extrabold border border-emerald-500/20 transition-colors"
         >
           <Phone className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Contacter Support & Chauffeur</span>
+          <span>{tr("Contacter Support & Chauffeur")}</span>
         </a>
       </div>
     </div>
@@ -608,6 +619,8 @@ function ChauffeurReservationCard({ r, onOpenMap }) {
 
 /* ── Main Page ────────────────────────────────────────── */
 export default function Historique() {
+  const tr = useText()
+
   const { user, openAuthModal } = useAuth();
   const { t } = useLanguage();
 
@@ -649,21 +662,20 @@ export default function Historique() {
             </div>
             <div>
               <span className="text-[11px] uppercase tracking-wider font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 px-3 py-1 rounded-full">
-                Espace Client Sécurisé
+                {tr("Espace Client Sécurisé")}
               </span>
               <h2 className="text-2xl font-black text-[#191C1F] font-display mt-3">
-                Connexion requise
+                {tr("Connexion requise")}
               </h2>
               <p className="text-xs sm:text-sm text-[#727D88] mt-2 leading-relaxed">
-                Connectez-vous pour consulter l'historique complet de vos
-                réservations et gérer vos contrats en cours.
+                {tr("Connectez-vous pour consulter l'historique complet de vos réservations et gérer vos contrats en cours.")}
               </p>
             </div>
             <button
               onClick={() => openAuthModal && openAuthModal('login')}
               className="w-full py-3 px-6 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>Se connecter à mon compte</span>
+              <span>{tr("Se connecter à mon compte")}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -696,18 +708,17 @@ export default function Historique() {
         <div className="max-w-7xl mx-auto relative z-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5 text-[#F4A261]" />
-            <span>Espace Privilège Client • Suivi en Temps Réel</span>
+            <span>{tr("Espace Privilège Client • Suivi en Temps Réel")}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-display">
-            Mon Espace Réservations
+            {tr("Mon Espace Réservations")}
           </h1>
           <p className="text-sm sm:text-base text-white/75 mt-2 max-w-2xl leading-relaxed">
-            Bonjour{' '}
+            {tr("Bonjour")}{' '}
             <strong className="text-white font-bold">
-              {user.firstName} {user.lastName}
+              {tr(user.firstName)} {tr(user.lastName)}
             </strong>{' '}
-            — retrouvez le récapitulatif complet de vos véhicules, séjours et
-            excursions en Tunisie.
+            {tr("— retrouvez le récapitulatif complet de vos véhicules, séjours et excursions en Tunisie.")}
           </p>
 
           {/* Quick Direct Links */}
@@ -717,28 +728,28 @@ export default function Historique() {
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-[#A84A3B] text-white shadow-md hover:bg-[#8F3E31] transition-colors"
             >
               <Car className="w-3.5 h-3.5" />
-              <span>Réserver une voiture</span>
+              <span>{tr("Réserver une voiture")}</span>
             </Link>
             <Link
               to="/appartements"
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-white/15 hover:bg-white/25 text-white/90 border border-white/10 transition-colors"
             >
               <HomeIcon className="w-3.5 h-3.5" />
-              <span>Voir les hébergements</span>
+              <span>{tr("Voir les hébergements")}</span>
             </Link>
             <Link
               to="/excursions"
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-white/15 hover:bg-white/25 text-white/90 border border-white/10 transition-colors"
             >
               <Compass className="w-3.5 h-3.5" />
-              <span>Explorer les excursions</span>
+              <span>{tr("Explorer les excursions")}</span>
             </Link>
             <Link
               to="/transfer"
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-white/15 hover:bg-white/25 text-white/90 border border-white/10 transition-colors"
             >
               <UserCheck className="w-3.5 h-3.5 text-[#F4A261]" />
-              <span>Lignes Chauffeur Privé</span>
+              <span>{tr("Lignes Chauffeur Privé")}</span>
             </Link>
           </div>
         </div>
@@ -758,7 +769,7 @@ export default function Historique() {
             }`}
           >
             <Car className="w-4 h-4" />
-            <span>Voitures</span>
+            <span>{tr("Voitures")}</span>
             <span
               className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
                 serviceTab === 'cars'
@@ -766,7 +777,7 @@ export default function Historique() {
                   : 'bg-[#FFFFF0] text-[#727D88]'
               }`}
             >
-              {carResas.length}
+              {tr(carResas.length)}
             </span>
           </button>
 
@@ -780,7 +791,7 @@ export default function Historique() {
             }`}
           >
             <HomeIcon className="w-4 h-4" />
-            <span>Hébergements</span>
+            <span>{tr("Hébergements")}</span>
             <span
               className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
                 serviceTab === 'apartments'
@@ -788,7 +799,7 @@ export default function Historique() {
                   : 'bg-[#FFFFF0] text-[#727D88]'
               }`}
             >
-              {aptResas.length}
+              {tr(aptResas.length)}
             </span>
           </button>
 
@@ -810,7 +821,7 @@ export default function Historique() {
                   : 'bg-[#FFFFF0] text-[#727D88]'
               }`}
             >
-              {excResas.length}
+              {tr(excResas.length)}
             </span>
           </button>
 
@@ -824,7 +835,7 @@ export default function Historique() {
             }`}
           >
             <UserCheck className="w-4 h-4" />
-            <span>Chauffeur Privé</span>
+            <span>{tr("Chauffeur Privé")}</span>
             <span
               className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold ${
                 serviceTab === 'chauffeur'
@@ -832,7 +843,7 @@ export default function Historique() {
                   : 'bg-[#FFFFF0] text-[#727D88]'
               }`}
             >
-              {chauffeurResas.length}
+              {tr(chauffeurResas.length)}
             </span>
           </button>
         </div>
@@ -866,17 +877,17 @@ export default function Historique() {
 
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-[#191C1F] font-display">
-                Aucune réservation trouvée
+                {tr("Aucune réservation trouvée")}
               </h2>
               <p className="text-xs sm:text-sm text-[#727D88] mt-2 leading-relaxed">
-                {serviceTab === 'cars' &&
-                  "Vous n'avez pas encore de réservation de véhicule active."}
-                {serviceTab === 'apartments' &&
-                  "Vous n'avez pas encore réservé de dar ou villa pour vos vacances."}
-                {serviceTab === 'excursions' &&
-                  "Vous n'avez pas encore réservé d'excursion ou circuit touristique."}
-                {serviceTab === 'chauffeur' &&
-                  "Vous n'avez pas encore de trajet régulier avec chauffeur réservé."}
+                {tr(serviceTab === 'cars' &&
+                  "Vous n'avez pas encore de réservation de véhicule active.")}
+                {tr(serviceTab === 'apartments' &&
+                  "Vous n'avez pas encore réservé de dar ou villa pour vos vacances.")}
+                {tr(serviceTab === 'excursions' &&
+                  "Vous n'avez pas encore réservé d'excursion ou circuit touristique.")}
+                {tr(serviceTab === 'chauffeur' &&
+                  "Vous n'avez pas encore de trajet régulier avec chauffeur réservé.")}
               </p>
             </div>
 
@@ -893,13 +904,13 @@ export default function Historique() {
               className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all"
             >
               <span>
-                {serviceTab === 'cars'
+                {tr(serviceTab === 'cars'
                   ? 'Explorer notre flotte de véhicules'
                   : serviceTab === 'apartments'
                   ? 'Découvrir nos hébergements'
                   : serviceTab === 'excursions'
                   ? 'Voir nos circuits & excursions'
-                  : 'Découvrir nos liaisons avec chauffeur'}
+                  : 'Découvrir nos liaisons avec chauffeur')}
               </span>
               <ArrowRight className="w-4 h-4" />
             </Link>

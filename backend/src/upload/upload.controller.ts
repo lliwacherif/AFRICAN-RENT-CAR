@@ -16,7 +16,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 
 /** Multer file type filter — only allow image MIME types */
 const imageFilter = (_req: any, file: Express.Multer.File, cb: any) => {
-  if (!file.mimetype.match(/\/(jpg|jpeg|png|webp|gif)$/)) {
+  if (!/^image\/(jpeg|png|webp|gif|avif)$/.test(file.mimetype)) {
     return cb(new BadRequestException('Only image files are allowed'), false);
   }
   cb(null, true);
@@ -41,7 +41,7 @@ export class UploadController {
   /**
    * Uploads a single image file to Cloudinary.
    *
-   * - Accepts: jpg, jpeg, png, webp, gif (max 5 MB)
+   * - Accepts: jpg, jpeg, png, webp, gif, avif (max 5 MB)
    * - Image is automatically resized to max 1200×800 px with quality optimisation.
    * - Returns the secure Cloudinary URL to be stored in `vehicle.images[]`.
    */
@@ -57,9 +57,9 @@ export class UploadController {
     summary: '[Admin] Upload an image to Cloudinary',
     description:
       'Uploads a vehicle image to Cloudinary.\n\n' +
-      '**Accepted types:** jpg, jpeg, png, webp, gif\n' +
+      '**Accepted types:** jpg, jpeg, png, webp, gif, avif\n' +
       '**Max size:** 5 MB\n' +
-      '**Auto-transform:** resized to max 1200×800, quality & format optimised.\n\n' +
+      '**Auto-transform:** resized to max 1200×800, quality optimised.\n\n' +
       'Use the returned `url` as a value in the vehicle `images` array.',
   })
   @ApiConsumes('multipart/form-data')
@@ -68,7 +68,7 @@ export class UploadController {
       type: 'object',
       required: ['file'],
       properties: {
-        file: { type: 'string', format: 'binary', description: 'Image file (jpg/png/webp/gif, max 5 MB)' },
+        file: { type: 'string', format: 'binary', description: 'Image file (jpg/png/webp/gif/avif, max 5 MB)' },
         folder: { type: 'string', example: 'tunisia-car-rental/vehicles', description: 'Cloudinary folder (optional, defaults to tunisia-car-rental)' },
       },
     },
@@ -128,17 +128,10 @@ export class UploadController {
   ) {
     if (!file) throw new BadRequestException('No 3D file provided');
     const safeName = file.originalname.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
-    const filename = `${safeName}_${Date.now()}`;
-    try {
-      const result = await this.uploadService.uploadRaw(file.buffer, filename, folder || 'tunisia-car-rental/3d-models');
-      return {
-        url: result.secure_url,
-        publicId: result.public_id,
-      };
-    } catch (err) {
-      console.error('[uploadGlb] Failed:', err?.message);
-      throw new BadRequestException(err?.message || 'GLB upload to Cloudinary failed');
-    }
+    const extension = file.originalname.toLowerCase().endsWith('.gltf') ? 'gltf' : 'glb';
+    const filename = `${safeName}_${Date.now()}.${extension}`;
+    const result = await this.uploadService.uploadRaw(file.buffer, filename, folder || 'tunisia-car-rental/3d-models');
+    return { url: result.secure_url, publicId: result.public_id };
   }
 
   /**

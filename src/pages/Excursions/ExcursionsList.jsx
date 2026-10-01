@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -62,6 +63,8 @@ function getExcursionHighlights(item) {
 }
 
 export default function ExcursionsList() {
+  const tr = useText()
+
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
@@ -154,13 +157,13 @@ export default function ExcursionsList() {
         <div className="max-w-7xl mx-auto relative z-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5 text-[#F4A261]" />
-            <span>Circuits Privatifs & Aventures Sahariennes • Guides Certifiés</span>
+            <span>{tr("Circuits Privatifs & Aventures Sahariennes • Guides Certifiés")}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-display">
-            Circuits & Excursions d'Exception en Tunisie
+            {tr("Circuits & Excursions d'Exception en Tunisie")}
           </h1>
           <p className="text-sm sm:text-base text-white/75 mt-2 max-w-2xl">
-            Des dunes majestueuses du Grand Erg Oriental aux villages troglodytiques de Matmata et aux oasis de montagne de Tozeur.
+            {tr("Des dunes majestueuses du Grand Erg Oriental aux villages troglodytiques de Matmata et aux oasis de montagne de Tozeur.")}
           </p>
 
           {/* Quick Category Pills */}
@@ -175,7 +178,7 @@ export default function ExcursionsList() {
                     : 'bg-white/15 hover:bg-white/25 text-white/90 border border-white/10'
                 }`}
               >
-                {cat.label}
+                {tr(cat.label)}
               </button>
             ))}
           </div>
@@ -184,7 +187,7 @@ export default function ExcursionsList() {
 
       {/* 2. MAIN LAYOUT */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        
+
         {/* Mobile Filter Button */}
         <div className="lg:hidden mb-4 flex items-center justify-between">
           <button
@@ -192,7 +195,7 @@ export default function ExcursionsList() {
             className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#EBE6DC] text-sm font-bold text-[#191C1F] shadow-xs cursor-pointer"
           >
             <SlidersHorizontal className="w-4 h-4 text-[#A84A3B]" />
-            <span>Filtres ({excursions.length})</span>
+            <span>{tr("Filtres (")}{tr(excursions.length)})</span>
           </button>
 
           {/* Toggle View for Mobile */}
@@ -200,32 +203,32 @@ export default function ExcursionsList() {
             <button
               onClick={() => handleViewModeChange('list')}
               className={`view-toggle-item ${viewMode === 'list' ? 'active' : 'inactive'}`}
-              title="Vue Liste"
+              title={tr("Vue Liste")}
             >
               <LayoutList className="w-4 h-4" />
-              <span className="hidden sm:inline">Liste</span>
+              <span className="hidden sm:inline">{tr("Liste")}</span>
             </button>
             <button
               onClick={() => handleViewModeChange('grid')}
               className={`view-toggle-item ${viewMode === 'grid' ? 'active' : 'inactive'}`}
-              title="Vue Mosaïque"
+              title={tr("Vue Mosaïque")}
             >
               <LayoutGrid className="w-4 h-4" />
-              <span className="hidden sm:inline">Mosaïque</span>
+              <span className="hidden sm:inline">{tr("Mosaïque")}</span>
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
+
           {/* ================= LEFT SIDEBAR (FILTERS) ================= */}
           <aside className={`lg:col-span-4 xl:col-span-3 space-y-6 ${mobileFilterOpen ? 'block' : 'hidden lg:block'}`}>
-            
+
             {/* Filter: Departure City */}
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <h3 className="font-bold text-sm text-[#191C1F] mb-3 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[#A84A3B]" />
-                <span>Ville de départ</span>
+                <span>{tr("Ville de départ")}</span>
               </h3>
               <select
                 value={selectedCity}
@@ -234,7 +237,7 @@ export default function ExcursionsList() {
               >
                 {DEPARTURE_CITIES.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.label}
+                    {tr(c.label)}
                   </option>
                 ))}
               </select>
@@ -244,7 +247,7 @@ export default function ExcursionsList() {
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <h3 className="font-bold text-sm text-[#191C1F] mb-3 flex items-center gap-2">
                 <Compass className="w-4 h-4 text-[#2C3E56]" />
-                <span>Type d'expédition</span>
+                <span>{tr("Type d'expédition")}</span>
               </h3>
               <div className="space-y-1.5">
                 {CATEGORIES.map((cat) => {
@@ -259,7 +262,7 @@ export default function ExcursionsList() {
                           : 'text-[#4A525A] hover:bg-[#F8F7EE]'
                       }`}
                     >
-                      <span>{cat.label}</span>
+                      <span>{tr(cat.label)}</span>
                       {isActive && <Check className="w-3.5 h-3.5" />}
                     </button>
                   );
@@ -271,7 +274,7 @@ export default function ExcursionsList() {
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <h3 className="font-bold text-sm text-[#191C1F] mb-3 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-[#2C3E56]" />
-                <span>Durée du circuit</span>
+                <span>{tr("Durée du circuit")}</span>
               </h3>
               <div className="space-y-1.5">
                 {DURATIONS.map((d) => {
@@ -286,7 +289,7 @@ export default function ExcursionsList() {
                           : 'bg-[#F8F7EE] text-[#4A525A] hover:bg-[#EBE6DC]'
                       }`}
                     >
-                      <span>{d.label}</span>
+                      <span>{tr(d.label)}</span>
                       {isActive && <Check className="w-3.5 h-3.5" />}
                     </button>
                   );
@@ -297,7 +300,7 @@ export default function ExcursionsList() {
             {/* Filter: Max Price per person */}
             <div className="bg-white rounded-2xl p-5 border border-[#EBE6DC] shadow-xs">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-sm text-[#191C1F]">Budget max / pers.</h3>
+                <h3 className="font-bold text-sm text-[#191C1F]">{tr("Budget max / pers.")}</h3>
                 <span className="text-xs font-extrabold text-[#A84A3B] bg-[#A84A3B]/10 px-2 py-0.5 rounded-full">
                   {formatPrice(maxPrice, isRtl)}
                 </span>
@@ -324,25 +327,25 @@ export default function ExcursionsList() {
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[#DAD3C5] text-xs font-bold text-[#727D88] hover:text-[#191C1F] hover:bg-white transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Réinitialiser tous les filtres</span>
+              <span>{tr("Réinitialiser tous les filtres")}</span>
             </button>
 
           </aside>
 
           {/* ================= RIGHT MAIN LISTINGS ================= */}
           <main className="lg:col-span-8 xl:col-span-9 space-y-6">
-            
+
             {/* Header bar with Count, Sort and Toggle [ Liste | Mosaïque ] */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#EBE6DC] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-extrabold text-[#191C1F] font-display">
-                  {loading
+                  {tr(loading
                     ? 'Exploration des circuits...'
-                    : `${excursions.length} expédition${excursions.length > 1 ? 's' : ''} disponible${excursions.length > 1 ? 's' : ''}`
+                    : `${excursions.length} expédition${excursions.length > 1 ? 's' : ''} disponible${excursions.length > 1 ? 's' : ''}`)
                   }
                 </h2>
                 <p className="text-xs text-[#727D88] mt-0.5">
-                  Guides bilingues diplômés d'État & véhicules 4x4 tout-terrain révisés
+                  {tr("Guides bilingues diplômés d'État & véhicules 4x4 tout-terrain révisés")}
                 </p>
               </div>
 
@@ -355,9 +358,9 @@ export default function ExcursionsList() {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="bg-transparent font-bold text-xs text-[#191C1F] focus:outline-hidden cursor-pointer"
                   >
-                    <option value="rating">Mieux notés</option>
-                    <option value="price_asc">Prix croissant</option>
-                    <option value="price_desc">Prix décroissant</option>
+                    <option value="rating">{tr("Mieux notés")}</option>
+                    <option value="price_asc">{tr("Prix croissant")}</option>
+                    <option value="price_desc">{tr("Prix décroissant")}</option>
                   </select>
                 </div>
 
@@ -366,18 +369,18 @@ export default function ExcursionsList() {
                   <button
                     onClick={() => handleViewModeChange('list')}
                     className={`view-toggle-item ${viewMode === 'list' ? 'active' : 'inactive'}`}
-                    title="Affichage en Liste"
+                    title={tr("Affichage en Liste")}
                   >
                     <LayoutList className="w-4 h-4" />
-                    <span className="hidden sm:inline">Liste</span>
+                    <span className="hidden sm:inline">{tr("Liste")}</span>
                   </button>
                   <button
                     onClick={() => handleViewModeChange('grid')}
                     className={`view-toggle-item ${viewMode === 'grid' ? 'active' : 'inactive'}`}
-                    title="Affichage en Mosaïque"
+                    title={tr("Affichage en Mosaïque")}
                   >
                     <LayoutGrid className="w-4 h-4" />
-                    <span className="hidden sm:inline">Mosaïque</span>
+                    <span className="hidden sm:inline">{tr("Mosaïque")}</span>
                   </button>
                 </div>
               </div>
@@ -388,13 +391,13 @@ export default function ExcursionsList() {
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-center justify-between text-xs font-semibold">
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-                  <span>{error}</span>
+                  <span>{tr(error)}</span>
                 </div>
                 <button
                   onClick={fetchExcursions}
                   className="px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
                 >
-                  Réessayer
+                  {tr("Réessayer")}
                 </button>
               </div>
             )}
@@ -425,16 +428,16 @@ export default function ExcursionsList() {
                   <Compass className="w-7 h-7" />
                 </div>
                 <h3 className="text-lg font-bold text-[#191C1F]">
-                  Aucune excursion trouvée avec ces critères
+                  {tr("Aucune excursion trouvée avec ces critères")}
                 </h3>
                 <p className="text-sm text-[#727D88] mt-1 max-w-md mx-auto">
-                  Modifiez la ville de départ ou la catégorie d'expédition pour découvrir d'autres circuits.
+                  {tr("Modifiez la ville de départ ou la catégorie d'expédition pour découvrir d'autres circuits.")}
                 </p>
                 <button
                   onClick={resetFilters}
                   className="mt-5 px-6 py-2.5 rounded-full bg-[#A84A3B] text-white font-bold text-xs hover:bg-[#8A372A] transition-colors cursor-pointer"
                 >
-                  Réinitialiser les filtres
+                  {tr("Réinitialiser les filtres")}
                 </button>
               </div>
             )}
@@ -455,7 +458,7 @@ export default function ExcursionsList() {
                       <div className="md:w-72 lg:w-84 shrink-0 relative bg-neutral-900 overflow-hidden min-h-[220px] md:min-h-full">
                         <img
                           src={itemImg}
-                          alt={item.title}
+                          alt={tr(item.title)}
                           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
@@ -463,7 +466,7 @@ export default function ExcursionsList() {
                         {/* Top Category Badge */}
                         <div className="absolute top-3 left-3 flex items-center gap-1.5">
                           <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {item.category}
+                            {tr(item.category)}
                           </span>
                         </div>
 
@@ -471,7 +474,7 @@ export default function ExcursionsList() {
                         <button
                           onClick={() => toggleFavorite(item, 'excursion')}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-neutral-700 hover:text-[#A84A3B] transition-colors cursor-pointer"
-                          title={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+                          title={tr(isFav ? "Retirer des favoris" : "Ajouter aux favoris")}
                         >
                           <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A84A3B] text-[#A84A3B]' : ''}`} />
                         </button>
@@ -479,7 +482,7 @@ export default function ExcursionsList() {
                         {/* Duration Pill */}
                         <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold bg-black/60 backdrop-blur-md text-white border border-white/20 flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5 text-[#F4A261]" />
-                          <span>{item.duration || '1 Journée'}</span>
+                          <span>{tr(item.duration || '1 Journée')}</span>
                         </div>
                       </div>
 
@@ -489,14 +492,14 @@ export default function ExcursionsList() {
                           {/* Departure City & Vehicle pill */}
                           <div className="flex flex-wrap items-center gap-2 mb-1.5 text-[11px] font-bold text-[#727D88]">
                             <span className="inline-flex items-center gap-1 text-[#A84A3B] bg-[#A84A3B]/10 px-2 py-0.5 rounded-full">
-                              <MapPin className="w-3 h-3" /> Départ : {item.departureCity || 'Tunis'}
+                              <MapPin className="w-3 h-3" /> {tr("Départ :")} {tr(item.departureCity || 'Tunis')}
                             </span>
                             <span className="inline-flex items-center gap-1 text-[#2C3E56] bg-[#2C3E56]/10 px-2 py-0.5 rounded-full">
-                              <Car className="w-3 h-3" /> {item.vehicleType || '4x4 VIP'}
+                              <Car className="w-3 h-3" /> {tr(item.vehicleType || '4x4 VIP')}
                             </span>
                             {item.groupSize && (
                               <span className="inline-flex items-center gap-1 text-[#4A525A] bg-[#F8F7EE] px-2 py-0.5 rounded-full border border-[#EBE6DC]">
-                                <Users className="w-3 h-3" /> {item.groupSize}
+                                <Users className="w-3 h-3" /> {tr(item.groupSize)}
                               </span>
                             )}
                           </div>
@@ -504,25 +507,25 @@ export default function ExcursionsList() {
                           {/* Title & Rating */}
                           <div className="flex items-start justify-between gap-3 mb-1.5">
                             <h3 className="text-xl font-extrabold text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors">
-                              {item.title}
+                              {tr(item.title)}
                             </h3>
 
                             <div className="flex items-center gap-1.5 shrink-0 bg-[#F8F7EE] px-2.5 py-1 rounded-xl border border-[#EBE6DC]">
                               <span className="text-xs font-black text-[#A84A3B]">★ {(item.rating || 4.96).toFixed(2)}</span>
-                              <span className="text-[10px] text-[#727D88]">({item.reviewsCount || 34} avis)</span>
+                              <span className="text-[10px] text-[#727D88]">({tr(item.reviewsCount || 34)} {tr("avis)")}</span>
                             </div>
                           </div>
 
                           {/* Tagline / route summary */}
                           <p className="text-xs text-[#727D88] line-clamp-2 mb-3">
-                            {item.tagline || item.description}
+                            {tr(item.tagline || item.description)}
                           </p>
 
                           {/* Highlights with checkmarks */}
                           {getExcursionHighlights(item).slice(0, 3).map((hl, idx) => (
                             <div key={idx} className="flex items-center gap-2 text-xs text-[#4A525A] mb-1">
                               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                              <span className="line-clamp-1">{hl}</span>
+                              <span className="line-clamp-1">{tr(hl)}</span>
                             </div>
                           ))}
                         </div>
@@ -530,7 +533,7 @@ export default function ExcursionsList() {
                         {/* Inclusions assurance */}
                         <div className="pt-2 border-t border-[#EBE6DC] flex items-center gap-2 text-xs font-bold text-emerald-700">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span className="line-clamp-1">Guide officiel bilingue + transport aller-retour inclus</span>
+                          <span className="line-clamp-1">{tr("Guide officiel bilingue + transport aller-retour inclus")}</span>
                         </div>
                       </div>
 
@@ -543,16 +546,16 @@ export default function ExcursionsList() {
                                 {formatPrice(item.originalPriceTND, isRtl)}
                               </p>
                             )}
-                            <p className="text-[11px] uppercase tracking-wider font-bold text-[#727D88]">Par adulte</p>
+                            <p className="text-[11px] uppercase tracking-wider font-bold text-[#727D88]">{tr("Par adulte")}</p>
                             <p className="text-2xl font-black text-[#191C1F] font-display">
                               {formatPrice(item.pricePerAdult || item.pricePerPersonTND || 150, isRtl)}
                             </p>
                           </div>
                           <p className="text-right text-xs font-semibold text-[#A84A3B]">
-                            Tarif tout compris
+                            {tr("Tarif tout compris")}
                           </p>
                           <p className="text-right text-[10px] text-[#727D88] mt-0.5">
-                            Transport, repas & accès sites
+                            {tr("Transport, repas & accès sites")}
                           </p>
                         </div>
 
@@ -562,20 +565,20 @@ export default function ExcursionsList() {
                             className="w-full py-2 px-3 rounded-xl border border-[#DAD3C5] bg-white hover:bg-[#EBE6DC] text-[#191C1F] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                           >
                             <Eye className="w-3.5 h-3.5 text-[#2C3E56]" />
-                            <span>Voir l'itinéraire</span>
+                            <span>{tr("Voir l'itinéraire")}</span>
                           </button>
 
                           <button
                             onClick={() => navigate(`/excursions/${item._id || item.id}`)}
                             className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#A84A3B] to-[#C25847] hover:from-[#8A372A] hover:to-[#A84A3B] text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1.5 transition-all transform active:scale-95 cursor-pointer"
                           >
-                            <span>Réserver le circuit</span>
+                            <span>{tr("Réserver le circuit")}</span>
                             <ChevronRight className="w-4 h-4" />
                           </button>
 
                           <div className="pt-1 text-center">
                             <span className="text-[10px] text-[#727D88]">
-                              Confirmation immédiate par WhatsApp
+                              {tr("Confirmation immédiate par WhatsApp")}
                             </span>
                           </div>
                         </div>
@@ -603,28 +606,28 @@ export default function ExcursionsList() {
                       <div className="relative aspect-16/10 bg-neutral-900 overflow-hidden">
                         <img
                           src={itemImg}
-                          alt={item.title}
+                          alt={tr(item.title)}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
                         <div className="absolute top-3 left-3 flex items-center gap-1.5">
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#191C1F] shadow-xs">
-                            {item.category}
+                            {tr(item.category)}
                           </span>
                         </div>
 
                         <button
                           onClick={() => toggleFavorite(item, 'excursion')}
                           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-neutral-700 hover:text-[#A84A3B] transition-colors cursor-pointer"
-                          title={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+                          title={tr(isFav ? "Retirer des favoris" : "Ajouter aux favoris")}
                         >
                           <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A84A3B] text-[#A84A3B]' : ''}`} />
                         </button>
 
                         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs">
                           <span className="font-extrabold flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5 text-[#F4A261]" /> {item.duration || '1 Journée'}
+                            <Clock className="w-3.5 h-3.5 text-[#F4A261]" /> {tr(item.duration || '1 Journée')}
                           </span>
                           <span className="bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[10px] font-bold text-[#F4A261]">
                             ★ {(item.rating || 4.96).toFixed(2)}
@@ -636,22 +639,22 @@ export default function ExcursionsList() {
                       <div className="p-5 flex-1 flex flex-col justify-between">
                         <div>
                           <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#A84A3B] mb-1">
-                            <MapPin className="w-3 h-3" /> Départ : {item.departureCity || 'Tunisie'}
+                            <MapPin className="w-3 h-3" /> {tr("Départ :")} {tr(item.departureCity || 'Tunisie')}
                           </div>
 
                           <h3 className="font-extrabold text-lg text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors">
-                            {item.title}
+                            {tr(item.title)}
                           </h3>
 
                           <p className="text-xs text-[#727D88] line-clamp-2 mt-1 mb-3">
-                            {item.tagline || item.description}
+                            {tr(item.tagline || item.description)}
                           </p>
 
                           {/* Highlights */}
                           {getExcursionHighlights(item).slice(0, 2).map((hl, idx) => (
                             <div key={idx} className="flex items-center gap-1.5 text-[11px] text-[#4A525A] mb-1">
                               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                              <span className="line-clamp-1">{hl}</span>
+                              <span className="line-clamp-1">{tr(hl)}</span>
                             </div>
                           ))}
                         </div>
@@ -660,13 +663,13 @@ export default function ExcursionsList() {
                         <div className="pt-4 mt-4 border-t border-[#EBE6DC]">
                           <div className="flex items-baseline justify-between mb-3">
                             <div>
-                              <p className="text-[10px] uppercase font-bold text-[#727D88]">Par personne</p>
+                              <p className="text-[10px] uppercase font-bold text-[#727D88]">{tr("Par personne")}</p>
                               <p className="text-xl font-black text-[#191C1F] font-display">
                                 {formatPrice(item.pricePerAdult || item.pricePerPersonTND || 150, isRtl)}
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="text-[10px] text-emerald-700 font-bold">Tout inclus</p>
+                              <p className="text-[10px] text-emerald-700 font-bold">{tr("Tout inclus")}</p>
                             </div>
                           </div>
 
@@ -675,13 +678,13 @@ export default function ExcursionsList() {
                               onClick={() => navigate(`/excursions/${item._id || item.id}`)}
                               className="py-2 rounded-xl border border-[#DAD3C5] text-xs font-bold text-[#191C1F] hover:bg-[#F8F7EE] transition-colors cursor-pointer"
                             >
-                              Détails
+                              {tr("Détails")}
                             </button>
                             <button
                               onClick={() => navigate(`/excursions/${item._id || item.id}`)}
                               className="py-2 rounded-xl bg-[#A84A3B] hover:bg-[#8A372A] text-white text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
                             >
-                              Réserver
+                              {tr("Réserver")}
                             </button>
                           </div>
                         </div>
@@ -730,8 +733,8 @@ export default function ExcursionsList() {
                     <Icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-extrabold text-[#191C1F]">{g.title}</h4>
-                    <p className="text-xs text-[#727D88] mt-0.5 leading-relaxed">{g.desc}</p>
+                    <h4 className="text-sm font-extrabold text-[#191C1F]">{tr(g.title)}</h4>
+                    <p className="text-xs text-[#727D88] mt-0.5 leading-relaxed">{tr(g.desc)}</p>
                   </div>
                 </div>
               );
@@ -750,8 +753,8 @@ export default function ExcursionsList() {
             <Sparkles className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">Concierge VIP</p>
-            <p className="text-xs font-extrabold text-white">Conseiller Voyage IA</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">{tr("Concierge VIP")}</p>
+            <p className="text-xs font-extrabold text-white">{tr("Conseiller Voyage IA")}</p>
           </div>
         </button>
       </div>

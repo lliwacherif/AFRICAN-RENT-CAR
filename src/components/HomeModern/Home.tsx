@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from './Header';
@@ -18,6 +19,8 @@ import { Currency, Vehicle, ComboPackage, ChauffeurRoute, Accommodation } from '
 import { Sparkles, MessageSquare } from 'lucide-react';
 
 export const Home: React.FC = () => {
+  const tr = useText()
+
   const navigate = useNavigate();
   const [currency, setCurrency] = useState<Currency>('TND');
   const [selectedVehicleForModal, setSelectedVehicleForModal] = useState<Vehicle | null>(null);
@@ -169,14 +172,14 @@ export const Home: React.FC = () => {
         <button
           onClick={() => setIsConciergeOpen(true)}
           className="group flex items-center gap-2.5 apple-glass-dark text-white px-4 py-3 rounded-full shadow-[0_16px_36px_rgba(0,0,0,0.35)] hover:bg-[#1E293B]/90 border border-white/25 transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer"
-          aria-label="Contacter le Concierge VIP"
+          aria-label={tr("Contacter le Concierge VIP")}
         >
           <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div className="text-left hidden sm:block pr-1">
-            <p className="text-[10px] font-extrabold uppercase tracking-wider text-white/70 leading-none">Concierge VIP</p>
-            <p className="text-xs font-black leading-tight">Conseiller Voyage IA</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-white/70 leading-none">{tr("Concierge VIP")}</p>
+            <p className="text-xs font-black leading-tight">{tr("Conseiller Voyage IA")}</p>
           </div>
         </button>
       </div>

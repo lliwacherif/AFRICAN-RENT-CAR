@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import {
   Phone,
@@ -23,6 +24,8 @@ import { AIConciergeModal } from '../../components/HomeModern/AIConciergeModal';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Contact() {
+  const tr = useText()
+
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [sent, setSent] = useState(false);
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
@@ -78,7 +81,7 @@ export default function Contact() {
         <div className="text-xs sm:text-sm font-bold text-[#191C1F] leading-snug">
           Avenue Habib Bourguiba, Bizerte 7000
           <span className="block text-[11px] text-[#727D88] font-medium mt-0.5">
-            + Comptoirs aéroports TUN, DJE, MIR
+            {tr("+ Comptoirs aéroports TUN, DJE, MIR")}
           </span>
         </div>
       ),
@@ -92,7 +95,7 @@ export default function Contact() {
         <div className="text-sm font-extrabold text-[#191C1F]">
           24h / 24 • 7j / 7
           <span className="block text-xs font-semibold text-emerald-700 mt-0.5">
-            Suivi des vols en temps réel
+            {tr("Suivi des vols en temps réel")}
           </span>
         </div>
       ),
@@ -147,32 +150,32 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto relative z-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5 text-[#F4A261]" />
-            <span>À Propos & Agences • Mobilité & Séjours d'Exception en Tunisie</span>
+            <span>{tr("À Propos & Agences • Mobilité & Séjours d'Exception en Tunisie")}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-display">
-            African Rent Car Tunisie
+            {tr("African Rent Car Tunisie")}
           </h1>
           <p className="text-sm sm:text-base text-white/75 mt-2 max-w-2xl">
-            Votre partenaire de confiance pour la location de véhicules récents, de villas de charme et d'excursions d'exception depuis plus de 15 ans.
+            {tr("Votre partenaire de confiance pour la location de véhicules récents, de villas de charme et d'excursions d'exception depuis plus de 15 ans.")}
           </p>
 
           {/* Quick Metrics Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 max-w-3xl">
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3 text-center">
               <p className="text-xl sm:text-2xl font-black text-white">12</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-white/70 uppercase tracking-wider">Agences & Aéroports</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-white/70 uppercase tracking-wider">{tr("Agences & Aéroports")}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3 text-center">
               <p className="text-xl sm:text-2xl font-black text-[#F4A261]">100%</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-white/70 uppercase tracking-wider">Flotte 2025/2026</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-white/70 uppercase tracking-wider">{tr("Flotte 2025/2026")}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3 text-center">
               <p className="text-xl sm:text-2xl font-black text-white">24/7</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-white/70 uppercase tracking-wider">Assistance Dédiée</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-white/70 uppercase tracking-wider">{tr("Assistance Dédiée")}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3 text-center">
               <p className="text-xl sm:text-2xl font-black text-emerald-400">4.98★</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-white/70 uppercase tracking-wider">Avis Clients</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-white/70 uppercase tracking-wider">{tr("Avis Clients")}</p>
             </div>
           </div>
         </div>
@@ -180,7 +183,7 @@ export default function Contact() {
 
       {/* 3. MAIN CONTENT CONTAINER */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 space-y-20">
-        
+
         {/* ================= 4 INFO CARDS ================= */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {contactCards.map((card, idx) => {
@@ -195,12 +198,12 @@ export default function Contact() {
                     <Icon className="w-6 h-6" />
                   </div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#727D88]">
-                    {card.label}
+                    {tr(card.label)}
                   </span>
-                  <div className="mt-2">{card.content}</div>
+                  <div className="mt-2">{tr(card.content)}</div>
                 </div>
                 <div className="mt-4 pt-3 border-t border-[#EBE6DC]/80 text-[11px] font-medium text-[#727D88]">
-                  {card.sub}
+                  {tr(card.sub)}
                 </div>
               </div>
             );
@@ -215,50 +218,50 @@ export default function Contact() {
               onError={(e) => {
                 e.currentTarget.src = 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=1200&q=80';
               }}
-              alt="L'équipe African Rent Car"
+              alt={tr("L'équipe African Rent Car")}
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 text-white">
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#A84A3B] text-white inline-block mb-2">
-                📍 Présents Partout en Tunisie
+                {tr("📍 Présents Partout en Tunisie")}
               </span>
               <h3 className="text-xl sm:text-2xl font-extrabold font-display">
-                Une Équipe Dévouée à Votre Mobilité
+                {tr("Une Équipe Dévouée à Votre Mobilité")}
               </h3>
             </div>
           </div>
 
           <div className="lg:col-span-6 p-6 sm:p-10 lg:p-12 space-y-4">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#A84A3B] bg-[#A84A3B]/10 px-3 py-1 rounded-full">
-              Notre Philosophie
+              {tr("Notre Philosophie")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#191C1F] font-display">
-              La location sans stress, sans surprise et sans file d'attente
+              {tr("La location sans stress, sans surprise et sans file d'attente")}
             </h2>
             <p className="text-xs sm:text-sm text-[#727D88] leading-relaxed">
-              Fondée avec la volonté de moderniser les standards de location en Tunisie, <strong>African Rent Car</strong> vous propose une expérience haut de gamme combinant flotte récente certifiée, assistance VIP aux aéroports et digitalisation complète.
+              {tr("Fondée avec la volonté de moderniser les standards de location en Tunisie,")} <strong>African Rent Car</strong> {tr("vous propose une expérience haut de gamme combinant flotte récente certifiée, assistance VIP aux aéroports et digitalisation complète.")}
             </p>
             <p className="text-xs sm:text-sm text-[#727D88] leading-relaxed">
-              Que vous veniez pour des vacances en famille, un voyage d'affaires à Tunis ou une traversée du Sahara, nos conseillers dédiés vous accompagnent avec réactivité et professionnalisme.
+              {tr("Que vous veniez pour des vacances en famille, un voyage d'affaires à Tunis ou une traversée du Sahara, nos conseillers dédiés vous accompagnent avec réactivité et professionnalisme.")}
             </p>
 
             <div className="pt-2 grid grid-cols-2 gap-3 text-xs font-bold text-[#2C3E56]">
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Accueil nominatif aéroport</span>
+                <span>{tr("Accueil nominatif aéroport")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Véhicules révisés 40 points</span>
+                <span>{tr("Véhicules révisés 40 points")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Kilométrage adapté</span>
+                <span>{tr("Kilométrage adapté")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Paiement en ligne ou à l'arrivée</span>
+                <span>{tr("Paiement en ligne ou à l'arrivée")}</span>
               </div>
             </div>
           </div>
@@ -268,13 +271,13 @@ export default function Contact() {
         <section className="space-y-8">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#2C3E56] bg-[#2C3E56]/10 px-3 py-1 rounded-full">
-              Nos Engagements Qualité
+              {tr("Nos Engagements Qualité")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#191C1F] font-display mt-3">
-              Pourquoi Choisir African Rent Car ?
+              {tr("Pourquoi Choisir African Rent Car ?")}
             </h2>
             <p className="text-sm text-[#727D88] mt-1.5">
-              Des garanties solides pour sécuriser chaque kilomètre de votre séjour en Tunisie.
+              {tr("Des garanties solides pour sécuriser chaque kilomètre de votre séjour en Tunisie.")}
             </p>
           </div>
 
@@ -291,10 +294,10 @@ export default function Contact() {
                       <Icon className="w-6 h-6" />
                     </div>
                     <h3 className="text-base sm:text-lg font-extrabold text-[#191C1F] font-display">
-                      {f.title}
+                      {tr(f.title)}
                     </h3>
                     <p className="text-xs sm:text-sm text-[#727D88] mt-2 leading-relaxed">
-                      {f.desc}
+                      {tr(f.desc)}
                     </p>
                   </div>
                 </div>
@@ -305,18 +308,18 @@ export default function Contact() {
 
         {/* ================= BOTTOM: MAP EMBED + CONTACT FORM ================= */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left: Interactive Map & Agency Hubs */}
           <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-[#EBE6DC] shadow-xs space-y-5">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#A84A3B]">
-                Implantation Géographique
+                {tr("Implantation Géographique")}
               </span>
               <h3 className="text-xl font-extrabold text-[#191C1F] font-display mt-1">
-                Notre Siège & Nos Comptoirs
+                {tr("Notre Siège & Nos Comptoirs")}
               </h3>
               <p className="text-xs text-[#727D88] mt-1">
-                Comptoirs express dans tous les aéroports internationaux de Tunisie.
+                {tr("Comptoirs express dans tous les aéroports internationaux de Tunisie.")}
               </p>
             </div>
 
@@ -337,21 +340,21 @@ export default function Contact() {
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#A84A3B] shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-[#191C1F]">Aéroport International Tunis-Carthage (TUN)</p>
-                  <p className="text-[#727D88]">Terminal 1, Hall des arrivées VIP • Prise en charge 24/7</p>
+                  <p className="font-bold text-[#191C1F]">{tr("Aéroport International Tunis-Carthage (TUN)")}</p>
+                  <p className="text-[#727D88]">{tr("Terminal 1, Hall des arrivées VIP • Prise en charge 24/7")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#2C3E56] shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-[#191C1F]">Aéroport Djerba-Zarzis (DJE) & Monastir (MIR)</p>
-                  <p className="text-[#727D88]">Livraison directe parking ou hôtel sélectionné</p>
+                  <p className="font-bold text-[#191C1F]">{tr("Aéroport Djerba-Zarzis (DJE) & Monastir (MIR)")}</p>
+                  <p className="text-[#727D88]">{tr("Livraison directe parking ou hôtel sélectionné")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#727D88] shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-[#191C1F]">Siège Social Bizerte</p>
+                  <p className="font-bold text-[#191C1F]">{tr("Siège Social Bizerte")}</p>
                   <p className="text-[#727D88]">Avenue Habib Bourguiba, 7000 Bizerte</p>
                 </div>
               </div>
@@ -362,13 +365,13 @@ export default function Contact() {
           <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 sm:p-10 border border-[#EBE6DC] shadow-xs space-y-6">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#A84A3B]">
-                Formulaire Direct
+                {tr("Formulaire Direct")}
               </span>
               <h3 className="text-xl font-extrabold text-[#191C1F] font-display mt-1">
-                Envoyez un Message à Nos Conseillers
+                {tr("Envoyez un Message à Nos Conseillers")}
               </h3>
               <p className="text-xs text-[#727D88] mt-1">
-                Besoin d'un devis sur mesure pour une longue durée, un pack hôtel ou un véhicule VIP ? Nous vous répondons sous 2h.
+                {tr("Besoin d'un devis sur mesure pour une longue durée, un pack hôtel ou un véhicule VIP ? Nous vous répondons sous 2h.")}
               </p>
             </div>
 
@@ -376,8 +379,8 @@ export default function Contact() {
               <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-6 rounded-2xl flex items-center gap-3 animate-in fade-in duration-300">
                 <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
                 <div>
-                  <p className="font-bold text-sm">Votre message a été envoyé avec succès !</p>
-                  <p className="text-xs text-emerald-700 mt-0.5">Notre service client vous contactera dans les plus brefs délais.</p>
+                  <p className="font-bold text-sm">{tr("Votre message a été envoyé avec succès !")}</p>
+                  <p className="text-xs text-emerald-700 mt-0.5">{tr("Notre service client vous contactera dans les plus brefs délais.")}</p>
                 </div>
               </div>
             ) : (
@@ -385,7 +388,7 @@ export default function Contact() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[11px] font-bold uppercase text-[#727D88] mb-1.5">
-                      Nom & Prénom *
+                      {tr("Nom & Prénom *")}
                     </label>
                     <input
                       type="text"
@@ -398,12 +401,12 @@ export default function Contact() {
                   </div>
                   <div>
                     <label className="block text-[11px] font-bold uppercase text-[#727D88] mb-1.5">
-                      Adresse Email *
+                      {tr("Adresse Email *")}
                     </label>
                     <input
                       type="email"
                       required
-                      placeholder="votre.email@exemple.com"
+                      placeholder={tr("votre.email@exemple.com")}
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full bg-[#F8F7EE] border border-[#EBE6DC] focus:border-[#A84A3B] rounded-2xl px-4 py-3 text-xs sm:text-sm font-semibold text-[#191C1F] focus:outline-hidden transition-colors"
@@ -413,7 +416,7 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-[11px] font-bold uppercase text-[#727D88] mb-1.5">
-                    Numéro de Téléphone / WhatsApp
+                    {tr("Numéro de Téléphone / WhatsApp")}
                   </label>
                   <input
                     type="tel"
@@ -426,12 +429,12 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-[11px] font-bold uppercase text-[#727D88] mb-1.5">
-                    Comment pouvons-nous vous aider ? *
+                    {tr("Comment pouvons-nous vous aider ? *")}
                   </label>
                   <textarea
                     required
                     rows={4}
-                    placeholder="Précisez vos dates, vos destinations ou vos souhaits particuliers..."
+                    placeholder={tr("Précisez vos dates, vos destinations ou vos souhaits particuliers...")}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full bg-[#F8F7EE] border border-[#EBE6DC] focus:border-[#A84A3B] rounded-2xl px-4 py-3 text-xs sm:text-sm font-semibold text-[#191C1F] focus:outline-hidden transition-colors resize-none"
@@ -443,7 +446,7 @@ export default function Contact() {
                   className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Envoyer votre message</span>
+                  <span>{tr("Envoyer votre message")}</span>
                 </button>
               </form>
             )}
@@ -462,8 +465,8 @@ export default function Contact() {
             <Sparkles className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">Concierge VIP</p>
-            <p className="text-xs font-extrabold text-white">Conseiller Voyage IA</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">{tr("Concierge VIP")}</p>
+            <p className="text-xs font-extrabold text-white">{tr("Conseiller Voyage IA")}</p>
           </div>
         </button>
       </div>

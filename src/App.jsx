@@ -1,3 +1,4 @@
+import { useText } from './context/LanguageContext'
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -22,6 +23,8 @@ import { WishlistProvider } from './context/WishlistContext'
 
 /** Must be rendered inside AuthProvider */
 function AdminRoute() {
+  const tr = useText()
+
   const { user, loading, openAuthModal } = useAuth()
   if (loading) {
     return (
@@ -36,7 +39,7 @@ function AdminRoute() {
       }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '32px', marginBottom: '12px' }}>⏳</div>
-          <p style={{ fontWeight: 600 }}>Chargement de l'espace administration...</p>
+          <p style={{ fontWeight: 600 }}>{tr("Chargement de l'espace administration...")}</p>
         </div>
       </div>
     )
@@ -64,12 +67,12 @@ function AdminRoute() {
         }}>
           <div style={{ fontSize: '44px', marginBottom: '16px' }}>🛡️</div>
           <h2 style={{ color: 'var(--blue, #2C3E56)', margin: '0 0 8px', fontSize: '20px', fontWeight: 800 }}>
-            Accès Administrateur Requis
+            {tr("Accès Administrateur Requis")}
           </h2>
           <p style={{ color: 'var(--white-70, #4a525a)', fontSize: '14px', lineHeight: 1.6, margin: '0 0 24px' }}>
-            {user
+            {tr(user
               ? `Le compte connecté (${user.email}) ne dispose pas des droits d'administrateur.`
-              : "Veuillez vous connecter avec un compte administrateur pour accéder à cette interface."}
+              : "Veuillez vous connecter avec un compte administrateur pour accéder à cette interface.")}
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <button
@@ -86,7 +89,7 @@ function AdminRoute() {
                 boxShadow: '0 4px 14px rgba(168, 74, 59, 0.3)'
               }}
             >
-              🔐 Se connecter en tant qu'administrateur
+              {tr("🔐 Se connecter en tant qu'administrateur")}
             </button>
             <a
               href="/"
@@ -98,7 +101,7 @@ function AdminRoute() {
                 padding: '8px'
               }}
             >
-              ← Retour au site public
+              {tr("← Retour au site public")}
             </a>
           </div>
         </div>

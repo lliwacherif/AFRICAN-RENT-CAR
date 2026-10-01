@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useCurrency } from '../../context/CurrencyContext'
 import { useLanguage } from '../../context/LanguageContext'
 import './CurrencyToggle.css'
@@ -9,6 +10,8 @@ const OPTIONS = [
 ]
 
 export default function CurrencyToggle() {
+  const tr = useText()
+
   const { currency, setCurrency } = useCurrency()
   const { isRtl } = useLanguage()
 
@@ -23,7 +26,7 @@ export default function CurrencyToggle() {
     : `translateX(${safeIndex * 100}%)`
 
   return (
-    <div className="currency-toggle" title="Sélectionnez la devise / اختر العملة">
+    <div className="currency-toggle" title={tr("Sélectionnez la devise / اختر العملة")}>
       <div
         className="currency-toggle__thumb"
         style={{ transform: transformValue }}
@@ -35,7 +38,7 @@ export default function CurrencyToggle() {
           className={`currency-toggle__option ${currency === opt.code ? 'currency-toggle__option--active' : ''}`}
           onClick={() => setCurrency(opt.code)}
         >
-          {isRtl ? opt.labelAr : opt.label}
+          {tr(isRtl ? opt.labelAr : opt.label)}
         </button>
       ))}
     </div>

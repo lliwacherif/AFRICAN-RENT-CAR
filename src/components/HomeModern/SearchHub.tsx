@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -30,6 +31,8 @@ interface SearchHubProps {
 }
 
 export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
+  const tr = useText()
+
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<ServiceType>('cars');
   const [parcs, setParcs] = useState<any[]>([]);
@@ -179,7 +182,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
               }`}
             >
               <Car className={`w-4 h-4 shrink-0 ${activeTab === 'cars' ? 'text-[#A84A3B]' : 'text-white/80'}`} />
-              <span>1. Voitures</span>
+              <span>{tr("1. Voitures")}</span>
             </button>
 
             {/* Tab 2: Chauffeur Privé (Point A -> Point B) */}
@@ -193,7 +196,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
               }`}
             >
               <UserCheck className={`w-4 h-4 shrink-0 ${activeTab === 'chauffeur' ? 'text-[#2C3E56]' : 'text-white/80'}`} />
-              <span>2. Chauffeur</span>
+              <span>{tr("2. Chauffeur")}</span>
             </button>
 
             {/* Tab 3: Hébergements & Villas */}
@@ -221,7 +224,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
               }`}
             >
               <Compass className={`w-4 h-4 shrink-0 ${activeTab === 'tours' ? 'text-[#2C3E56]' : 'text-white/80'}`} />
-              <span>4. Circuits</span>
+              <span>{tr("4. Circuits")}</span>
             </button>
           </div>
 
@@ -236,18 +239,18 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                     onChange={(e) => setSameLocation(e.target.checked)}
                     className="rounded border-white/30 text-[#A84A3B] focus:ring-[#A84A3B] w-4 h-4 cursor-pointer bg-black/40"
                   />
-                  <span>Restitution même agence</span>
+                  <span>{tr("Restitution même agence")}</span>
                 </label>
 
                 <div className="flex items-center gap-1.5 text-xs font-bold text-white/80">
-                  <span>Âge conducteur :</span>
+                  <span>{tr("Âge conducteur :")}</span>
                   <select
                     value={driverAge}
                     onChange={(e) => setDriverAge(e.target.value as any)}
                     className="apple-glass-input rounded-xl px-2.5 py-1 text-xs font-bold text-white focus:outline-none cursor-pointer"
                   >
-                    <option value="25+" className="bg-[#141B26] text-white">25+ ans (Standard)</option>
-                    <option value="21-24" className="bg-[#141B26] text-white">21 - 24 ans (Jeune)</option>
+                    <option value="25+" className="bg-[#141B26] text-white">{tr("25+ ans (Standard)")}</option>
+                    <option value="21-24" className="bg-[#141B26] text-white">{tr("21 - 24 ans (Jeune)")}</option>
                   </select>
                 </div>
               </>
@@ -266,9 +269,9 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                         : 'bg-white/10 hover:bg-white/20 text-white/80 border border-white/20'
                     }`}
                   >
-                    {t === 'one_way' && 'Trajet simple'}
-                    {t === 'round_trip' && 'Aller-Retour'}
-                    {t === 'hourly' && 'Mise à disposition'}
+                    {tr(t === 'one_way' && 'Trajet simple')}
+                    {tr(t === 'round_trip' && 'Aller-Retour')}
+                    {tr(t === 'hourly' && 'Mise à disposition')}
                   </button>
                 ))}
               </div>
@@ -278,7 +281,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
               <div className="flex items-center gap-2 text-xs font-bold text-white">
                 <span className="inline-flex items-center gap-1.5 bg-white/10 text-white px-3 py-1 rounded-full border border-white/20 backdrop-blur-md">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#A84A3B]" />
-                  <span>Piscine privée sans vis-à-vis garantie</span>
+                  <span>{tr("Piscine privée sans vis-à-vis garantie")}</span>
                 </span>
               </div>
             )}
@@ -287,7 +290,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
               <div className="flex items-center gap-2 text-xs font-bold text-white">
                 <span className="inline-flex items-center gap-1.5 bg-white/10 text-white px-3 py-1 rounded-full border border-white/20 backdrop-blur-md">
                   <Sparkles className="w-3.5 h-3.5 text-[#A84A3B]" />
-                  <span>4x4 tout-terrain & guide local certifié</span>
+                  <span>{tr("4x4 tout-terrain & guide local certifié")}</span>
                 </span>
               </div>
             )}
@@ -304,7 +307,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-white/80" />
-                    <span>Lieu de prise en charge</span>
+                    <span>{tr("Lieu de prise en charge")}</span>
                   </label>
                     <div className="relative">
                       <select
@@ -317,14 +320,14 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                             <optgroup label="Nos Parcs & Agences Principaux" className="bg-[#141B26] text-[#C25847] font-bold">
                               {parcs.map((p) => (
                                 <option key={p._id} value={p._id} className="bg-[#141B26] text-white">
-                                  {p.name} 🏢
+                                  {tr(p.name)} 🏢
                                 </option>
                               ))}
                             </optgroup>
-                            <optgroup label="Points Express & Aéroports" className="bg-[#141B26] text-white/60 font-semibold">
+                            <optgroup label={tr("Points Express & Aéroports")} className="bg-[#141B26] text-white/60 font-semibold">
                               {AGENCIES.map((ag) => (
                                 <option key={ag.id} value={ag.id} className="bg-[#141B26] text-white">
-                                  {ag.name} {ag.isAirport ? '✈️' : '📍'}
+                                  {tr(ag.name)} {tr(ag.isAirport ? '✈️' : '📍')}
                                 </option>
                               ))}
                             </optgroup>
@@ -332,7 +335,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                         ) : (
                           AGENCIES.map((ag) => (
                             <option key={ag.id} value={ag.id} className="bg-[#141B26] text-white">
-                              {ag.name} {ag.isAirport ? '✈️' : '📍'}
+                              {tr(ag.name)} {tr(ag.isAirport ? '✈️' : '📍')}
                             </option>
                           ))
                         )}
@@ -346,7 +349,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-white/80" />
-                        <span>Lieu de restitution</span>
+                        <span>{tr("Lieu de restitution")}</span>
                       </label>
                       <div className="relative">
                         <select
@@ -359,14 +362,14 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                               <optgroup label="Nos Parcs & Agences Principaux" className="bg-[#141B26] text-[#C25847] font-bold">
                                 {parcs.map((p) => (
                                   <option key={p._id} value={p._id} className="bg-[#141B26] text-white">
-                                    {p.name} 🏢
+                                    {tr(p.name)} 🏢
                                   </option>
                                 ))}
                               </optgroup>
-                              <optgroup label="Points Express & Aéroports" className="bg-[#141B26] text-white/60 font-semibold">
+                              <optgroup label={tr("Points Express & Aéroports")} className="bg-[#141B26] text-white/60 font-semibold">
                                 {AGENCIES.map((ag) => (
                                   <option key={ag.id} value={ag.id} className="bg-[#141B26] text-white">
-                                    {ag.name}
+                                    {tr(ag.name)}
                                   </option>
                                 ))}
                               </optgroup>
@@ -374,7 +377,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                           ) : (
                             AGENCIES.map((ag) => (
                               <option key={ag.id} value={ag.id} className="bg-[#141B26] text-white">
-                                {ag.name}
+                                {tr(ag.name)}
                               </option>
                             ))
                           )}
@@ -388,7 +391,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-white/80" />
-                    <span>Départ & Heure</span>
+                    <span>{tr("Départ & Heure")}</span>
                   </label>
                   <div className="grid grid-cols-5 gap-1.5">
                     <input
@@ -411,10 +414,10 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-white/80" />
-                      <span>Retour & Heure</span>
+                      <span>{tr("Retour & Heure")}</span>
                     </label>
                     <span className="text-[10px] font-bold text-white bg-[#A84A3B] px-2 py-0.5 rounded-full shadow-sm">
-                      {daysCount} {daysCount > 1 ? 'jours' : 'jour'}
+                      {tr(daysCount)} {tr(daysCount > 1 ? 'jours' : 'jour')}
                     </span>
                   </div>
                   <div className="grid grid-cols-5 gap-1.5">
@@ -440,7 +443,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                     className="w-full bg-[#A84A3B] hover:bg-[#933F32] active:scale-[0.99] text-white font-black py-3.5 px-6 rounded-2xl shadow-[0_8px_24px_rgba(168,74,59,0.35)] transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
                   >
                     <Search className="w-5 h-5 text-white/95" />
-                    <span>Trouver une voiture disponible</span>
+                    <span>{tr("Trouver une voiture disponible")}</span>
                   </button>
                 </div>
               </div>
@@ -455,14 +458,14 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Navigation className="w-3.5 h-3.5 text-white/80" />
-                    <span>Point de départ A</span>
+                    <span>{tr("Point de départ A")}</span>
                   </label>
                   <div className="relative">
                     <input
                       type="text"
                       value={pickupPointA}
                       onChange={(e) => setPickupPointA(e.target.value)}
-                      placeholder="Aéroport, Hôtel, Adresse..."
+                      placeholder={tr("Aéroport, Hôtel, Adresse...")}
                       className="w-full apple-glass-input rounded-2xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none transition-colors placeholder:text-white/40"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/15 text-white border border-white/20 flex items-center justify-center text-xs font-black">
@@ -475,7 +478,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-white/80" />
-                    <span>{tripType === 'hourly' ? 'Mise à disposition' : 'Destination B'}</span>
+                    <span>{tr(tripType === 'hourly' ? 'Mise à disposition' : 'Destination B')}</span>
                   </label>
                   <div className="relative">
                     {tripType === 'hourly' ? (
@@ -484,17 +487,17 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                         onChange={(e) => setChauffeurHours(e.target.value)}
                         className="w-full apple-glass-input rounded-2xl px-3.5 py-2.5 text-sm font-bold text-white appearance-none focus:outline-none cursor-pointer"
                       >
-                        <option value="2 heures" className="bg-[#141B26] text-white">2 Heures (90 TND)</option>
-                        <option value="4 heures" className="bg-[#141B26] text-white">Demi-journée 4h (180 TND)</option>
-                        <option value="8 heures" className="bg-[#141B26] text-white">Journée 8h (320 TND)</option>
-                        <option value="12 heures" className="bg-[#141B26] text-white">Grand circuit 12h (450 TND)</option>
+                        <option value="2 heures" className="bg-[#141B26] text-white">{tr("2 Heures (90 TND)")}</option>
+                        <option value="4 heures" className="bg-[#141B26] text-white">{tr("Demi-journée 4h (180 TND)")}</option>
+                        <option value="8 heures" className="bg-[#141B26] text-white">{tr("Journée 8h (320 TND)")}</option>
+                        <option value="12 heures" className="bg-[#141B26] text-white">{tr("Grand circuit 12h (450 TND)")}</option>
                       </select>
                     ) : (
                       <input
                         type="text"
                         value={destinationB}
                         onChange={(e) => setDestinationB(e.target.value)}
-                        placeholder="Hôtel, Quartier d'arrivée..."
+                        placeholder={tr("Hôtel, Quartier d'arrivée...")}
                         className="w-full apple-glass-input rounded-2xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none transition-colors placeholder:text-white/40"
                       />
                     )}
@@ -508,7 +511,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-white/80" />
-                    <span>Prise en charge</span>
+                    <span>{tr("Prise en charge")}</span>
                   </label>
                   <div className="grid grid-cols-2 gap-1.5">
                     <input
@@ -530,7 +533,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Users className="w-3.5 h-3.5 text-white/80" />
-                    <span>Passagers & Valises</span>
+                    <span>{tr("Passagers & Valises")}</span>
                   </label>
                   <div className="grid grid-cols-2 gap-1.5">
                     <select
@@ -538,20 +541,20 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                       onChange={(e) => setPassengersCount(e.target.value)}
                       className="apple-glass-input rounded-xl px-2 py-2.5 text-xs font-bold text-white focus:outline-none cursor-pointer"
                     >
-                      <option value="1 passager" className="bg-[#141B26] text-white">1 pers.</option>
-                      <option value="2 passagers" className="bg-[#141B26] text-white">2 pers.</option>
-                      <option value="3 passagers" className="bg-[#141B26] text-white">3 pers.</option>
-                      <option value="4-7 passagers (Van VIP)" className="bg-[#141B26] text-white">4-7 pers. (Van VIP)</option>
+                      <option value="1 passager" className="bg-[#141B26] text-white">{tr("1 pers.")}</option>
+                      <option value="2 passagers" className="bg-[#141B26] text-white">{tr("2 pers.")}</option>
+                      <option value="3 passagers" className="bg-[#141B26] text-white">{tr("3 pers.")}</option>
+                      <option value="4-7 passagers (Van VIP)" className="bg-[#141B26] text-white">{tr("4-7 pers. (Van VIP)")}</option>
                     </select>
                     <select
                       value={luggageCount}
                       onChange={(e) => setLuggageCount(e.target.value)}
                       className="apple-glass-input rounded-xl px-2 py-2.5 text-xs font-bold text-white focus:outline-none cursor-pointer"
                     >
-                      <option value="1 valise" className="bg-[#141B26] text-white">1 valise</option>
-                      <option value="2 valises" className="bg-[#141B26] text-white">2 valises</option>
-                      <option value="3-4 valises" className="bg-[#141B26] text-white">3-4 valises</option>
-                      <option value="5+ valises" className="bg-[#141B26] text-white">5+ valises</option>
+                      <option value="1 valise" className="bg-[#141B26] text-white">{tr("1 valise")}</option>
+                      <option value="2 valises" className="bg-[#141B26] text-white">{tr("2 valises")}</option>
+                      <option value="3-4 valises" className="bg-[#141B26] text-white">{tr("3-4 valises")}</option>
+                      <option value="5+ valises" className="bg-[#141B26] text-white">{tr("5+ valises")}</option>
                     </select>
                   </div>
                 </div>
@@ -563,14 +566,14 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                     className="w-full bg-[#2C3E56] hover:bg-[#223145] active:scale-[0.99] text-white font-black py-3.5 px-4 rounded-2xl shadow-[0_8px_24px_rgba(44,62,86,0.35)] transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
                   >
                     <UserCheck className="w-5 h-5 text-white/95" />
-                    <span>Réserver mon chauffeur (Dès {formatPrice(getEstimatedChauffeurPrice(), currency)} fixe)</span>
+                    <span>{tr("Réserver mon chauffeur (Dès")} {formatPrice(getEstimatedChauffeurPrice(), currency)} {tr("fixe)")}</span>
                   </button>
                 </div>
               </div>
 
               {/* Quick transfer chips */}
               <div className="pt-1 flex flex-wrap items-center gap-1.5 text-xs">
-                <span className="text-white/70 font-bold text-[11px]">Directs :</span>
+                <span className="text-white/70 font-bold text-[11px]">{tr("Directs :")}</span>
                 {CHAUFFEUR_ROUTES.slice(0, 3).map((r) => (
                   <button
                     key={r.id}
@@ -581,7 +584,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                     }}
                     className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/20 transition-colors text-[11px] font-semibold flex items-center gap-1 cursor-pointer shadow-sm backdrop-blur-md"
                   >
-                    <span>{r.from.split(' ')[0]} ➔ {r.to.split(' ')[0]}</span>
+                    <span>{tr(r.from.split(' ')[0])} ➔ {tr(r.to.split(' ')[0])}</span>
                     <span className="font-bold text-white/90">({formatPrice(r.basePriceTND, currency)})</span>
                   </button>
                 ))}
@@ -597,19 +600,19 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-white/80" />
-                    <span>Destination en Tunisie</span>
+                    <span>{tr("Destination en Tunisie")}</span>
                   </label>
                   <select
                     value={stayDestination}
                     onChange={(e) => setStayDestination(e.target.value)}
                     className="w-full apple-glass-input rounded-2xl px-3.5 py-2.5 text-sm font-bold text-white appearance-none focus:outline-none cursor-pointer"
                   >
-                    <option value="Djerba" className="bg-[#141B26] text-white">Djerba (Villas avec piscine privée)</option>
-                    <option value="Hammamet" className="bg-[#141B26] text-white">Hammamet (Villas mer & golf)</option>
+                    <option value="Djerba" className="bg-[#141B26] text-white">{tr("Djerba (Villas avec piscine privée)")}</option>
+                    <option value="Hammamet" className="bg-[#141B26] text-white">{tr("Hammamet (Villas mer & golf)")}</option>
                     <option value="Tunis-Marsa" className="bg-[#141B26] text-white">La Marsa / Gammarth / Sidi Bou Saïd</option>
                     <option value="Sousse" className="bg-[#141B26] text-white">Sousse & Port El Kantaoui</option>
                     <option value="Tabarka" className="bg-[#141B26] text-white">Tabarka & Aïn Draham (Nature)</option>
-                    <option value="Bizerte" className="bg-[#141B26] text-white">Bizerte (Maisons de charme)</option>
+                    <option value="Bizerte" className="bg-[#141B26] text-white">{tr("Bizerte (Maisons de charme)")}</option>
                   </select>
                 </div>
 
@@ -617,17 +620,17 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <HomeIcon className="w-3.5 h-3.5 text-white/80" />
-                    <span>Type de bien recherché</span>
+                    <span>{tr("Type de bien recherché")}</span>
                   </label>
                   <select
                     value={propertyType}
                     onChange={(e) => setPropertyType(e.target.value)}
                     className="w-full apple-glass-input rounded-2xl px-3.5 py-2.5 text-sm font-bold text-white appearance-none focus:outline-none cursor-pointer"
                   >
-                    <option value="Villa avec piscine privée" className="bg-[#141B26] text-white">Villa d'architecte avec piscine</option>
-                    <option value="Appartement standing vue mer" className="bg-[#141B26] text-white">Appartement grand standing vue mer</option>
-                    <option value="Maison traditionnelle de charme" className="bg-[#141B26] text-white">Darna de charme / Maison d'hôtes</option>
-                    <option value="Lodge & Spa nature" className="bg-[#141B26] text-white">Lodge panoramique & Spa</option>
+                    <option value="Villa avec piscine privée" className="bg-[#141B26] text-white">{tr("Villa d'architecte avec piscine")}</option>
+                    <option value="Appartement standing vue mer" className="bg-[#141B26] text-white">{tr("Appartement grand standing vue mer")}</option>
+                    <option value="Maison traditionnelle de charme" className="bg-[#141B26] text-white">{tr("Darna de charme / Maison d'hôtes")}</option>
+                    <option value="Lodge & Spa nature" className="bg-[#141B26] text-white">{tr("Lodge panoramique & Spa")}</option>
                   </select>
                 </div>
 
@@ -635,7 +638,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-white/80" />
-                    <span>Arrivée & Départ</span>
+                    <span>{tr("Arrivée & Départ")}</span>
                   </label>
                   <div className="grid grid-cols-2 gap-1.5">
                     <input
@@ -657,17 +660,17 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Users className="w-3.5 h-3.5 text-white/80" />
-                    <span>Voyageurs</span>
+                    <span>{tr("Voyageurs")}</span>
                   </label>
                   <select
                     value={guestsCount}
                     onChange={(e) => setGuestsCount(e.target.value)}
                     className="w-full apple-glass-input rounded-2xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none cursor-pointer"
                   >
-                    <option value="2 personnes (1 chambre)" className="bg-[#141B26] text-white">2 personnes (1 chambre)</option>
-                    <option value="4 personnes (2 chambres)" className="bg-[#141B26] text-white">4 personnes (2 chambres)</option>
-                    <option value="6 personnes (3 chambres)" className="bg-[#141B26] text-white">6 personnes (3 chambres)</option>
-                    <option value="8+ personnes (Villa complète)" className="bg-[#141B26] text-white">8+ personnes (Villa privée)</option>
+                    <option value="2 personnes (1 chambre)" className="bg-[#141B26] text-white">{tr("2 personnes (1 chambre)")}</option>
+                    <option value="4 personnes (2 chambres)" className="bg-[#141B26] text-white">{tr("4 personnes (2 chambres)")}</option>
+                    <option value="6 personnes (3 chambres)" className="bg-[#141B26] text-white">{tr("6 personnes (3 chambres)")}</option>
+                    <option value="8+ personnes (Villa complète)" className="bg-[#141B26] text-white">{tr("8+ personnes (Villa privée)")}</option>
                   </select>
                 </div>
 
@@ -678,7 +681,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                     className="w-full bg-[#A84A3B] hover:bg-[#933F32] active:scale-[0.99] text-white font-black py-3.5 px-6 rounded-2xl shadow-[0_8px_24px_rgba(168,74,59,0.35)] transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
                   >
                     <Search className="w-5 h-5 text-white/95" />
-                    <span>Découvrir les villas & séjours</span>
+                    <span>{tr("Découvrir les villas & séjours")}</span>
                   </button>
                 </div>
               </div>
@@ -693,17 +696,17 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Compass className="w-3.5 h-3.5 text-white/80" />
-                    <span>Région d'aventure</span>
+                    <span>{tr("Région d'aventure")}</span>
                   </label>
                   <select
                     value={tourRegion}
                     onChange={(e) => setTourRegion(e.target.value)}
                     className="w-full apple-glass-input rounded-2xl px-3.5 py-2.5 text-sm font-bold text-white appearance-none focus:outline-none cursor-pointer"
                   >
-                    <option value="Sahara & Tozeur" className="bg-[#141B26] text-white">Grand Sud : Tozeur & Douz</option>
-                    <option value="Ksar Ghilane & Tembaine" className="bg-[#141B26] text-white">Dunes de Ksar Ghilane</option>
-                    <option value="Cap Bon & El Haouaria" className="bg-[#141B26] text-white">Cap Bon & Criques</option>
-                    <option value="Tataouine Ksours" className="bg-[#141B26] text-white">Ksour de Tataouine</option>
+                    <option value="Sahara & Tozeur" className="bg-[#141B26] text-white">{tr("Grand Sud : Tozeur & Douz")}</option>
+                    <option value="Ksar Ghilane & Tembaine" className="bg-[#141B26] text-white">{tr("Dunes de Ksar Ghilane")}</option>
+                    <option value="Cap Bon & El Haouaria" className="bg-[#141B26] text-white">{tr("Cap Bon & Criques")}</option>
+                    <option value="Tataouine Ksours" className="bg-[#141B26] text-white">{tr("Ksour de Tataouine")}</option>
                   </select>
                 </div>
 
@@ -711,16 +714,16 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-white/80" />
-                    <span>Type d'expédition</span>
+                    <span>{tr("Type d'expédition")}</span>
                   </label>
                   <select
                     value={tourTheme}
                     onChange={(e) => setTourTheme(e.target.value)}
                     className="w-full apple-glass-input rounded-2xl px-3.5 py-2.5 text-sm font-bold text-white appearance-none focus:outline-none cursor-pointer"
                   >
-                    <option value="Raid 4x4 Dunes & Oasis" className="bg-[#141B26] text-white">Raid 4x4 Dunes & Oasis</option>
-                    <option value="Road Trip Culture & Patrimoine" className="bg-[#141B26] text-white">Road Trip Culture & Histoire</option>
-                    <option value="Nuit Royale sous les étoiles" className="bg-[#141B26] text-white">Campement Royal Saharien</option>
+                    <option value="Raid 4x4 Dunes & Oasis" className="bg-[#141B26] text-white">{tr("Raid 4x4 Dunes & Oasis")}</option>
+                    <option value="Road Trip Culture & Patrimoine" className="bg-[#141B26] text-white">{tr("Road Trip Culture & Histoire")}</option>
+                    <option value="Nuit Royale sous les étoiles" className="bg-[#141B26] text-white">{tr("Campement Royal Saharien")}</option>
                   </select>
                 </div>
 
@@ -728,7 +731,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/90 flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-white/80" />
-                    <span>Date souhaitée</span>
+                    <span>{tr("Date souhaitée")}</span>
                   </label>
                   <input
                     type="date"
@@ -749,10 +752,10 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                     onChange={(e) => setTourParticipants(e.target.value)}
                     className="w-full apple-glass-input rounded-xl px-2.5 py-2.5 text-xs sm:text-sm font-bold text-white focus:outline-none cursor-pointer"
                   >
-                    <option value="1 personne" className="bg-[#141B26] text-white">1 aventurier</option>
-                    <option value="2 personnes" className="bg-[#141B26] text-white">2 personnes</option>
-                    <option value="3-4 personnes" className="bg-[#141B26] text-white">Famille (3-4 pers.)</option>
-                    <option value="Groupe 5-8 personnes" className="bg-[#141B26] text-white">Groupe privé (5-8 pers.)</option>
+                    <option value="1 personne" className="bg-[#141B26] text-white">{tr("1 aventurier")}</option>
+                    <option value="2 personnes" className="bg-[#141B26] text-white">{tr("2 personnes")}</option>
+                    <option value="3-4 personnes" className="bg-[#141B26] text-white">{tr("Famille (3-4 pers.)")}</option>
+                    <option value="Groupe 5-8 personnes" className="bg-[#141B26] text-white">{tr("Groupe privé (5-8 pers.)")}</option>
                   </select>
                 </div>
 
@@ -763,7 +766,7 @@ export const SearchHub: React.FC<SearchHubProps> = ({ currency, onSearch }) => {
                     className="w-full bg-[#2C3E56] hover:bg-[#223145] active:scale-[0.99] text-white font-black py-3.5 px-6 rounded-2xl shadow-[0_8px_24px_rgba(44,62,86,0.35)] transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
                   >
                     <Search className="w-5 h-5 text-white/95" />
-                    <span>Explorer les circuits en Tunisie</span>
+                    <span>{tr("Explorer les circuits en Tunisie")}</span>
                   </button>
                 </div>
               </div>

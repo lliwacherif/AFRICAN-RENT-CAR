@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -22,6 +23,8 @@ import { AIConciergeModal } from '../../components/HomeModern/AIConciergeModal';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Guide() {
+  const tr = useText()
+
   const [activeFaq, setActiveFaq] = useState(0);
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
   const { t } = useLanguage();
@@ -174,13 +177,13 @@ export default function Guide() {
         <div className="max-w-7xl mx-auto relative z-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5 text-[#F4A261]" />
-            <span>Guide Pas à Pas • Processus Transparent & Sans Frais Cachés</span>
+            <span>{tr("Guide Pas à Pas • Processus Transparent & Sans Frais Cachés")}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-display">
-            Comment Ça Marche ?
+            {tr("Comment Ça Marche ?")}
           </h1>
           <p className="text-sm sm:text-base text-white/75 mt-2 max-w-2xl">
-            Du clic sur notre plateforme jusqu'à la remise des clés en agence ou au terminal aéroport : transparence totale, 0 TND prélevé en ligne.
+            {tr("Du clic sur notre plateforme jusqu'à la remise des clés en agence ou au terminal aéroport : transparence totale, 0 TND prélevé en ligne.")}
           </p>
 
           {/* Quick Anchor Pills */}
@@ -189,19 +192,19 @@ export default function Guide() {
               href="#steps"
               className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#A84A3B] text-white shadow-md hover:bg-[#8F3E31] transition-colors"
             >
-              1. Les 4 Étapes Simples
+              {tr("1. Les 4 Étapes Simples")}
             </a>
             <a
               href="#statuses"
               className="px-4 py-1.5 rounded-full text-xs font-bold bg-white/15 hover:bg-white/25 text-white/90 border border-white/10 transition-colors"
             >
-              2. Statuts de Réservation
+              {tr("2. Statuts de Réservation")}
             </a>
             <a
               href="#faq"
               className="px-4 py-1.5 rounded-full text-xs font-bold bg-white/15 hover:bg-white/25 text-white/90 border border-white/10 transition-colors"
             >
-              3. Questions Fréquentes
+              {tr("3. Questions Fréquentes")}
             </a>
           </div>
         </div>
@@ -209,18 +212,18 @@ export default function Guide() {
 
       {/* 3. MAIN CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 space-y-20">
-        
+
         {/* ================= SECTION 1: 4 STEPS ================= */}
         <section id="steps" className="scroll-mt-24 space-y-10">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#A84A3B] bg-[#A84A3B]/10 px-3 py-1 rounded-full">
-              Processus Client 100% Simplifié
+              {tr("Processus Client 100% Simplifié")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#191C1F] font-display mt-3">
-              Votre Véhicule en 4 Étapes Claires
+              {tr("Votre Véhicule en 4 Étapes Claires")}
             </h2>
             <p className="text-sm text-[#727D88] mt-1.5">
-              Une expérience fluide conçue pour vous faire gagner du temps dès votre arrivée en Tunisie.
+              {tr("Une expérience fluide conçue pour vous faire gagner du temps dès votre arrivée en Tunisie.")}
             </p>
           </div>
 
@@ -235,18 +238,18 @@ export default function Guide() {
                   <div className="p-6 sm:p-8">
                     <div className="flex items-center justify-between gap-4 mb-4">
                       <span className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2C3E56] to-[#1F2C3D] text-white flex items-center justify-center font-black text-sm shadow-md">
-                        {s.step}
+                        {tr(s.step)}
                       </span>
                       <span className={`px-3 py-1 rounded-full text-xs font-bold border ${s.badgeColor}`}>
-                        {s.badge}
+                        {tr(s.badge)}
                       </span>
                     </div>
 
                     <h3 className="text-lg sm:text-xl font-extrabold text-[#191C1F] font-display group-hover:text-[#A84A3B] transition-colors">
-                      {s.title}
+                      {tr(s.title)}
                     </h3>
                     <p className="text-xs sm:text-sm text-[#727D88] mt-2.5 leading-relaxed">
-                      {s.desc}
+                      {tr(s.desc)}
                     </p>
                   </div>
 
@@ -257,13 +260,13 @@ export default function Guide() {
                       onError={(e) => {
                         e.currentTarget.src = s.fallbackImg;
                       }}
-                      alt={s.title}
+                      alt={tr(s.title)}
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <div className="absolute bottom-3 left-4 flex items-center gap-2 text-white text-xs font-bold drop-shadow-md">
                       <Icon className="w-4 h-4 text-[#F4A261]" />
-                      <span>Étape {s.step} • Service Garanti</span>
+                      <span>{tr("Étape")} {tr(s.step)} {tr("• Service Garanti")}</span>
                     </div>
                   </div>
                 </div>
@@ -276,13 +279,13 @@ export default function Guide() {
         <section id="statuses" className="scroll-mt-24 space-y-8">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#2C3E56] bg-[#2C3E56]/10 px-3 py-1 rounded-full">
-              Suivi en Temps Réel
+              {tr("Suivi en Temps Réel")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#191C1F] font-display mt-3">
-              Guide des Statuts de Réservation
+              {tr("Guide des Statuts de Réservation")}
             </h2>
             <p className="text-sm text-[#727D88] mt-1.5">
-              Consultez l'état exact de votre dossier à tout moment depuis votre espace client ou par e-mail.
+              {tr("Consultez l'état exact de votre dossier à tout moment depuis votre espace client ou par e-mail.")}
             </p>
           </div>
 
@@ -294,18 +297,18 @@ export default function Guide() {
               >
                 <div>
                   <div className="inline-block px-2.5 py-1 rounded-full text-xs font-black mb-3">
-                    {st.badge}
+                    {tr(st.badge)}
                   </div>
                   <h4 className={`text-sm font-extrabold ${st.color}`}>
-                    {st.title}
+                    {tr(st.title)}
                   </h4>
                   <p className="text-xs text-[#727D88] mt-2 leading-relaxed">
-                    {st.text}
+                    {tr(st.text)}
                   </p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-[#EBE6DC]/80 flex items-center gap-1.5 text-[11px] font-bold text-[#4A525A]">
                   <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Notification auto</span>
+                  <span>{tr("Notification auto")}</span>
                 </div>
               </div>
             ))}
@@ -316,13 +319,13 @@ export default function Guide() {
         <section id="faq" className="scroll-mt-24 space-y-8">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#A84A3B] bg-[#A84A3B]/10 px-3 py-1 rounded-full">
-              Réponses Claires
+              {tr("Réponses Claires")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#191C1F] font-display mt-3">
-              Questions Fréquentes
+              {tr("Questions Fréquentes")}
             </h2>
             <p className="text-sm text-[#727D88] mt-1.5">
-              Tout ce que vous devez savoir avant de prendre la route en Tunisie.
+              {tr("Tout ce que vous devez savoir avant de prendre la route en Tunisie.")}
             </p>
           </div>
 
@@ -339,7 +342,7 @@ export default function Guide() {
                 >
                   <span className="flex items-center gap-3">
                     <HelpCircle className="w-4 h-4 text-[#A84A3B] shrink-0" />
-                    {f.q}
+                    {tr(f.q)}
                   </span>
                   <ChevronDown
                     className={`w-4 h-4 text-[#727D88] transition-transform duration-300 shrink-0 ${
@@ -349,7 +352,7 @@ export default function Guide() {
                 </button>
                 {activeFaq === i && (
                   <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-[#727D88] leading-relaxed border-t border-[#EBE6DC]/60 animate-in fade-in duration-200">
-                    {f.a}
+                    {tr(f.a)}
                   </div>
                 )}
               </div>
@@ -362,13 +365,13 @@ export default function Guide() {
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#A84A3B]/25 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 max-w-xl text-center md:text-left">
             <span className="text-xs font-bold uppercase tracking-wider text-[#F4A261]">
-              Flotte Récente 2025 / 2026
+              {tr("Flotte Récente 2025 / 2026")}
             </span>
             <h3 className="text-2xl sm:text-3xl font-extrabold mt-1 font-display">
-              Prêt à réserver votre véhicule en toute sérénité ?
+              {tr("Prêt à réserver votre véhicule en toute sérénité ?")}
             </h3>
             <p className="text-sm text-white/75 mt-2">
-              Profitez du kilométrage adapté, de la prise en charge VIP aux aéroports et d'une annulation gratuite.
+              {tr("Profitez du kilométrage adapté, de la prise en charge VIP aux aéroports et d'une annulation gratuite.")}
             </p>
           </div>
 
@@ -377,7 +380,7 @@ export default function Guide() {
               to="/voitures"
               className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-[#A84A3B] hover:bg-[#8F3E31] text-white font-bold text-sm shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
-              <span>Voir les véhicules disponibles</span>
+              <span>{tr("Voir les véhicules disponibles")}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -395,8 +398,8 @@ export default function Guide() {
             <Sparkles className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">Concierge VIP</p>
-            <p className="text-xs font-extrabold text-white">Conseiller Voyage IA</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">{tr("Concierge VIP")}</p>
+            <p className="text-xs font-extrabold text-white">{tr("Conseiller Voyage IA")}</p>
           </div>
         </button>
       </div>

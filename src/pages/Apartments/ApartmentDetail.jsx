@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -16,6 +17,8 @@ const today = new Date().toISOString().split('T')[0]
 const inThreeDays = new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0]
 
 export default function ApartmentDetail() {
+  const tr = useText()
+
   const { id } = useParams()
   const navigate = useNavigate()
   const { user, openAuthModal } = useAuth()
@@ -54,7 +57,7 @@ export default function ApartmentDetail() {
         <Header />
         <div className="container" style={{ padding: '80px 0', textAlign: 'center' }}>
           <div className="apts-spinner" />
-          <p style={{ color: '#8c8c9a', marginTop: 12 }}>Chargement de votre séjour d'exception...</p>
+          <p style={{ color: '#8c8c9a', marginTop: 12 }}>{tr("Chargement de votre séjour d'exception...")}</p>
         </div>
         <Footer />
       </div>
@@ -66,10 +69,10 @@ export default function ApartmentDetail() {
       <div className="aptd-page">
         <Header />
         <div className="container" style={{ padding: '80px 0', textAlign: 'center' }}>
-          <h2>Hébergement introuvable</h2>
-          <p style={{ color: '#8c8c9a', margin: '12px 0 24px' }}>{error || "Ce séjour n'existe pas ou n'est plus disponible."}</p>
+          <h2>{tr("Hébergement introuvable")}</h2>
+          <p style={{ color: '#8c8c9a', margin: '12px 0 24px' }}>{tr(error || "Ce séjour n'existe pas ou n'est plus disponible.")}</p>
           <button className="aptd-btn-gold" onClick={() => navigate('/appartements')}>
-            Retour aux hébergements
+            {tr("Retour aux hébergements")}
           </button>
         </div>
         <Footer />
@@ -116,19 +119,19 @@ export default function ApartmentDetail() {
       <div className="container aptd-container">
         {/* Back Link */}
         <button className="aptd-back-link" onClick={() => navigate('/appartements')}>
-          <FiArrowLeft size={16} /> Tous les hébergements
+          <FiArrowLeft size={16} /> {tr("Tous les hébergements")}
         </button>
 
         {/* Title Header */}
         <div className="aptd-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
           <div>
             <div className="aptd-type-row">
-              <span className="aptd-badge">{apt.type}</span>
+              <span className="aptd-badge">{tr(apt.type)}</span>
               <span className="aptd-city">
-                <FiMapPin size={13} style={{ color: 'var(--gold)' }} /> {apt.address || apt.city}
+                <FiMapPin size={13} style={{ color: 'var(--gold)' }} /> {tr(apt.address || apt.city)}
               </span>
             </div>
-            <h1 className="aptd-title">{apt.title}</h1>
+            <h1 className="aptd-title">{tr(apt.title)}</h1>
           </div>
           <button
             type="button"
@@ -147,7 +150,7 @@ export default function ApartmentDetail() {
               transition: 'all 0.2s',
               flexShrink: 0
             }}
-            title={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+            title={tr(isFav ? "Retirer des favoris" : "Ajouter aux favoris")}
           >
             <FiHeart size={20} fill={isFav ? '#A84A3B' : 'none'} color={isFav ? '#A84A3B' : '#6b7280'} />
           </button>
@@ -158,7 +161,7 @@ export default function ApartmentDetail() {
           <div className="aptd-gallery__main">
             <img
               src={apt.images?.[selectedImg] || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200'}
-              alt={apt.title}
+              alt={tr(apt.title)}
               className="aptd-gallery__main-img"
             />
           </div>
@@ -171,7 +174,7 @@ export default function ApartmentDetail() {
                   className={`aptd-gallery__thumb-btn ${selectedImg === i ? 'active' : ''}`}
                   onClick={() => setSelectedImg(i)}
                 >
-                  <img src={img} alt={`Photo ${i + 1}`} />
+                  <img src={img} alt={tr(`Photo ${i + 1}`)} />
                 </button>
               ))}
             </div>
@@ -185,50 +188,50 @@ export default function ApartmentDetail() {
             {/* Quick Specs */}
             <div className="aptd-specs-bar">
               <div className="aptd-spec-item">
-                <span className="aptd-spec-val">{apt.maxGuests}</span>
-                <span className="aptd-spec-lbl">Voyageurs max</span>
+                <span className="aptd-spec-val">{tr(apt.maxGuests)}</span>
+                <span className="aptd-spec-lbl">{tr("Voyageurs max")}</span>
               </div>
               <div className="aptd-spec-item">
-                <span className="aptd-spec-val">{apt.bedrooms}</span>
-                <span className="aptd-spec-lbl">Chambres</span>
+                <span className="aptd-spec-val">{tr(apt.bedrooms)}</span>
+                <span className="aptd-spec-lbl">{tr("Chambres")}</span>
               </div>
               <div className="aptd-spec-item">
-                <span className="aptd-spec-val">{apt.bedsCount}</span>
-                <span className="aptd-spec-lbl">Lits</span>
+                <span className="aptd-spec-val">{tr(apt.bedsCount)}</span>
+                <span className="aptd-spec-lbl">{tr("Lits")}</span>
               </div>
               <div className="aptd-spec-item">
-                <span className="aptd-spec-val">{apt.bathrooms}</span>
-                <span className="aptd-spec-lbl">Salles de bain</span>
+                <span className="aptd-spec-val">{tr(apt.bathrooms)}</span>
+                <span className="aptd-spec-lbl">{tr("Salles de bain")}</span>
               </div>
               {apt.surfaceM2 && (
                 <div className="aptd-spec-item">
-                  <span className="aptd-spec-val">{apt.surfaceM2} m²</span>
-                  <span className="aptd-spec-lbl">Superficie</span>
+                  <span className="aptd-spec-val">{tr(apt.surfaceM2)} m²</span>
+                  <span className="aptd-spec-lbl">{tr("Superficie")}</span>
                 </div>
               )}
             </div>
 
             {/* Description */}
             <div className="aptd-section">
-              <h2 className="aptd-section-title">À propos de ce logement</h2>
-              <p className="aptd-description">{apt.description}</p>
+              <h2 className="aptd-section-title">{tr("À propos de ce logement")}</h2>
+              <p className="aptd-description">{tr(apt.description)}</p>
             </div>
 
             {/* Amenities */}
             <div className="aptd-section">
-              <h2 className="aptd-section-title">Équipements inclus</h2>
+              <h2 className="aptd-section-title">{tr("Équipements inclus")}</h2>
               <div className="aptd-amenities-grid">
-                {apt.amenities?.wifi && <div className="aptd-amenity"><FiCheck className="text-gold" /> Wifi haut débit</div>}
-                {apt.amenities?.ac && <div className="aptd-amenity"><FiCheck className="text-gold" /> Climatisation réversible</div>}
-                {apt.amenities?.pool && <div className="aptd-amenity"><FiCheck className="text-gold" /> Piscine privée ou partagée</div>}
-                {apt.amenities?.seaView && <div className="aptd-amenity"><FiCheck className="text-gold" /> Vue imprenable sur la mer</div>}
-                {apt.amenities?.parking && <div className="aptd-amenity"><FiCheck className="text-gold" /> Place de parking réservée</div>}
-                {apt.amenities?.kitchen && <div className="aptd-amenity"><FiCheck className="text-gold" /> Cuisine équipée (four, frigo, plaques)</div>}
-                {apt.amenities?.tv && <div className="aptd-amenity"><FiCheck className="text-gold" /> Téléviseur Smart TV</div>}
-                {apt.amenities?.washingMachine && <div className="aptd-amenity"><FiCheck className="text-gold" /> Lave-linge</div>}
-                {apt.amenities?.terrace && <div className="aptd-amenity"><FiCheck className="text-gold" /> Terrasse / Patio aménagé</div>}
-                {apt.amenities?.heating && <div className="aptd-amenity"><FiCheck className="text-gold" /> Chauffage central</div>}
-                {apt.amenities?.elevator && <div className="aptd-amenity"><FiCheck className="text-gold" /> Ascenseur dans l'immeuble</div>}
+                {apt.amenities?.wifi && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Wifi haut débit")}</div>}
+                {apt.amenities?.ac && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Climatisation réversible")}</div>}
+                {apt.amenities?.pool && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Piscine privée ou partagée")}</div>}
+                {apt.amenities?.seaView && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Vue imprenable sur la mer")}</div>}
+                {apt.amenities?.parking && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Place de parking réservée")}</div>}
+                {apt.amenities?.kitchen && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Cuisine équipée (four, frigo, plaques)")}</div>}
+                {apt.amenities?.tv && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Téléviseur Smart TV")}</div>}
+                {apt.amenities?.washingMachine && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Lave-linge")}</div>}
+                {apt.amenities?.terrace && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Terrasse / Patio aménagé")}</div>}
+                {apt.amenities?.heating && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Chauffage central")}</div>}
+                {apt.amenities?.elevator && <div className="aptd-amenity"><FiCheck className="text-gold" /> {tr("Ascenseur dans l'immeuble")}</div>}
               </div>
             </div>
 
@@ -236,8 +239,8 @@ export default function ApartmentDetail() {
             <div className="aptd-guarantee">
               <FiShield size={24} style={{ color: 'var(--gold)' }} />
               <div>
-                <h4>Garantie Confort &amp; Sérénité</h4>
-                <p>Logement vérifié et préparé avec soin. Accueil personnalisé à votre arrivée et assistance 7j/7.</p>
+                <h4>{tr("Garantie Confort & Sérénité")}</h4>
+                <p>{tr("Logement vérifié et préparé avec soin. Accueil personnalisé à votre arrivée et assistance 7j/7.")}</p>
               </div>
             </div>
           </div>
@@ -248,29 +251,29 @@ export default function ApartmentDetail() {
               <div className="aptd-booking-price-header">
                 <div>
                   <span className="aptd-booking-price">{formatPrice(apt.pricePerNight)}</span>
-                  <span className="aptd-booking-unit"> / nuitée</span>
+                  <span className="aptd-booking-unit"> {tr("/ nuitée")}</span>
                 </div>
-                <span className="aptd-min-nights">Min. {apt.minNights || 1} nuit(s)</span>
+                <span className="aptd-min-nights">Min. {tr(apt.minNights || 1)} {tr("nuit(s)")}</span>
               </div>
 
               {bookingSuccess ? (
                 <div className="aptd-success-box">
                   <div className="aptd-success-icon">✓</div>
-                  <h3>Demande de réservation reçue !</h3>
-                  <p>Votre réservation pour {nights} nuit(s) a été enregistrée avec succès.</p>
+                  <h3>{tr("Demande de réservation reçue !")}</h3>
+                  <p>{tr("Votre réservation pour")} {tr(nights)} {tr("nuit(s) a été enregistrée avec succès.")}</p>
                   <button
                     className="aptd-btn-gold"
                     style={{ marginTop: 16, width: '100%' }}
                     onClick={() => navigate('/historique')}
                   >
-                    Voir dans mon Historique
+                    {tr("Voir dans mon Historique")}
                   </button>
                 </div>
               ) : (
                 <div className="aptd-form">
                   <div className="aptd-dates-row">
                     <div className="aptd-field">
-                      <label className="aptd-label">Arrivée</label>
+                      <label className="aptd-label">{tr("Arrivée")}</label>
                       <input
                         type="date"
                         className="aptd-input"
@@ -280,7 +283,7 @@ export default function ApartmentDetail() {
                       />
                     </div>
                     <div className="aptd-field">
-                      <label className="aptd-label">Départ</label>
+                      <label className="aptd-label">{tr("Départ")}</label>
                       <input
                         type="date"
                         className="aptd-input"
@@ -293,38 +296,38 @@ export default function ApartmentDetail() {
 
                   <div className="aptd-guests-row">
                     <div className="aptd-field">
-                      <label className="aptd-label">Adultes</label>
+                      <label className="aptd-label">{tr("Adultes")}</label>
                       <select
                         className="aptd-select"
                         value={adults}
                         onChange={e => setAdults(Number(e.target.value))}
                       >
                         {[...Array(apt.maxGuests)].map((_, i) => (
-                          <option key={i + 1} value={i + 1}>{i + 1} adulte{i > 0 ? 's' : ''}</option>
+                          <option key={i + 1} value={i + 1}>{tr(i + 1)} {tr("adulte")}{tr(i > 0 ? 's' : '')}</option>
                         ))}
                       </select>
                     </div>
                     <div className="aptd-field">
-                      <label className="aptd-label">Enfants</label>
+                      <label className="aptd-label">{tr("Enfants")}</label>
                       <select
                         className="aptd-select"
                         value={children}
                         onChange={e => setChildren(Number(e.target.value))}
                       >
-                        <option value="0">Aucun</option>
-                        <option value="1">1 enfant</option>
-                        <option value="2">2 enfants</option>
-                        <option value="3">3 enfants</option>
+                        <option value="0">{tr("Aucun")}</option>
+                        <option value="1">{tr("1 enfant")}</option>
+                        <option value="2">{tr("2 enfants")}</option>
+                        <option value="3">{tr("3 enfants")}</option>
                       </select>
                     </div>
                   </div>
 
                   <div className="aptd-field">
-                    <label className="aptd-label">Demande particulière (optionnel)</label>
+                    <label className="aptd-label">{tr("Demande particulière (optionnel)")}</label>
                     <textarea
                       className="aptd-textarea"
                       rows="2"
-                      placeholder="Heure d'arrivée estimée, besoin d'un lit bébé..."
+                      placeholder={tr("Heure d'arrivée estimée, besoin d'un lit bébé...")}
                       value={specialRequests}
                       onChange={e => setSpecialRequests(e.target.value)}
                     />
@@ -333,21 +336,21 @@ export default function ApartmentDetail() {
                   {/* Pricing Breakdown */}
                   <div className="aptd-breakdown">
                     <div className="aptd-breakdown-row">
-                      <span>{formatPrice(apt.pricePerNight)} × {nights} nuits</span>
+                      <span>{formatPrice(apt.pricePerNight)} × {tr(nights)} {tr("nuits")}</span>
                       <span>{formatPrice(subtotalHT)}</span>
                     </div>
                     {cleaning > 0 && (
                       <div className="aptd-breakdown-row">
-                        <span>Frais de ménage &amp; linge</span>
+                        <span>{tr("Frais de ménage & linge")}</span>
                         <span>{formatPrice(cleaning)}</span>
                       </div>
                     )}
                     <div className="aptd-breakdown-row">
-                      <span>Taxes &amp; TVA touristique (7%)</span>
+                      <span>{tr("Taxes & TVA touristique (7%)")}</span>
                       <span>{formatPrice(tva)}</span>
                     </div>
                     <div className="aptd-breakdown-row aptd-breakdown-row--total">
-                      <span>Total TTC</span>
+                      <span>{tr("Total TTC")}</span>
                       <span className="text-gold">{formatPrice(totalTTC)}</span>
                     </div>
                   </div>
@@ -358,11 +361,11 @@ export default function ApartmentDetail() {
                     onClick={handleBook}
                     disabled={submitting}
                   >
-                    {submitting ? 'Confirmation...' : user ? 'Réserver ce séjour' : 'Se connecter pour réserver'}
+                    {tr(submitting ? 'Confirmation...' : user ? 'Réserver ce séjour' : 'Se connecter pour réserver')}
                   </button>
 
                   <p className="aptd-deposit-note">
-                    <FiInfo size={12} /> Caution remboursable à l'arrivée : {formatPrice(apt.depositAmount || 200)}
+                    <FiInfo size={12} /> {tr("Caution remboursable à l'arrivée :")} {formatPrice(apt.depositAmount || 200)}
                   </p>
                 </div>
               )}

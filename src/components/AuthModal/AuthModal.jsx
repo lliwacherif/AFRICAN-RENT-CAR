@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiX, FiEye, FiEyeOff, FiAlertCircle, FiMail } from 'react-icons/fi'
@@ -7,6 +8,8 @@ import './AuthModal.css'
 
 // ─── Social OAuth Buttons ─────────────────────────────────────────────────────
 function SocialOAuthButtons({ loading }) {
+  const tr = useText()
+
   const handleGoogleClick = () => {
     // Redirect browser to NestJS Google OAuth 2.0 Authorization Endpoint with return origin
     const origin = window.location.origin
@@ -22,7 +25,7 @@ function SocialOAuthButtons({ loading }) {
   return (
     <div className="am-social-wrap" style={{ marginTop: 12 }}>
       <div className="am-divider">
-        <span>OU</span>
+        <span>{tr("OU")}</span>
       </div>
 
       <div className="am-social-buttons">
@@ -38,7 +41,7 @@ function SocialOAuthButtons({ loading }) {
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <span>Continuer avec Google</span>
+          <span>{tr("Continuer avec Google")}</span>
         </button>
 
         <button
@@ -50,7 +53,7 @@ function SocialOAuthButtons({ loading }) {
           <svg className="am-social-icon" width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
           </svg>
-          <span>Continuer avec Facebook</span>
+          <span>{tr("Continuer avec Facebook")}</span>
         </button>
       </div>
     </div>
@@ -59,6 +62,8 @@ function SocialOAuthButtons({ loading }) {
 
 // ─── Register Panel ───────────────────────────────────────────────────────────
 function RegisterPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
+  const tr = useText()
+
   const { t } = useLanguage()
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', phone: '', age: '', agree: false })
   const [showPw, setShowPw] = useState(false)
@@ -85,7 +90,7 @@ function RegisterPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
         {error && (
           <div className="am-error">
             <FiAlertCircle size={13} />
-            <span>{error}</span>
+            <span>{tr(error)}</span>
           </div>
         )}
 
@@ -103,7 +108,7 @@ function RegisterPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
 
           <div className="am-field">
             <label className="am-label">{t('auth.email', 'Adresse email')}</label>
-            <input className="am-input" type="email" placeholder="vous@exemple.com" value={form.email} onChange={set('email')} required autoComplete="email" />
+            <input className="am-input" type="email" placeholder={tr("vous@exemple.com")} value={form.email} onChange={set('email')} required autoComplete="email" />
           </div>
 
           <div className="am-row-two">
@@ -113,7 +118,7 @@ function RegisterPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
             </div>
             <div className="am-field">
               <label className="am-label">{t('auth.age', 'Âge du conducteur')}</label>
-              <input className="am-input" type="number" placeholder="ex: 25" min={18} max={99} value={form.age} onChange={set('age')} required />
+              <input className="am-input" type="number" placeholder={tr("ex: 25")} min={18} max={99} value={form.age} onChange={set('age')} required />
             </div>
           </div>
 
@@ -131,7 +136,7 @@ function RegisterPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
 
           <label className="am-check">
             <input type="checkbox" checked={form.agree} onChange={set('agree')} required />
-            <span>J'accepte les Conditions</span>
+            <span>{tr("J'accepte les Conditions")}</span>
           </label>
 
           <button className="am-submit" type="submit" disabled={loading || !form.agree}>
@@ -152,6 +157,8 @@ function RegisterPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
 
 // ─── Login Panel ──────────────────────────────────────────────────────────────
 function LoginPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
+  const tr = useText()
+
   const { t } = useLanguage()
   const [form, setForm] = useState({ email: '', password: '' })
   const [showPw, setShowPw] = useState(false)
@@ -174,14 +181,14 @@ function LoginPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
         {error && (
           <div className="am-error">
             <FiAlertCircle size={13} />
-            <span>{error}</span>
+            <span>{tr(error)}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="am-form" noValidate>
           <div className="am-field">
             <label className="am-label">{t('auth.email', 'Adresse email')}</label>
-            <input className="am-input" type="email" placeholder="vous@exemple.com" value={form.email} onChange={set('email')} required autoComplete="email" />
+            <input className="am-input" type="email" placeholder={tr("vous@exemple.com")} value={form.email} onChange={set('email')} required autoComplete="email" />
           </div>
 
           <div className="am-field">
@@ -214,6 +221,8 @@ function LoginPanel({ onSwitch, onSubmit, onOAuth, loading, error }) {
 
 // ─── Image Panel ──────────────────────────────────────────────────────────────
 function ImagePanel({ mode }) {
+  const tr = useText()
+
   const isLogin = mode === 'login'
   const bgImg = isLogin ? '/auth_login.png' : '/auth_register.png'
 
@@ -227,15 +236,15 @@ function ImagePanel({ mode }) {
       <div className="am-image-overlay" />
       <div className="am-image-content">
         <p className="am-image-tagline">
-          {isLogin ? "Plus qu'une voiture." : "Rejoignez l'aventure."}
+          {tr(isLogin ? "Plus qu'une voiture." : "Rejoignez l'aventure.")}
         </p>
         <p className="am-image-tagline am-image-tagline--accent">
-          {isLogin ? "C'est la liberté." : "Voyagez sans limites."}
+          {tr(isLogin ? "C'est la liberté." : "Voyagez sans limites.")}
         </p>
         <p className="am-image-desc">
-          {isLogin
+          {tr(isLogin
             ? "Connectez-vous pour gérer vos réservations et profiter d'un service premium en Tunisie."
-            : "Créez votre compte en 1 minute et découvrez la Tunisie avec le véhicule idéal."
+            : "Créez votre compte en 1 minute et découvrez la Tunisie avec le véhicule idéal.")
           }
         </p>
       </div>
@@ -248,6 +257,8 @@ const MAX_RESENDS = 5
 const COOLDOWN_SECS = 30
 
 function VerificationSentPanel({ data, onClose }) {
+  const tr = useText()
+
   const { resendVerification } = useAuth()
   const [sendCount, setSendCount] = useState(1) // first email already sent on register
   const [loading, setLoading] = useState(false)
@@ -291,27 +302,27 @@ function VerificationSentPanel({ data, onClose }) {
         <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'rgba(168,74,59,0.12)', border: '1.5px solid rgba(168,74,59,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
           <FiMail size={24} color="#A84A3B" />
         </div>
-        <h2 className="am-title" style={{ fontSize: 20, marginBottom: 6 }}>Vérifiez vos e-mails 📩</h2>
+        <h2 className="am-title" style={{ fontSize: 20, marginBottom: 6 }}>{tr("Vérifiez vos e-mails 📩")}</h2>
         <p style={{ fontSize: 12.5, color: 'var(--white-70)', lineHeight: 1.5, marginBottom: 14 }}>
-          Un e-mail de confirmation a été envoyé à <strong style={{ color: 'var(--white)' }}>{email}</strong>.<br />
-          Cliquez sur le lien dans le mail pour activer votre compte.
+          {tr("Un e-mail de confirmation a été envoyé à")} <strong style={{ color: 'var(--white)' }}>{tr(email)}</strong>.<br />
+          {tr("Cliquez sur le lien dans le mail pour activer votre compte.")}
         </p>
 
         {successMsg && (
           <div className="am-error" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', color: '#4ade80', marginBottom: 10, padding: '6px 10px', fontSize: 11.5 }}>
-            <span>{successMsg}</span>
+            <span>{tr(successMsg)}</span>
           </div>
         )}
         {error && (
           <div className="am-error" style={{ marginBottom: 10 }}>
-            <span>{error}</span>
+            <span>{tr(error)}</span>
           </div>
         )}
 
         {data?.verifyLink && (
           <div style={{ marginTop: 8, marginBottom: 12, padding: '10px 14px', background: 'rgba(212, 160, 23, 0.08)', border: '1px dashed rgba(212, 160, 23, 0.3)', borderRadius: 8, textAlign: 'center', width: '100%', boxSizing: 'border-box' }}>
             <p style={{ margin: '0 0 6px 0', fontSize: 11.5, color: '#d4a017', fontWeight: 600 }}>
-              ⚡ Lien direct d'activation :
+              {tr("⚡ Lien direct d'activation :")}
             </p>
             <a
               href={data.verifyLink}
@@ -319,7 +330,7 @@ function VerificationSentPanel({ data, onClose }) {
               rel="noopener noreferrer"
               style={{ fontSize: 11.5, color: '#f3f4f6', wordBreak: 'break-all', textDecoration: 'underline' }}
             >
-              Cliquer pour activer le compte directement →
+              {tr("Cliquer pour activer le compte directement →")}
             </a>
           </div>
         )}
@@ -341,7 +352,7 @@ function VerificationSentPanel({ data, onClose }) {
             }
           </button>
           <button className="am-submit" onClick={onClose} style={{ background: 'transparent', color: '#71717a', border: '1px solid #27272a', padding: '8px 12px', fontSize: 12 }}>
-            Fermer
+            {tr("Fermer")}
           </button>
         </div>
       </div>
@@ -351,6 +362,8 @@ function VerificationSentPanel({ data, onClose }) {
 
 // ─── Main Modal ───────────────────────────────────────────────────────────────
 export default function AuthModal() {
+  const tr = useText()
+
   const { authModal, closeAuthModal, login, register, oauthLogin } = useAuth()
   const { open, mode: initialMode } = authModal
   const navigate = useNavigate()
@@ -466,11 +479,11 @@ export default function AuthModal() {
       onClick={handleOverlayClick}
       role="dialog"
       aria-modal="true"
-      aria-label={isLogin ? 'Connexion' : 'Créer un compte'}
+      aria-label={tr(isLogin ? 'Connexion' : 'Créer un compte')}
     >
       <div className={`am-card ${isLogin ? 'am-card--login' : 'am-card--register'} ${animating ? 'am-card--animating' : ''}`}>
 
-        <button className="am-close" onClick={closeAuthModal} aria-label="Fermer">
+        <button className="am-close" onClick={closeAuthModal} aria-label={tr("Fermer")}>
           <FiX size={18} />
         </button>
 

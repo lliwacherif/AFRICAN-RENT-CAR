@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { Parc, ParcDocument } from './schemas/parc.schema';
 import { CreateParcDto } from './dto/create-parc.dto';
 import { UpdateParcDto } from './dto/update-parc.dto';
+import { Vehicle, VehicleDocument } from '../vehicles/schemas/vehicle.schema';
 
 @Injectable()
 export class ParcsService {
   constructor(
     @InjectModel(Parc.name) private readonly parcModel: Model<ParcDocument>,
+    @InjectModel(Vehicle.name) private readonly vehicleModel: Model<VehicleDocument>,
   ) {}
 
   async create(dto: CreateParcDto): Promise<ParcDocument> {
@@ -36,6 +38,8 @@ export class ParcsService {
   async remove(id: string): Promise<{ message: string }> {
     const parc = await this.parcModel.findByIdAndDelete(id).exec();
     if (!parc) throw new NotFoundException('Parc not found');
+    await this.vehicleModel.updateMany({ parcs: parc._id }, { $pull: { parcs: parc._id } }).exec();
+    await this.vehicleModel.updateMany({ parc: parc._id }, { $set: { parc: null } }).exec();
     return { message: 'Parc deleted successfully' };
   }
 }

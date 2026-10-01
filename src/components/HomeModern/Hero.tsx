@@ -1,3 +1,4 @@
+import { useText } from '../../context/LanguageContext'
 import React, { useState } from 'react';
 import { Star, ShieldCheck, Sparkles } from 'lucide-react';
 
@@ -9,6 +10,8 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onExploreFleet, onExploreChauffeur, onExploreStays, children }) => {
+  const tr = useText()
+
   const heroBackgrounds = [
     { id: 'amg-crimson', label: 'AMG Ciel Rouge Flamboyant', src: '/hero-crimson-amg.jpg' },
     { id: 'sportback-crimson', label: 'Sportback Crépuscule', src: '/hero-crimson-sportback.jpg' },
@@ -25,7 +28,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreFleet, onExploreChauffeur, 
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none flex items-center justify-center">
         <img
           src={bgSrc}
-          alt="African Rent Car - Mobilité d'Exception"
+          alt={tr("African Rent Car - Mobilité d'Exception")}
           onError={() => {
             if (bgSrc !== '/hero-fallback.jpg') {
               setBgSrc('/hero-fallback.jpg');
@@ -49,48 +52,48 @@ export const Hero: React.FC<HeroProps> = ({ onExploreFleet, onExploreChauffeur, 
           {/* Category Pill: Clean Frosted Glass */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/35 backdrop-blur-xl border border-white/20 text-xs font-bold tracking-wide uppercase text-white shadow-sm mb-3 sm:mb-4">
             <Sparkles className="w-3.5 h-3.5 text-[#A84A3B]" />
-            <span>MOBILITÉ GLOBALE & SÉJOURS DE RÊVE EN TUNISIE</span>
+            <span>{tr("MOBILITÉ GLOBALE & SÉJOURS DE RÊVE EN TUNISIE")}</span>
           </div>
 
           {/* Main Title (Left-aligned) - Clean, high contrast */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold tracking-tight leading-[1.14] text-white drop-shadow-sm font-display">
-            Votre voyage complet en Tunisie :{' '}
+            {tr("Votre voyage complet en Tunisie :")}{' '}
             <span className="text-white font-black">
-              Voitures, Chauffeurs Privés & Hébergements.
+              {tr("Voitures, Chauffeurs Privés & Hébergements.")}
             </span>
           </h1>
 
           {/* Subtitle (Left-aligned) */}
           <p className="mt-3 text-xs sm:text-sm md:text-base text-white/85 font-medium leading-relaxed max-w-2xl">
-            Location de véhicules sans caution démesurée, transferts aéroport avec accueil VIP, et privatisation de villas avec piscine.
+            {tr("Location de véhicules sans caution démesurée, transferts aéroport avec accueil VIP, et privatisation de villas avec piscine.")}
           </p>
 
           {/* Clean Unified Trust Badges: Coherent White & Red Brand Palette */}
           <div className="mt-4 flex flex-wrap items-center justify-start gap-2 sm:gap-2.5 text-xs">
             <div className="bg-black/35 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-white/20 text-white flex items-center gap-2 font-bold shadow-sm">
               <span className="w-2 h-2 rounded-full bg-[#A84A3B]" />
-              <span>Chauffeurs VIP Vérifiés</span>
+              <span>{tr("Chauffeurs VIP Vérifiés")}</span>
             </div>
             <div className="bg-black/35 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-white/20 text-white flex items-center gap-1.5 font-bold shadow-sm">
               <Star className="w-3.5 h-3.5 fill-[#A84A3B] text-[#A84A3B]" />
-              <span>4.96/5 (1 200+ avis)</span>
+              <span>{tr("4.96/5 (1 200+ avis)")}</span>
             </div>
             <div className="bg-black/35 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-white/20 text-white flex items-center gap-1.5 font-bold shadow-sm">
               <ShieldCheck className="w-3.5 h-3.5 text-white/90" />
-              <span>0 € Caution Abusive</span>
+              <span>{tr("0 € Caution Abusive")}</span>
             </div>
           </div>
 
           {/* THE SEARCH BAR AS IT IS - Translucent Apple Glass Console on the Left */}
           <div className="mt-6 w-full text-left">
-            {children}
+            {tr(children)}
           </div>
         </div>
       </div>
 
       {/* Subtle Ambiance Switcher Pill for User Exploration */}
       <div className="absolute bottom-4 right-4 sm:right-8 z-20 hidden md:flex items-center gap-1.5 p-1 rounded-full bg-black/45 backdrop-blur-xl border border-white/20 text-[11px] font-bold text-white shadow-xl">
-        <span className="pl-3 pr-1 text-white/60 uppercase tracking-wider text-[9px] font-extrabold">Ambiance :</span>
+        <span className="pl-3 pr-1 text-white/60 uppercase tracking-wider text-[9px] font-extrabold">{tr("Ambiance :")}</span>
         {heroBackgrounds.map((bg) => (
           <button
             key={bg.id}
@@ -102,7 +105,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreFleet, onExploreChauffeur, 
                 : 'text-white/80 hover:text-white hover:bg-white/10'
             }`}
           >
-            {bg.label}
+            {tr(bg.label)}
           </button>
         ))}
       </div>
