@@ -23,6 +23,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { excursionsService } from '../../services/excursionsService';
+import { hasGroupPricing, getExcursionStartingPrice } from '../../utils/excursionPricing';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Header } from '../../components/HomeModern/Header';
@@ -546,9 +547,9 @@ export default function ExcursionsList() {
                                 {formatPrice(item.originalPriceTND, isRtl)}
                               </p>
                             )}
-                            <p className="text-[11px] uppercase tracking-wider font-bold text-[#727D88]">{tr("Par adulte")}</p>
+                            <p className="text-[11px] uppercase tracking-wider font-bold text-[#727D88]">{tr(hasGroupPricing(item) ? 'Par groupe, à partir de' : 'Par adulte')}</p>
                             <p className="text-2xl font-black text-[#191C1F] font-display">
-                              {formatPrice(item.pricePerAdult || item.pricePerPersonTND || 150, isRtl)}
+                              {formatPrice(getExcursionStartingPrice(item), isRtl)}
                             </p>
                           </div>
                           <p className="text-right text-xs font-semibold text-[#A84A3B]">
@@ -663,9 +664,9 @@ export default function ExcursionsList() {
                         <div className="pt-4 mt-4 border-t border-[#EBE6DC]">
                           <div className="flex items-baseline justify-between mb-3">
                             <div>
-                              <p className="text-[10px] uppercase font-bold text-[#727D88]">{tr("Par personne")}</p>
+                              <p className="text-[10px] uppercase font-bold text-[#727D88]">{tr(hasGroupPricing(item) ? 'Par groupe, à partir de' : 'Par personne')}</p>
                               <p className="text-xl font-black text-[#191C1F] font-display">
-                                {formatPrice(item.pricePerAdult || item.pricePerPersonTND || 150, isRtl)}
+                                {formatPrice(getExcursionStartingPrice(item), isRtl)}
                               </p>
                             </div>
                             <div className="text-right">

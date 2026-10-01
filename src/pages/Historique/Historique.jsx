@@ -411,6 +411,13 @@ function ExcursionReservationCard({ r }) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-[#FFFFF0] border border-[#EBE6DC]">
+        {r.pricingType === 'group' ? (
+          <div className="col-span-2">
+            <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">{tr('Nombre de personnes')}</div>
+            <div className="text-sm sm:text-base font-bold text-[#191C1F] mt-0.5">{r.totalParticipants} {tr('pers.')}</div>
+            {r.priceTier && <div className="text-xs text-[#727D88]">{tr('Tarif du groupe')} : {r.priceTier.minPeople}–{r.priceTier.maxPeople} {tr('personnes')}</div>}
+          </div>
+        ) : <>
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
             {tr("Adultes")}
@@ -427,6 +434,7 @@ function ExcursionReservationCard({ r }) {
             {tr(r.children || 0)} {tr("pers.")}
           </div>
         </div>
+        </>}
         <div>
           <div className="text-[11px] font-semibold text-[#727D88] uppercase tracking-wider">
             {tr("Total réglé")}

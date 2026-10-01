@@ -7,6 +7,7 @@ import {
   FiCheckCircle, FiChevronLeft, FiChevronRight, FiNavigation
 } from 'react-icons/fi';
 import { excursionsService } from '../../services/excursionsService';
+import { hasGroupPricing, getExcursionStartingPrice } from '../../utils/excursionPricing';
 import { useCurrency } from '../../context/CurrencyContext';
 import ExcursionModal from './ExcursionModal';
 import './ApartmentsAdmin.css';
@@ -171,7 +172,7 @@ export default function ExcursionsAdmin() {
   const activeExcursions = safeExcursions.filter(e => e.isActive !== false).length;
   const featuredExcursions = safeExcursions.filter(e => e.featured).length;
   const avgAdultPrice = totalExcursions > 0
-    ? Math.round(safeExcursions.reduce((acc, e) => acc + (e.pricePerAdult || 0), 0) / totalExcursions)
+    ? Math.round(safeExcursions.reduce((acc, e) => acc + getExcursionStartingPrice(e), 0) / totalExcursions)
     : 0;
 
   const totalReservations = safeReservations.length;
@@ -366,7 +367,7 @@ export default function ExcursionsAdmin() {
                       <th>CATÉGORIE</th>
                       <th>VILLE DÉPART</th>
                       <th>DURÉE</th>
-                      <th>TARIF ADULTE</th>
+                      <th>TARIF À PARTIR DE</th>
                       <th>STATUT</th>
                     </tr>
                   </thead>
@@ -397,7 +398,7 @@ export default function ExcursionsAdmin() {
                         <td style={{ color: 'var(--white-70)', fontSize: 12 }}>⏱️ {exc.duration}</td>
                         <td>
                           <span style={{ color: 'var(--gold)', fontWeight: 700 }}>
-                            {fmtMoney(exc.pricePerAdult)}
+                            {fmtMoney(getExcursionStartingPrice(exc))} {hasGroupPricing(exc) ? '/ groupe' : '/ pers.'}
                           </span>
                         </td>
                         <td>
@@ -786,9 +787,13 @@ export default function ExcursionsAdmin() {
                       </td>
                       <td>
                         <span style={{ color: 'var(--gold)', fontWeight: 700 }}>
-                          {fmtMoney(exc.pricePerAdult)}
+                          {fmtMoney(getExcursionStartingPrice(exc))} {hasGroupPricing(exc) ? '/ groupe' : '/ pers.'}
                         </span>
-                        {exc.pricePerChild > 0 && (
+                        {hasGroupPricing(exc) ? exc.priceTiers.map(tier => (
+                          <div key={tier.minPeople} style={{ fontSize: 11, color: 'var(--white-70)' }}>
+                            {tier.minPeople}–{tier.maxPeople} pers. : {fmtMoney(tier.price)}
+                          </div>
+                        )) : exc.pricePerChild > 0 && (
                           <div style={{ fontSize: 11, color: 'var(--white-50)' }}>
                             {fmtMoney(exc.pricePerChild)} / enf.
                           </div>

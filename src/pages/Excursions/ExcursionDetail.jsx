@@ -9,6 +9,7 @@ import { excursionsService } from '../../services/excursionsService'
 import { useAuth } from '../../context/AuthContext'
 import { useCurrency } from '../../context/CurrencyContext'
 import { useWishlist } from '../../context/WishlistContext'
+import { hasGroupPricing, getExcursionStartingPrice, getExcursionPriceTier } from '../../utils/excursionPricing'
 import { Header } from '../../components/HomeModern/Header'
 import { Footer } from '../../components/HomeModern/Footer'
 import './ExcursionDetail.css'
@@ -86,6 +87,7 @@ export default function ExcursionDetail() {
   const [date, setDate] = useState('')
   const [adults, setAdults] = useState(2)
   const [children, setChildren] = useState(0)
+  const [participants, setParticipants] = useState(1)
   const [pickupLocation, setPickupLocation] = useState('')
   const [specialRequests, setSpecialRequests] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -100,6 +102,7 @@ export default function ExcursionDetail() {
     excursionsService.getOne(id)
       .then(data => {
         setExc(data)
+        if (hasGroupPricing(data)) setParticipants(Math.min(...data.priceTiers.map(tier => tier.minPeople)))
         if (data?.availableDays) {
           const firstDate = getNextAvailableDate(data.availableDays)
           if (firstDate) setDate(firstDate)
@@ -149,9 +152,11 @@ export default function ExcursionDetail() {
     )
   }
 
-  const pricePerAdult = exc.pricePerAdult
+  const groupPricing = hasGroupPricing(exc)
+  const selectedTier = getExcursionPriceTier(exc, participants)
+  const pricePerAdult = exc.pricePerAdult || 0
   const pricePerChild = exc.pricePerChild || Math.round(pricePerAdult * 0.6)
-  const totalPrice = adults * pricePerAdult + children * pricePerChild
+  const totalPrice = groupPricing ? selectedTier?.price : adults * pricePerAdult + children * pricePerChild
 
   const handleBook = async () => {
     if (!user) {
@@ -161,6 +166,11 @@ export default function ExcursionDetail() {
 
     if (!date) {
       alert("Veuillez sélectionner une date de départ valide.");
+      return
+    }
+
+    if (groupPricing && !selectedTier) {
+      alert(tr('Aucun tarif pour ce nombre de personnes.'))
       return
     }
 
@@ -177,8 +187,7 @@ export default function ExcursionDetail() {
     try {
       await excursionsService.reserve(id, {
         date,
-        adults: Number(adults),
-        children: Number(children),
+        ...(groupPricing ? { participants: Number(participants) } : { adults: Number(adults), children: Number(children) }),
         pickupLocation,
         specialRequests,
       })
@@ -359,10 +368,11 @@ export default function ExcursionDetail() {
             <div className="excd-booking-card">
               <div className="excd-booking-price-header">
                 <div>
-                  <span className="excd-booking-price">{formatPrice(pricePerAdult)}</span>
-                  <span className="excd-booking-unit"> {tr("/ adulte")}</span>
+                  {groupPricing && <div className="excd-booking-unit">{tr('À partir de')}</div>}
+                  <span className="excd-booking-price">{formatPrice(getExcursionStartingPrice(exc))}</span>
+                  <span className="excd-booking-unit"> {tr(groupPricing ? '/ groupe' : '/ adulte')}</span>
                 </div>
-                {pricePerChild > 0 && (
+                {!groupPricing && pricePerChild > 0 && (
                   <span className="excd-child-rate">{tr("Enfant :")} {formatPrice(pricePerChild)}</span>
                 )}
               </div>
@@ -382,6 +392,19 @@ export default function ExcursionDetail() {
                 </div>
               ) : (
                 <div className="excd-form">
+                  {groupPricing && (
+                    <table className="excd-group-prices">
+                      <caption>{tr('Tarifs par groupe')}</caption>
+                      <thead><tr><th>{tr('Personnes')}</th><th>{tr('Prix total')}</th></tr></thead>
+                      <tbody>
+                        {exc.priceTiers.map(tier => (
+                          <tr key={tier.minPeople} className={tier === selectedTier ? 'excd-group-prices__selected' : ''}>
+                            <td>{tier.minPeople}–{tier.maxPeople}</td><td>{formatPrice(tier.price)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
                   <div className="excd-field">
                     <label className="excd-label">{tr("Date de l'excursion")}</label>
                     <select
@@ -401,7 +424,15 @@ export default function ExcursionDetail() {
                     </select>
                   </div>
 
-                  <div className="excd-guests-row">
+                  {groupPricing ? (
+                    <div className="excd-field">
+                      <label className="excd-label" htmlFor="excursion-participants">{tr('Nombre de personnes')}</label>
+                      <input id="excursion-participants" className="excd-input" type="number" step={1}
+                        min={exc.minGroupSize} max={exc.maxGroupSize} value={participants}
+                        onChange={e => setParticipants(e.target.value)} />
+                      {!selectedTier && <p role="alert" style={{ color: 'var(--danger)', fontSize: 12 }}>{tr('Aucun tarif pour ce nombre de personnes.')}</p>}
+                    </div>
+                  ) : <div className="excd-guests-row">
                     <div className="excd-field">
                       <label className="excd-label">{tr("Adultes")}</label>
                       <select
@@ -427,7 +458,7 @@ export default function ExcursionDetail() {
                         <option value="3">{tr("3 enfants")}</option>
                       </select>
                     </div>
-                  </div>
+                  </div>}
 
                   <div className="excd-field">
                     <label className="excd-label">{tr("Hôtel ou lieu de prise en charge")}</label>
@@ -453,6 +484,12 @@ export default function ExcursionDetail() {
 
                   {/* Price breakdown */}
                   <div className="excd-breakdown">
+                    {groupPricing ? (
+                      <div className="excd-breakdown-row">
+                        <span>{participants} {tr('personnes')} — {tr('Tarif du groupe')}</span>
+                        <span>{selectedTier ? formatPrice(totalPrice) : '—'}</span>
+                      </div>
+                    ) : <>
                     <div className="excd-breakdown-row">
                       <span>{tr(adults)} {tr("× Adulte (")}{formatPrice(pricePerAdult)})</span>
                       <span>{formatPrice(adults * pricePerAdult)}</span>
@@ -463,9 +500,10 @@ export default function ExcursionDetail() {
                         <span>{formatPrice(children * pricePerChild)}</span>
                       </div>
                     )}
+                    </>}
                     <div className="excd-breakdown-row excd-breakdown-row--total">
                       <span>{tr("Total à régler")}</span>
-                      <span className="text-gold">{formatPrice(totalPrice)}</span>
+                      <span className="text-gold">{totalPrice == null ? '—' : formatPrice(totalPrice)}</span>
                     </div>
                   </div>
 
@@ -473,7 +511,7 @@ export default function ExcursionDetail() {
                     type="button"
                     className="excd-btn-gold"
                     onClick={handleBook}
-                    disabled={submitting}
+                    disabled={submitting || (groupPricing && !selectedTier)}
                   >
                     {tr(submitting ? 'Réservation en cours...' : user ? 'Réserver cette excursion' : 'Se connecter pour réserver')}
                   </button>

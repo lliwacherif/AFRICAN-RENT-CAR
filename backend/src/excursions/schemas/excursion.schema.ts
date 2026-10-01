@@ -19,6 +19,14 @@ export class ItineraryStep {
 }
 export const ItineraryStepSchema = SchemaFactory.createForClass(ItineraryStep);
 
+@Schema({ _id: false })
+export class PriceTier {
+  @Prop({ required: true, min: 1 }) minPeople: number;
+  @Prop({ required: true, min: 1 }) maxPeople: number;
+  @Prop({ required: true, min: 0.01 }) price: number;
+}
+export const PriceTierSchema = SchemaFactory.createForClass(PriceTier);
+
 @Schema({ timestamps: true })
 export class Excursion {
   @Prop({ required: true, trim: true })
@@ -39,8 +47,12 @@ export class Excursion {
   @Prop({ required: true, trim: true })
   duration: string; // e.g. "1 jour", "2 jours / 1 nuit", "Demi-journée"
 
-  @Prop({ required: true, min: 0 })
-  pricePerAdult: number; // TND
+  @Prop({ type: [PriceTierSchema], default: [] })
+  priceTiers: PriceTier[];
+
+  // Retained for excursions created before group pricing was introduced.
+  @Prop({ min: 0 })
+  pricePerAdult?: number; // TND
 
   @Prop({ min: 0, default: 0 })
   pricePerChild: number; // TND

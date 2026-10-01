@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsDateString, IsNumber, Min, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsDateString, IsInt, Min, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -8,16 +8,24 @@ export class CreateExcursionReservationDto {
   @IsDateString()
   date: string;
 
-  @ApiProperty({ example: 2, default: 1 })
+  @ApiPropertyOptional({ example: 4, description: 'Nombre total de personnes pour un tarif de groupe' })
+  @IsOptional()
   @Type(() => Number)
-  @IsNumber()
+  @IsInt()
   @Min(1)
-  adults: number;
+  participants?: number;
+
+  @ApiPropertyOptional({ example: 2, description: 'Réservations avec les anciens tarifs individuels' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  adults?: number;
 
   @ApiPropertyOptional({ example: 1, default: 0 })
   @IsOptional()
   @Type(() => Number)
-  @IsNumber()
+  @IsInt()
   @Min(0)
   children?: number = 0;
 

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { PriceTier, PriceTierSchema } from './excursion.schema';
 
 export type ExcursionReservationDocument = ExcursionReservation & Document;
 
@@ -27,8 +28,8 @@ export class ExcursionReservation {
   @Prop({ required: true })
   date: Date;
 
-  @Prop({ required: true, min: 1 })
-  adults: number;
+  @Prop({ min: 1 })
+  adults?: number;
 
   @Prop({ default: 0, min: 0 })
   children: number;
@@ -36,8 +37,14 @@ export class ExcursionReservation {
   @Prop({ required: true, min: 1 })
   totalParticipants: number;
 
-  @Prop({ required: true, min: 0 })
-  pricePerAdult: number;
+  @Prop({ enum: ['group', 'per-person'], default: 'per-person' })
+  pricingType: string;
+
+  @Prop({ type: PriceTierSchema })
+  priceTier?: PriceTier;
+
+  @Prop({ min: 0 })
+  pricePerAdult?: number;
 
   @Prop({ default: 0, min: 0 })
   pricePerChild: number;

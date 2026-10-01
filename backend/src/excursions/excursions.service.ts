@@ -11,6 +11,7 @@ import { CreateExcursionDto } from './dto/create-excursion.dto';
 import { UpdateExcursionDto } from './dto/update-excursion.dto';
 import { QueryExcursionDto } from './dto/query-excursion.dto';
 import { CreateExcursionReservationDto } from './dto/create-excursion-reservation.dto';
+import { findPriceTier, normalizePriceTiers } from './excursion-pricing';
 
 @Injectable()
 export class ExcursionsService {
@@ -29,22 +30,33 @@ export class ExcursionsService {
     if (query.departureCity) {
       filter.departureCity = { $regex: new RegExp(query.departureCity, 'i') };
     }
-    if (query.minPrice || query.maxPrice) {
-      filter.pricePerAdult = {};
-      if (query.minPrice) filter.pricePerAdult.$gte = Number(query.minPrice);
-      if (query.maxPrice) filter.pricePerAdult.$lte = Number(query.maxPrice);
+    const startingPrice = {
+      $cond: [
+        { $gt: [{ $size: { $ifNull: ['$priceTiers', []] } }, 0] },
+        { $min: '$priceTiers.price' },
+        { $ifNull: ['$pricePerAdult', 0] },
+      ],
+    };
+    if (query.minPrice != null || query.maxPrice != null) {
+      filter.$expr = { $and: [
+        ...(query.minPrice != null ? [{ $gte: [startingPrice, Number(query.minPrice)] }] : []),
+        ...(query.maxPrice != null ? [{ $lte: [startingPrice, Number(query.maxPrice)] }] : []),
+      ] };
     }
 
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 12;
     const skip = (page - 1) * limit;
 
-    const sortField = query.sortBy || 'createdAt';
-    const sortDir = query.sortOrder === 'asc' ? 1 : -1;
+    const sortField = query.sortBy === 'pricePerAdult' ? 'startingPrice' : query.sortBy || 'createdAt';
+    const sortDir: 1 | -1 = query.sortOrder === 'asc' ? 1 : -1;
     const sort: any = { [sortField]: sortDir };
 
     const [excursions, total] = await Promise.all([
-      this.excursionModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
+      this.excursionModel.aggregate([
+        { $match: filter }, { $addFields: { startingPrice } },
+        { $sort: sort }, { $skip: skip }, { $limit: limit },
+      ]),
       this.excursionModel.countDocuments(filter),
     ]);
 
@@ -71,12 +83,21 @@ export class ExcursionsService {
   }
 
   async create(dto: CreateExcursionDto) {
-    const created = new this.excursionModel(dto);
+    const priceTiers = normalizePriceTiers(dto.priceTiers);
+    const created = new this.excursionModel({
+      ...dto, priceTiers,
+      minGroupSize: priceTiers[0].minPeople,
+      maxGroupSize: priceTiers[priceTiers.length - 1].maxPeople,
+    });
     return created.save();
   }
 
   async update(id: string, dto: UpdateExcursionDto) {
     if (!Types.ObjectId.isValid(id)) throw new NotFoundException('ID excursion invalide');
+    if (dto.priceTiers !== undefined) {
+      const priceTiers = normalizePriceTiers(dto.priceTiers);
+      dto = { ...dto, priceTiers, minGroupSize: priceTiers[0].minPeople, maxGroupSize: priceTiers[priceTiers.length - 1].maxPeople };
+    }
     const updated = await this.excursionModel
       .findByIdAndUpdate(id, { $set: dto }, { new: true, runValidators: true })
       .lean();
@@ -130,9 +151,20 @@ export class ExcursionsService {
       }
     }
 
-    const adults = Number(dto.adults);
+    const adults = Number(dto.adults ?? dto.participants ?? 0);
     const children = Number(dto.children || 0);
-    const requestedSeats = adults + children;
+    const requestedSeats = Number(dto.participants ?? adults + children);
+    if (!Number.isInteger(requestedSeats) || requestedSeats < 1) {
+      throw new BadRequestException('Indiquez un nombre entier de personnes supérieur à zéro.');
+    }
+    const hasGroupPricing = Boolean(excursion.priceTiers?.length);
+    const priceTier = hasGroupPricing ? findPriceTier(excursion.priceTiers, requestedSeats) : undefined;
+    if (hasGroupPricing && !priceTier) {
+      throw new BadRequestException('Aucun tarif pour ce nombre de personnes.');
+    }
+    if (!hasGroupPricing && (adults < 1 || requestedSeats !== adults + children)) {
+      throw new BadRequestException('Nombre de participants invalide.');
+    }
 
     // Check available seats for this day
     const startOfDay = new Date(excursionDate);
@@ -147,7 +179,7 @@ export class ExcursionsService {
     });
 
     const alreadyBookedSeats = existingBookings.reduce(
-      (sum, b) => sum + (b.totalParticipants || (b.adults + (b.children || 0))),
+      (sum, b) => sum + (b.totalParticipants || ((b.adults || 0) + (b.children || 0))),
       0,
     );
 
@@ -158,19 +190,18 @@ export class ExcursionsService {
       );
     }
 
-    const pricePerAdult = excursion.pricePerAdult;
-    const pricePerChild = excursion.pricePerChild || excursion.pricePerAdult * 0.6;
-    const totalPrice = Math.round((adults * pricePerAdult + children * pricePerChild) * 100) / 100;
+    const pricePerAdult = excursion.pricePerAdult || 0;
+    const pricePerChild = excursion.pricePerChild || pricePerAdult * 0.6;
+    const totalPrice = priceTier ? priceTier.price : Math.round((adults * pricePerAdult + children * pricePerChild) * 100) / 100;
 
     const reservation = new this.reservationModel({
       excursion: excursion._id,
       user: new Types.ObjectId(userId),
       date: excursionDate,
-      adults,
-      children,
+      ...(priceTier
+        ? { pricingType: 'group', priceTier }
+        : { pricingType: 'per-person', adults, children, pricePerAdult, pricePerChild }),
       totalParticipants: requestedSeats,
-      pricePerAdult,
-      pricePerChild,
       totalPrice,
       pickupLocation: dto.pickupLocation,
       specialRequests: dto.specialRequests,

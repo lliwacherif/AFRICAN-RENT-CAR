@@ -91,6 +91,7 @@ export interface Excursion {
   included?: string[];
   pricePerPersonTND: number;
   pricePerAdult?: number;
+  priceTiers?: { minPeople: number; maxPeople: number; price: number }[];
   originalPriceTND?: number;
   rating: number;
   reviewsCount: number;

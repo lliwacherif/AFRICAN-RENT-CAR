@@ -1,4 +1,5 @@
 import { useText } from '../../context/LanguageContext'
+import { hasGroupPricing, getExcursionStartingPrice } from '../../utils/excursionPricing'
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -483,9 +484,9 @@ export default function Wishlist() {
                     <div className="p-5 pt-0">
                       <div className="flex items-center justify-between pt-3 border-t border-[#EBE6DC] mb-3">
                         <div>
-                          <p className="text-[10px] font-bold uppercase text-[#727D88]">{tr("Par adulte")}</p>
+                          <p className="text-[10px] font-bold uppercase text-[#727D88]">{tr(hasGroupPricing(item) ? 'Par groupe, à partir de' : 'Par adulte')}</p>
                           <p className="text-xl font-black text-[#191C1F] font-display">
-                            {formatPrice(item.pricePerAdult || 140, isRtl)}
+                            {formatPrice(getExcursionStartingPrice(item), isRtl)}
                           </p>
                         </div>
                         <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">

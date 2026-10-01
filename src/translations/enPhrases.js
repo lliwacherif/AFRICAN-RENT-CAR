@@ -1,5 +1,14 @@
 // English for public UI copy that predates the keyed translation dictionary.
 export const enPhrases = {
+  "À partir de": "From",
+  "/ groupe": "/ group",
+  "Tarifs par groupe": "Group prices",
+  "Personnes": "People",
+  "Prix total": "Total price",
+  "Nombre de personnes": "Number of people",
+  "Tarif du groupe": "Group price",
+  "Par groupe, à partir de": "Per group, from",
+  "Aucun tarif pour ce nombre de personnes.": "No price is available for this group size.",
   "Chargement de l'espace administration...": "Loading the administration area...",
   "Accès Administrateur Requis": "Administrator access required",
   "🔐 Se connecter en tant qu'administrateur": "🔐 Sign in as an administrator",

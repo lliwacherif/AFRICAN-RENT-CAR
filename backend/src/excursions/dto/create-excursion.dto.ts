@@ -1,6 +1,6 @@
 import {
   IsString, IsNotEmpty, IsEnum, IsNumber, IsOptional,
-  Min, IsArray, IsBoolean, ValidateNested
+  Min, IsArray, IsBoolean, ValidateNested, IsInt, ArrayMinSize
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -21,6 +21,26 @@ export class ItineraryStepDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+}
+
+export class PriceTierDto {
+  @ApiProperty({ example: 1 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  minPeople: number;
+
+  @ApiProperty({ example: 4 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  maxPeople: number;
+
+  @ApiProperty({ example: 166.5, description: 'Prix total du groupe en TND' })
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0.01)
+  price: number;
 }
 
 export class CreateExcursionDto {
@@ -53,11 +73,19 @@ export class CreateExcursionDto {
   @IsNotEmpty()
   duration: string;
 
-  @ApiProperty({ example: 320, description: 'Prix par adulte en TND' })
+  @ApiProperty({ type: [PriceTierDto], description: 'Tranches de personnes, bornes incluses, sans chevauchement' })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => PriceTierDto)
+  priceTiers: PriceTierDto[];
+
+  @ApiPropertyOptional({ description: 'Ancien tarif par adulte en TND' })
+  @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(0)
-  pricePerAdult: number;
+  pricePerAdult?: number;
 
   @ApiPropertyOptional({ example: 180, description: 'Prix par enfant (< 12 ans) en TND' })
   @IsOptional()

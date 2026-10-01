@@ -412,6 +412,17 @@
   margin-bottom: 0;
 }
 
+.excd-group-prices {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: var(--white, #191c1f);
+  margin-bottom: 16px;
+}
+.excd-group-prices caption { text-align: start; font-weight: 700; margin-bottom: 8px; }
+.excd-group-prices th, .excd-group-prices td { padding: 8px; text-align: start; border-bottom: 1px solid var(--black-4, #ebe6dc); }
+.excd-group-prices__selected { background: var(--gold-pale, #f8eee9); font-weight: 700; }
+
 .excd-btn-gold {
   width: 100%;
   background: var(--gold, #A84A3B);

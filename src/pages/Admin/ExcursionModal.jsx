@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiX, FiUpload, FiTrash2, FiPlus, FiAlertCircle, FiCheck, FiMapPin, FiCalendar, FiDollarSign, FiClock, FiStar, FiCompass } from 'react-icons/fi';
 import { excursionsService } from '../../services/excursionsService';
 import { uploadService } from '../../services/vehiclesService';
+import { useCurrency } from '../../context/CurrencyContext';
 import './ApartmentsAdmin.css';
 
 const EXCURSION_CATEGORIES = [
@@ -53,6 +54,9 @@ function normalizeAvailableDays(rawDays) {
 
 export default function ExcursionModal({ excursion, onClose, onSaved }) {
   const isEdit = Boolean(excursion?._id);
+  const { rates } = useCurrency();
+  const [priceCurrency, setPriceCurrency] = useState('TND');
+  const currencyRates = { TND: 1, EUR: rates.EUR_TND, USD: rates.USD_TND };
 
   const [form, setForm] = useState({
     title: '',
@@ -61,10 +65,7 @@ export default function ExcursionModal({ excursion, onClose, onSaved }) {
     departureCity: 'Tunis',
     destination: '',
     duration: '1 jour',
-    pricePerAdult: 120,
-    pricePerChild: 60,
-    maxGroupSize: 16,
-    minGroupSize: 2,
+    priceTiers: [{ minPeople: 1, maxPeople: 4, price: '' }],
     included: [
       'Transport aller-retour en véhicule climatisé / 4x4',
       'Guide touristique officiel agréé',
@@ -99,10 +100,9 @@ export default function ExcursionModal({ excursion, onClose, onSaved }) {
         departureCity: excursion.departureCity || 'Tunis',
         destination: excursion.destination || '',
         duration: excursion.duration || '1 jour',
-        pricePerAdult: excursion.pricePerAdult ?? 120,
-        pricePerChild: excursion.pricePerChild ?? 60,
-        maxGroupSize: excursion.maxGroupSize ?? 16,
-        minGroupSize: excursion.minGroupSize ?? 2,
+        priceTiers: excursion.priceTiers?.length
+          ? excursion.priceTiers.map(({ minPeople, maxPeople, price }) => ({ minPeople, maxPeople, price }))
+          : [{ minPeople: excursion.minGroupSize ?? 1, maxPeople: excursion.maxGroupSize ?? 16, price: '' }],
         included: Array.isArray(excursion.included) && excursion.included.length > 0
           ? excursion.included
           : ['Transport tout confort', 'Guide professionnel'],
@@ -119,6 +119,25 @@ export default function ExcursionModal({ excursion, onClose, onSaved }) {
       });
     }
   }, [excursion]);
+
+  const updatePriceTier = (index, field, value) => {
+    setForm(prev => ({ ...prev, priceTiers: prev.priceTiers.map((tier, i) => i === index ? { ...tier, [field]: value } : tier) }));
+  };
+
+  const addPriceTier = () => {
+    setForm(prev => {
+      const next = Math.max(0, ...prev.priceTiers.map(tier => Number(tier.maxPeople) || 0)) + 1;
+      return { ...prev, priceTiers: [...prev.priceTiers, { minPeople: next, maxPeople: next + 1, price: '' }] };
+    });
+  };
+
+  const changePriceCurrency = (currency) => {
+    setForm(prev => ({ ...prev, priceTiers: prev.priceTiers.map(tier => ({
+      ...tier,
+      price: tier.price === '' ? '' : Number((Number(tier.price) * currencyRates[priceCurrency] / currencyRates[currency]).toFixed(2)),
+    })) }));
+    setPriceCurrency(currency);
+  };
 
   // Image Upload via API
   const handleFileUpload = async (e) => {
@@ -237,8 +256,16 @@ export default function ExcursionModal({ excursion, onClose, onSaved }) {
       setError("La destination / circuit est obligatoire.");
       return;
     }
-    if (form.pricePerAdult <= 0) {
-      setError("Le tarif adulte doit être supérieur à 0 TND.");
+    const priceTiers = form.priceTiers.map(tier => ({
+      minPeople: Number(tier.minPeople), maxPeople: Number(tier.maxPeople),
+      price: Math.round(Number(tier.price) * currencyRates[priceCurrency] * 100) / 100,
+    })).sort((a, b) => a.minPeople - b.minPeople);
+    if (!priceTiers.length || priceTiers.some(tier => !Number.isInteger(tier.minPeople) || !Number.isInteger(tier.maxPeople) || tier.minPeople < 1 || tier.maxPeople < tier.minPeople || !Number.isFinite(tier.price) || tier.price <= 0)) {
+      setError('Chaque tranche doit avoir des nombres entiers de personnes et un prix positif.');
+      return;
+    }
+    if (priceTiers.some((tier, i) => i > 0 && tier.minPeople <= priceTiers[i - 1].maxPeople)) {
+      setError('Les tranches ne doivent pas se chevaucher : par exemple 1–4, puis 5–6 personnes.');
       return;
     }
 
@@ -250,10 +277,7 @@ export default function ExcursionModal({ excursion, onClose, onSaved }) {
         ...form,
         title: form.title.trim(),
         destination: form.destination.trim(),
-        pricePerAdult: Number(form.pricePerAdult),
-        pricePerChild: Number(form.pricePerChild || 0),
-        maxGroupSize: Number(form.maxGroupSize || 16),
-        minGroupSize: Number(form.minGroupSize || 2),
+        priceTiers,
       };
 
       let result;
@@ -408,49 +432,49 @@ export default function ExcursionModal({ excursion, onClose, onSaved }) {
             <div className="apt-form-section">
               <h3 className="apt-form-section__title">2. Tarifs & Taille de Groupe</h3>
 
-              <div className="apt-form-row">
-                <div className="apt-form-field" style={{ flex: 1 }}>
-                  <label className="apt-form-label">Tarif Adulte (TND) *</label>
-                  <input
-                    type="number"
-                    className="apt-form-input"
-                    required
-                    min={1}
-                    value={form.pricePerAdult}
-                    onChange={e => setForm({ ...form, pricePerAdult: Number(e.target.value) })}
-                  />
+              <p style={{ fontSize: 13, color: 'var(--white-70)', marginBottom: 12 }}>
+                Définissez le prix total du groupe pour chaque tranche. Les bornes sont incluses : par exemple 1–4, puis 5–6 personnes.
+              </p>
+              <label className="apt-form-field" style={{ maxWidth: 220 }}>
+                <span className="apt-form-label">Devise de saisie</span>
+                <select className="apt-form-select" value={priceCurrency} onChange={e => changePriceCurrency(e.target.value)}>
+                  <option value="TND">TND — Dinar tunisien</option>
+                  <option value="EUR">EUR — Euro (€)</option>
+                  <option value="USD">USD — Dollar ($)</option>
+                </select>
+              </label>
+              {priceCurrency !== 'TND' && (
+                <p style={{ fontSize: 12, color: 'var(--white-70)', marginBottom: 12 }}>
+                  1 {priceCurrency} = {currencyRates[priceCurrency]} TND. Les tarifs sont enregistrés en TND au taux actuel.
+                </p>
+              )}
+              {form.priceTiers.map((tier, index) => (
+                <div className="apt-form-row exc-price-tier-row" key={index}>
+                  <label className="apt-form-field" style={{ flex: 1 }}>
+                    <span className="apt-form-label">De (personnes) *</span>
+                    <input type="number" className="apt-form-input" required min={1} step={1}
+                      value={tier.minPeople} onChange={e => updatePriceTier(index, 'minPeople', e.target.value)} />
+                  </label>
+                  <label className="apt-form-field" style={{ flex: 1 }}>
+                    <span className="apt-form-label">À (personnes) *</span>
+                    <input type="number" className="apt-form-input" required min={Number(tier.minPeople) || 1} step={1}
+                      value={tier.maxPeople} onChange={e => updatePriceTier(index, 'maxPeople', e.target.value)} />
+                  </label>
+                  <label className="apt-form-field" style={{ flex: 1.5 }}>
+                    <span className="apt-form-label">Prix total du groupe ({priceCurrency}) *</span>
+                    <input type="number" className="apt-form-input" required min={0.01} step="0.01" placeholder="Ex : 50"
+                      value={tier.price} onChange={e => updatePriceTier(index, 'price', e.target.value)} />
+                  </label>
+                  <button type="button" className="admin-btn admin-btn--outline" style={{ marginBottom: 10 }}
+                    disabled={form.priceTiers.length === 1} aria-label={`Supprimer la tranche ${index + 1}`}
+                    onClick={() => setForm(prev => ({ ...prev, priceTiers: prev.priceTiers.filter((_, i) => i !== index) }))}>
+                    <FiTrash2 size={15} />
+                  </button>
                 </div>
-                <div className="apt-form-field" style={{ flex: 1 }}>
-                  <label className="apt-form-label">Tarif Enfant &lt; 12 ans (TND)</label>
-                  <input
-                    type="number"
-                    className="apt-form-input"
-                    min={0}
-                    value={form.pricePerChild}
-                    onChange={e => setForm({ ...form, pricePerChild: Number(e.target.value) })}
-                  />
-                </div>
-                <div className="apt-form-field" style={{ flex: 1 }}>
-                  <label className="apt-form-label">Groupe Minimum</label>
-                  <input
-                    type="number"
-                    className="apt-form-input"
-                    min={1}
-                    value={form.minGroupSize}
-                    onChange={e => setForm({ ...form, minGroupSize: Number(e.target.value) })}
-                  />
-                </div>
-                <div className="apt-form-field" style={{ flex: 1 }}>
-                  <label className="apt-form-label">Groupe Maximum</label>
-                  <input
-                    type="number"
-                    className="apt-form-input"
-                    min={form.minGroupSize}
-                    value={form.maxGroupSize}
-                    onChange={e => setForm({ ...form, maxGroupSize: Number(e.target.value) })}
-                  />
-                </div>
-              </div>
+              ))}
+              <button type="button" className="admin-btn admin-btn--outline" onClick={addPriceTier}>
+                <FiPlus size={14} /> Ajouter une tranche
+              </button>
 
               {/* Jours Disponibles */}
               <div style={{ marginTop: 14 }}>

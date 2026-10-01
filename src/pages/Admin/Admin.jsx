@@ -1940,7 +1940,7 @@ export default function Admin() {
                       step="0.01"
                       value={rateEurInput}
                       onChange={e => setRateEurInput(e.target.value)}
-                      style={{ flex: 1, padding: '8px 12px', borderRadius: 8, background: 'var(--black-3)', border: '1px solid var(--black-5)', color: '#fff', fontSize: 13, fontFamily: 'inherit' }}
+                      style={{ flex: 1, padding: '8px 12px', borderRadius: 8, background: 'var(--black-3)', border: '1px solid var(--black-5)', color: 'var(--white, #191c1f)', fontSize: 13, fontFamily: 'inherit' }}
                     />
                     <span style={{ fontSize: 12, color: 'var(--gold)', fontWeight: 700 }}>TND</span>
                   </div>
@@ -1953,7 +1953,7 @@ export default function Admin() {
                       step="0.01"
                       value={rateUsdInput}
                       onChange={e => setRateUsdInput(e.target.value)}
-                      style={{ flex: 1, padding: '8px 12px', borderRadius: 8, background: 'var(--black-3)', border: '1px solid var(--black-5)', color: '#fff', fontSize: 13, fontFamily: 'inherit' }}
+                      style={{ flex: 1, padding: '8px 12px', borderRadius: 8, background: 'var(--black-3)', border: '1px solid var(--black-5)', color: 'var(--white, #191c1f)', fontSize: 13, fontFamily: 'inherit' }}
                     />
                     <span style={{ fontSize: 12, color: 'var(--gold)', fontWeight: 700 }}>TND</span>
                   </div>

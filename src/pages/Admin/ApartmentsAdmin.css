@@ -753,6 +753,8 @@
   margin-bottom: 14px;
 }
 
+.exc-price-tier-row { align-items: flex-end; }
+
 .apt-form-row {
   display: flex;
   gap: 14px;
@@ -764,6 +766,7 @@
     flex-direction: column;
     gap: 10px;
   }
+  .exc-price-tier-row { align-items: stretch; }
 }
 
 .apt-form-field {

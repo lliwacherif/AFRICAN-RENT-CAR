@@ -8,6 +8,11 @@ export function normalizeMediaUrl(value, apiBase = import.meta.env?.VITE_API_URL
   if (url.startsWith('//')) return `https:${url}`
   if (url.startsWith('res.cloudinary.com/')) return `https://${url}`
   const origin = typeof window === 'undefined' ? 'http://localhost' : window.location.origin
+  const storedImage = url.match(/^\/?(?:api\/)?(upload\/images\/[a-f\d]{24})$/i)
+  if (storedImage) {
+    const base = new URL(apiBase, origin).href.replace(/\/+$/, '')
+    return new URL(storedImage[1], `${base}/`).href
+  }
   if (/^\/?(?:api\/)?uploads\//.test(url)) return new URL(`/${url.replace(/^\//, '')}`, new URL(apiBase, origin)).href
   if (url.startsWith('/') && !url.startsWith('//')) return url
   return ''

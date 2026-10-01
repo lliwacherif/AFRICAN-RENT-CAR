@@ -39,11 +39,11 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   /**
-   * Uploads a single image file to Cloudinary.
+   * Uploads a single image, with persistent MongoDB storage if Cloudinary is unavailable.
    *
    * - Accepts: jpg, jpeg, png, webp, gif, avif (max 5 MB)
-   * - Image is automatically resized to max 1200×800 px with quality optimisation.
-   * - Returns the secure Cloudinary URL to be stored in `vehicle.images[]`.
+   * - Cloudinary images are resized to max 1200×800 px with quality optimisation.
+   * - Returns an image URL to be stored in `vehicle.images[]`.
    */
   @Post('image')
   @UseInterceptors(
@@ -54,12 +54,12 @@ export class UploadController {
     }),
   )
   @ApiOperation({
-    summary: '[Admin] Upload an image to Cloudinary',
+    summary: '[Admin] Upload an image',
     description:
-      'Uploads a vehicle image to Cloudinary.\n\n' +
+      'Uploads a vehicle image. MongoDB stores the image if Cloudinary is not configured or unavailable.\n\n' +
       '**Accepted types:** jpg, jpeg, png, webp, gif, avif\n' +
       '**Max size:** 5 MB\n' +
-      '**Auto-transform:** resized to max 1200×800, quality optimised.\n\n' +
+      '**Cloudinary uploads:** resized to max 1200×800, quality optimised.\n\n' +
       'Use the returned `url` as a value in the vehicle `images` array.',
   })
   @ApiConsumes('multipart/form-data')
@@ -75,7 +75,7 @@ export class UploadController {
   })
   @ApiResponse({
     status: 201,
-    description: 'Returns { url, publicId, width, height, format }',
+    description: 'Returns { url, publicId, format } and dimensions when available. Database image URLs are relative to the API host.',
     schema: {
       example: {
         success: true,
@@ -135,17 +135,17 @@ export class UploadController {
   }
 
   /**
-   * Deletes an image from Cloudinary by its `public_id`.
+   * Deletes an image from its storage provider by its `public_id`.
    * The `publicId` path parameter must be URL-encoded if it contains slashes.
    */
   @Delete('image/:publicId')
   @ApiOperation({
-    summary: '[Admin] Delete an image from Cloudinary',
+    summary: '[Admin] Delete an uploaded image',
     description:
-      'Removes an image from Cloudinary by its `public_id`.\n\n' +
+      'Removes an image from Cloudinary or MongoDB by its `public_id`.\n\n' +
       '**Note:** URL-encode slashes in the publicId (e.g. `tunisia-car-rental%2Fabc123`).',
   })
-  @ApiParam({ name: 'publicId', description: 'URL-encoded Cloudinary public_id', example: 'tunisia-car-rental%2Fabc123' })
+  @ApiParam({ name: 'publicId', description: 'URL-encoded publicId returned by the upload endpoint', example: 'tunisia-car-rental%2Fabc123' })
   @ApiResponse({ status: 200, description: '{ message: "Image deleted successfully" }' })
   @ApiResponse({ status: 403, description: 'Forbidden — admin role required' })
   async deleteImage(@Param('publicId') publicId: string) {
