@@ -88,6 +88,12 @@ export class ChauffeurRoutesController {
     return this.routesService.updateReservationStatus(id, status);
   }
 
+  @Delete('reservations/:id')
+  @ApiOperation({ summary: 'Delete chauffeur reservation (Admin)' })
+  deleteReservation(@Param('id') id: string) {
+    return this.routesService.deleteReservation(id);
+  }
+
   @Post(':id/book')
   @ApiOperation({ summary: 'Book a chauffeur route' })
   bookRoute(

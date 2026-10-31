@@ -271,6 +271,19 @@ export default function ApartmentsAdmin() {
     }
   }
 
+  const handleDeleteReservation = async (res) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer définitivement cette réservation de séjour ?')) return
+    try {
+      await apartmentsService.deleteReservation(res._id)
+      setReservations(prev => (Array.isArray(prev) ? prev : []).filter(r => r._id !== res._id))
+      if (resModal && resModal._id === res._id) {
+        setResModal(null)
+      }
+    } catch (err) {
+      alert("Erreur lors de la suppression : " + (err?.response?.data?.message || err.message))
+    }
+  }
+
   return (
     <div>
       {/* ── Sub Tabs Bar (Matches Voitures admin-tabs-bar 100%) ── */}
@@ -945,13 +958,22 @@ export default function ApartmentsAdmin() {
                         </select>
                       </td>
                       <td style={{ textAlign: 'right' }}>
-                        <button
-                          className="admin-btn admin-btn--outline"
-                          style={{ padding: '4px 8px', fontSize: 11 }}
-                          onClick={() => setResModal(res)}
-                        >
-                          <FiEye size={12}/> Voir
-                        </button>
+                        <div className="admin-table__actions" style={{ justifyContent: 'flex-end' }}>
+                          <button
+                            className="admin-btn admin-btn--outline"
+                            style={{ padding: '4px 8px', fontSize: 11 }}
+                            onClick={() => setResModal(res)}
+                          >
+                            <FiEye size={12}/> Voir
+                          </button>
+                          <button
+                            className="admin-table__action admin-table__action--danger"
+                            title="Supprimer cette réservation"
+                            onClick={() => handleDeleteReservation(res)}
+                          >
+                            <FiTrash2 size={13}/>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1316,8 +1338,15 @@ export default function ApartmentsAdmin() {
                 </select>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 8 }}>
-                <button className="admin-btn admin-btn--primary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => setResModal(null)}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, marginTop: 8 }}>
+                <button
+                  className="admin-btn admin-btn--outline"
+                  style={{ color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.35)' }}
+                  onClick={() => handleDeleteReservation(resModal)}
+                >
+                  <FiTrash2 size={13}/> Supprimer
+                </button>
+                <button className="admin-btn admin-btn--primary" style={{ flex: 1, justifyContent: 'center' }} onClick={() => setResModal(null)}>
                   Fermer
                 </button>
               </div>

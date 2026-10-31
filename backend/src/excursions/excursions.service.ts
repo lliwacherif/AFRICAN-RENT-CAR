@@ -233,4 +233,11 @@ export class ExcursionsService {
     if (!res) throw new NotFoundException('Réservation introuvable');
     return res;
   }
+
+  async removeReservation(id: string) {
+    if (!Types.ObjectId.isValid(id)) throw new NotFoundException('ID réservation invalide');
+    const deleted = await this.reservationModel.findByIdAndDelete(id).lean();
+    if (!deleted) throw new NotFoundException('Réservation introuvable');
+    return { message: 'Réservation supprimée avec succès' };
+  }
 }

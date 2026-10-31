@@ -258,6 +258,16 @@ export default function ChauffeursAdmin() {
     }
   };
 
+  const handleDeleteReservation = async (resId) => {
+    if (!window.confirm('Voulez-vous vraiment supprimer définitivement cette demande de trajet ?')) return;
+    try {
+      await chauffeurService.deleteReservation(resId);
+      setReservations(prev => prev.filter(r => r._id !== resId));
+    } catch (err) {
+      setReservations(prev => prev.filter(r => r._id !== resId));
+    }
+  };
+
   const handleOpenModal = (route = null) => {
     setModalError(null);
     if (route) {
@@ -1004,6 +1014,7 @@ export default function ChauffeursAdmin() {
                     <th>CHAUFFEUR DÉDIÉ</th>
                     <th>TARIF</th>
                     <th>STATUT</th>
+                    <th style={{ textAlign: 'right' }}>ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1068,11 +1079,23 @@ export default function ChauffeursAdmin() {
                           <option value="cancelled">Annulée</option>
                         </select>
                       </td>
+
+                      <td style={{ textAlign: 'right' }}>
+                        <div className="admin-table__actions" style={{ justifyContent: 'flex-end' }}>
+                          <button
+                            className="admin-table__action admin-table__action--danger"
+                            onClick={() => handleDeleteReservation(res._id)}
+                            title="Supprimer cette demande de trajet"
+                          >
+                            <FiTrash2 size={13} />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                   {!filteredReservations.length && (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', color: 'var(--white-30)', padding: 32 }}>
+                      <td colSpan={8} style={{ textAlign: 'center', color: 'var(--white-30)', padding: 32 }}>
                         Aucune demande trouvée.
                       </td>
                     </tr>

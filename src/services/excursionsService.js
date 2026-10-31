@@ -49,6 +49,8 @@ export const excursionsService = {
   },
 
   updateReservationStatus: (id, status) => api.patch(`/excursions/reservations/${id}/status`, { status }).then(r => r.data?.data ?? r.data),
+
+  deleteReservation: (id) => api.delete(`/excursions/reservations/${id}`).then(r => r.data?.data ?? r.data),
 }
 
 export default excursionsService

@@ -102,4 +102,13 @@ export class ExcursionsController {
   ) {
     return this.excursionsService.updateReservationStatus(id, status);
   }
+
+  @Delete('reservations/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: '[Admin] Delete excursion reservation' })
+  removeReservation(@Param('id') id: string) {
+    return this.excursionsService.removeReservation(id);
+  }
 }

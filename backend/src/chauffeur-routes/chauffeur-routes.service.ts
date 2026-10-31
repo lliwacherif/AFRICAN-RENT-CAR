@@ -418,6 +418,12 @@ export class ChauffeurRoutesService implements OnModuleInit {
     return res;
   }
 
+  async deleteReservation(id: string): Promise<{ success: boolean; message: string }> {
+    const res = await this.resModel.findByIdAndDelete(id).exec();
+    if (!res) throw new NotFoundException('Réservation introuvable');
+    return { success: true, message: 'Réservation supprimée avec succès' };
+  }
+
   // ── Standalone Chauffeurs Management ──
   async getAllChauffeurs(): Promise<any[]> {
     const chauffeurs = await this.chauffeurModel.find().sort({ createdAt: -1 }).exec();

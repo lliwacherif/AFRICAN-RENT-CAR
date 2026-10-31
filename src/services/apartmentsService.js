@@ -11,6 +11,7 @@ export const apartmentsService = {
   reserve: (id, data) => api.post(`/apartments/${id}/reserve`, data).then(r => r.data?.data ?? r.data),
   getReservations: () => api.get('/apartments/reservations').then(r => r.data?.data ?? r.data),
   updateReservationStatus: (id, status) => api.patch(`/apartments/reservations/${id}/status`, { status }).then(r => r.data?.data ?? r.data),
+  deleteReservation: (id) => api.delete(`/apartments/reservations/${id}`).then(r => r.data?.data ?? r.data),
 }
 
 export default apartmentsService

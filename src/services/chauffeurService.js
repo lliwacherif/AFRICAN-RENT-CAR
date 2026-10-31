@@ -421,6 +421,19 @@ export const chauffeurService = {
     }
   },
 
+  /**
+   * Delete booking (Admin)
+   */
+  async deleteReservation(id) {
+    const stored = JSON.parse(localStorage.getItem('tcr_chauffeur_reservations') || '[]');
+    if (stored.length > 0) {
+      const filtered = stored.filter(r => r._id !== id);
+      localStorage.setItem('tcr_chauffeur_reservations', JSON.stringify(filtered));
+    }
+    const res = await api.delete(`/chauffeur-routes/reservations/${id}`);
+    return res.data?.data !== undefined ? res.data.data : res.data;
+  },
+
   // ══════════════════════════════════════════════════════════
   // STANDALONE CHAUFFEURS CRUD (Admin)
   // ══════════════════════════════════════════════════════════

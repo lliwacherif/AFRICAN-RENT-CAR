@@ -1401,11 +1401,32 @@ function StatusModal({ reservation, allReservations = [], onClose, onSaved }) {
             </>
           )}
 
-          <div className="vm-actions">
-            <button type="button" className="admin-btn admin-btn--outline" onClick={onClose}>Annuler</button>
-            <button type="button" className="admin-btn admin-btn--primary" onClick={handleSave} disabled={saving}>
-              {saving ? <span className="admin-spinner"/> : '💾 Enregistrer les modifications'}
+          <div className="vm-actions" style={{ justifyContent: 'space-between' }}>
+            <button
+              type="button"
+              className="admin-btn admin-btn--outline"
+              style={{ color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.35)' }}
+              onClick={async () => {
+                if (!window.confirm('Voulez-vous vraiment supprimer définitivement cette réservation ?')) return
+                setSaving(true)
+                try {
+                  await reservationsService.remove(reservation._id)
+                  onSaved()
+                } catch (err) {
+                  const msg = err?.response?.data?.message
+                  setError(Array.isArray(msg) ? msg[0] : msg || 'Erreur lors de la suppression.')
+                } finally { setSaving(false) }
+              }}
+              disabled={saving}
+            >
+              <FiTrash2 size={13}/> Supprimer
             </button>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button type="button" className="admin-btn admin-btn--outline" onClick={onClose}>Annuler</button>
+              <button type="button" className="admin-btn admin-btn--primary" onClick={handleSave} disabled={saving}>
+                {saving ? <span className="admin-spinner"/> : '💾 Enregistrer les modifications'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1645,6 +1666,18 @@ export default function Admin() {
       setTimeout(() => loadData(), 800)
     } catch (e) {
       alert('Impossible de supprimer: ' + (e?.message || 'erreur inconnue'))
+    }
+  }
+
+  const handleDeleteReservation = async (res) => {
+    if (!window.confirm('Voulez-vous vraiment supprimer définitivement cette réservation ?')) return
+    try {
+      await reservationsService.remove(res._id)
+      setAllReservations(p => p.filter(r => r._id !== res._id))
+      setUpcomingRes(p => p.filter(r => r._id !== res._id))
+      loadData()
+    } catch (e) {
+      alert('Impossible de supprimer la réservation: ' + (e?.response?.data?.message || e?.message || 'erreur inconnue'))
     }
   }
 
@@ -2265,9 +2298,18 @@ export default function Admin() {
                         <td><PayBadge status={r.paymentStatus}/></td>
                         <td><ResBadge status={r.status}/></td>
                         <td>
-                          <button className="admin-table__action" onClick={() => setStatusModal(r)}>
-                            <FiEdit2 size={12}/> Gérer
-                          </button>
+                          <div className="admin-table__actions">
+                            <button className="admin-table__action" onClick={() => setStatusModal(r)}>
+                              <FiEdit2 size={12}/> Gérer
+                            </button>
+                            <button
+                              className="admin-table__action admin-table__action--danger"
+                              onClick={() => handleDeleteReservation(r)}
+                              title="Supprimer la réservation"
+                            >
+                              <FiTrash2 size={12}/>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     )

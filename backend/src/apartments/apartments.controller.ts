@@ -113,4 +113,13 @@ export class ApartmentsController {
   ) {
     return this.apartmentsService.updateReservationStatus(id, status);
   }
+
+  @Delete('reservations/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: '[Admin] Delete apartment reservation' })
+  removeReservation(@Param('id') id: string) {
+    return this.apartmentsService.removeReservation(id);
+  }
 }
