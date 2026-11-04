@@ -229,10 +229,9 @@ export default function ChauffeursAdmin() {
       const updated = await chauffeurService.update(route._id, {
         available: !route.available
       });
-      setRoutes(prev => prev.map(r => r._id === route._id ? { ...r, available: !r.available } : r));
+      setRoutes(prev => prev.map(r => r._id === route._id ? updated : r));
     } catch (err) {
       alert("Erreur lors de la modification de l'état : " + (err?.response?.data?.message || err.message));
-      setRoutes(prev => prev.map(r => r._id === route._id ? { ...r, available: !r.available } : r));
     } finally {
       setTogglingId(null);
     }
@@ -245,7 +244,6 @@ export default function ChauffeursAdmin() {
       setRoutes(prev => prev.filter(r => r._id !== routeId));
     } catch (err) {
       alert("Erreur lors de la suppression : " + (err?.response?.data?.message || err.message));
-      setRoutes(prev => prev.filter(r => r._id !== routeId));
     }
   };
 
@@ -264,7 +262,7 @@ export default function ChauffeursAdmin() {
       await chauffeurService.deleteReservation(resId);
       setReservations(prev => prev.filter(r => r._id !== resId));
     } catch (err) {
-      setReservations(prev => prev.filter(r => r._id !== resId));
+      alert("Erreur lors de la suppression : " + (err?.response?.data?.message || err.message));
     }
   };
 

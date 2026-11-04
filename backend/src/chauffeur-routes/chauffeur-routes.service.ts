@@ -219,45 +219,6 @@ const DEFAULT_CHAUFFEUR_ROUTES = [
   },
 ];
 
-const DEFAULT_CHAUFFEUR_LOCATIONS = [
-  // Aéroports
-  { name: 'Aéroport Tunis-Carthage (TUN)', type: 'both', category: 'airport', region: 'Grand Tunis', city: 'Tunis', popular: true, isActive: true, order: 1 },
-  { name: 'Aéroport Enfidha-Hammamet (NBE)', type: 'both', category: 'airport', region: 'Sahel', city: 'Enfidha', popular: true, isActive: true, order: 2 },
-  { name: 'Aéroport Djerba-Zarzis (DJE)', type: 'both', category: 'airport', region: 'Sud & Djerba', city: 'Djerba', popular: true, isActive: true, order: 3 },
-  { name: 'Aéroport Monastir Habib Bourguiba (MIR)', type: 'both', category: 'airport', region: 'Sahel', city: 'Monastir', popular: true, isActive: true, order: 4 },
-  { name: 'Aéroport Sfax-Thyna (SFA)', type: 'both', category: 'airport', region: 'Sahel', city: 'Sfax', popular: false, isActive: true, order: 5 },
-  { name: 'Aéroport Tozeur-Nefta (TOE)', type: 'both', category: 'airport', region: 'Sud & Djerba', city: 'Tozeur', popular: false, isActive: true, order: 6 },
-
-  // Grand Tunis
-  { name: 'Tunis Centre-Ville (Avenue Habib Bourguiba)', type: 'both', category: 'city', region: 'Grand Tunis', city: 'Tunis', popular: true, isActive: true, order: 10 },
-  { name: 'La Marsa, Sidi Bou Said & Gammarth', type: 'both', category: 'hotel_zone', region: 'Grand Tunis', city: 'La Marsa', popular: true, isActive: true, order: 11 },
-  { name: 'Les Berges du Lac 1 & Lac 2', type: 'both', category: 'hotel_zone', region: 'Grand Tunis', city: 'Tunis', popular: false, isActive: true, order: 12 },
-  { name: 'Gammarth Zone Hôtelière & Palaces', type: 'both', category: 'hotel_zone', region: 'Grand Tunis', city: 'Gammarth', popular: true, isActive: true, order: 13 },
-
-  // Cap Bon & Hammamet
-  { name: 'Hammamet Sud & Yasmine Hammamet', type: 'both', category: 'hotel_zone', region: 'Cap Bon', city: 'Hammamet', popular: true, isActive: true, order: 20 },
-  { name: 'Hammamet Nord & Centre Historique', type: 'both', category: 'hotel_zone', region: 'Cap Bon', city: 'Hammamet', popular: false, isActive: true, order: 21 },
-  { name: 'Nabeul Centre & Front de Mer', type: 'both', category: 'city', region: 'Cap Bon', city: 'Nabeul', popular: false, isActive: true, order: 22 },
-
-  // Sahel
-  { name: 'Sousse Sahloul & Hôpitaux', type: 'both', category: 'city', region: 'Sahel', city: 'Sousse', popular: true, isActive: true, order: 30 },
-  { name: 'Port El Kantaoui & Zone Touristique', type: 'both', category: 'hotel_zone', region: 'Sahel', city: 'Hammam Sousse', popular: true, isActive: true, order: 31 },
-  { name: 'Sousse Ville & Médina', type: 'both', category: 'city', region: 'Sahel', city: 'Sousse', popular: false, isActive: true, order: 32 },
-  { name: 'Monastir Marina & Skanes', type: 'both', category: 'hotel_zone', region: 'Sahel', city: 'Monastir', popular: false, isActive: true, order: 33 },
-  { name: 'Mahdia Zone Touristique & Corniche', type: 'both', category: 'hotel_zone', region: 'Sahel', city: 'Mahdia', popular: false, isActive: true, order: 34 },
-
-  // Sud & Djerba
-  { name: 'Midoun & Zone Hôtelière (Djerba)', type: 'both', category: 'hotel_zone', region: 'Sud & Djerba', city: 'Midoun', popular: true, isActive: true, order: 40 },
-  { name: 'Houmt Souk & Port de Djerba', type: 'both', category: 'city', region: 'Sud & Djerba', city: 'Houmt Souk', popular: false, isActive: true, order: 41 },
-  { name: 'Zarzis Ville & Hôtels Oasisiens', type: 'both', category: 'hotel_zone', region: 'Sud & Djerba', city: 'Zarzis', popular: false, isActive: true, order: 42 },
-  { name: 'Tozeur Oasis & Palmeraie', type: 'both', category: 'hotel_zone', region: 'Sud & Djerba', city: 'Tozeur', popular: false, isActive: true, order: 43 },
-
-  // Nord-Ouest & Centre
-  { name: 'Bizerte Marina & Vieux Port', type: 'both', category: 'port', region: 'Nord-Ouest', city: 'Bizerte', popular: false, isActive: true, order: 50 },
-  { name: 'Tabarka Marina & Aïn Draham', type: 'both', category: 'hotel_zone', region: 'Nord-Ouest', city: 'Tabarka', popular: false, isActive: true, order: 51 },
-  { name: 'Kairouan Ville Sainte & Médina', type: 'both', category: 'city', region: 'Centre', city: 'Kairouan', popular: false, isActive: true, order: 52 },
-];
-
 @Injectable()
 export class ChauffeurRoutesService implements OnModuleInit {
   constructor(
@@ -272,36 +233,21 @@ export class ChauffeurRoutesService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const count = await this.routeModel.countDocuments();
-    if (count === 0) {
-      await this.routeModel.insertMany(DEFAULT_CHAUFFEUR_ROUTES.map(route => ({
-        ...route,
-        assignedChauffeur: withPrivateChauffeur(route.assignedChauffeur),
-      })));
-      console.log(`[ChauffeurRoutesService] Seeded ${DEFAULT_CHAUFFEUR_ROUTES.length} default chauffeur routes`);
-    } else {
-      // Migrate existing routes that lack coordinates or need accurate coords
-      const existingRoutes = await this.routeModel.find().exec();
-      for (const r of existingRoutes) {
-        const matchDefault = DEFAULT_CHAUFFEUR_ROUTES.find(
-          d => d.from.toLowerCase() === r.from.toLowerCase() && d.to.toLowerCase() === r.to.toLowerCase()
-        ) || DEFAULT_CHAUFFEUR_ROUTES.find(
-          d => r.title?.toLowerCase().includes(d.to.toLowerCase())
-        );
-        if (matchDefault) {
-          await this.routeModel.findByIdAndUpdate(r._id, {
-            fromCoords: matchDefault.fromCoords,
-            toCoords: matchDefault.toCoords,
-          });
-        }
+    // An empty collection can be intentional after admin deletions. Never
+    // recreate default routes or locations during application startup.
+    const existingRoutes = await this.routeModel.find().exec();
+    for (const route of existingRoutes) {
+      const matchDefault = DEFAULT_CHAUFFEUR_ROUTES.find(
+        d => d.from.toLowerCase() === route.from.toLowerCase() && d.to.toLowerCase() === route.to.toLowerCase()
+      ) || DEFAULT_CHAUFFEUR_ROUTES.find(
+        d => route.title?.toLowerCase().includes(d.to.toLowerCase())
+      );
+      if (matchDefault) {
+        await this.routeModel.findByIdAndUpdate(route._id, {
+          fromCoords: matchDefault.fromCoords,
+          toCoords: matchDefault.toCoords,
+        });
       }
-    }
-
-    // Seed default transfer locations if empty
-    const locCount = await this.locationModel.countDocuments();
-    if (locCount === 0) {
-      await this.locationModel.insertMany(DEFAULT_CHAUFFEUR_LOCATIONS);
-      console.log(`[ChauffeurRoutesService] Seeded ${DEFAULT_CHAUFFEUR_LOCATIONS.length} default locations`);
     }
   }
 
